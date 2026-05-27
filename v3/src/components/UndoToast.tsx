@@ -42,6 +42,7 @@ export function UndoToast({
   return (
     <div
       class="sb-undo-toast"
+      data-testid="undo-toast"
       style={{ '--undo-duration': `${durationMs}ms` } as Record<string, string>}
     >
       <span
@@ -55,6 +56,7 @@ export function UndoToast({
       </span>
       <button
         class="sb-btn sb-btn-sm sb-btn-primary"
+        data-testid="undo-toast-button"
         style={{ padding: '2px 12px', flexShrink: 0 }}
         onClick={handleUndo}
       >

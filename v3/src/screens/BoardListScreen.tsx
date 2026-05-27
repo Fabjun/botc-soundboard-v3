@@ -60,6 +60,7 @@ export function BoardListScreen(): JSX.Element {
           <div style={{ display: 'flex', gap: 6 }}>
             <button
               class="sb-btn sb-btn-sm sb-btn-primary"
+              data-testid="new-board-button"
               onClick={handleCreate}
             >
               <PixelIcon name="sparkle" size={11} />
@@ -153,6 +154,7 @@ function BoardRow({
   return (
     <div
       class="sb-menu-row"
+      data-testid={`board-row-${board.id}`}
       style={{
         '--pix-bg': 'var(--raised)',
         cursor: 'pointer',
@@ -199,6 +201,7 @@ function BoardRow({
         ) : (
           <div
             class="sb-row-title"
+            data-testid={`board-row-title-${board.id}`}
             style={{
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -223,6 +226,7 @@ function BoardRow({
         >
           <button
             class="sb-btn sb-btn-sm sb-btn-ghost"
+            data-testid={`board-edit-${board.id}`}
             style={{ minWidth: 36, padding: '0 6px' }}
             title="Rename board"
             onClick={() => { setEditValue(board.name); setEditing(true); }}
@@ -231,6 +235,7 @@ function BoardRow({
           </button>
           <button
             class={`sb-btn sb-btn-sm ${deleteConfirm ? 'sb-btn-danger' : 'sb-btn-ghost'}`}
+            data-testid={`board-delete-${board.id}`}
             style={{ minWidth: 36, padding: '0 6px' }}
             title={deleteConfirm ? 'Click again to confirm' : 'Delete board'}
             onClick={handleDelete}
@@ -281,6 +286,7 @@ function EmptyBoardsState({ onCreate }: { onCreate: () => void }): JSX.Element {
       </div>
       <button
         class="sb-btn sb-btn-primary"
+        data-testid="create-first-board-button"
         style={{ minWidth: 220, minHeight: 44, gap: 8 }}
         onClick={onCreate}
       >

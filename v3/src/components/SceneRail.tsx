@@ -199,6 +199,7 @@ export function SceneRail({
               (editingId === scene.id ? ' is-editing' : '') +
               (pendingDeleteId === scene.id ? ' is-danger' : '')
             }
+            data-testid={`scene-tab-${scene.id}`}
             onClick={() => {
               if (editingId !== scene.id) {
                 onSceneSelect(scene.id);
@@ -224,6 +225,7 @@ export function SceneRail({
             {editingId === scene.id ? (
               <input
                 ref={inputRef}
+                data-testid="scene-name-input"
                 value={editValue}
                 onInput={e => setEditValue((e.target as HTMLInputElement).value)}
                 onKeyDown={e => {
@@ -280,6 +282,7 @@ export function SceneRail({
               <div class="sb-scene-tab-actions">
                 <button
                   class="sb-btn sb-btn-sm sb-btn-ghost"
+                  data-testid={`scene-rename-${scene.id}`}
                   style={{ minWidth: 28, minHeight: 28, padding: '0 4px' }}
                   title="Rename scene"
                   onClick={e => { e.stopPropagation(); startRename(scene); }}
@@ -288,6 +291,7 @@ export function SceneRail({
                 </button>
                 <button
                   class="sb-btn sb-btn-sm sb-btn-ghost"
+                  data-testid={`scene-copy-${scene.id}`}
                   style={{ minWidth: 28, minHeight: 28, padding: '0 4px' }}
                   title="Duplicate scene"
                   onClick={e => { e.stopPropagation(); duplicateScene(scene); }}
@@ -296,6 +300,7 @@ export function SceneRail({
                 </button>
                 <button
                   class={`sb-btn sb-btn-sm ${pendingDeleteId === scene.id ? 'sb-btn-danger' : 'sb-btn-ghost'}`}
+                  data-testid={`scene-delete-${scene.id}`}
                   style={{ minWidth: 28, minHeight: 28, padding: '0 4px' }}
                   title={pendingDeleteId === scene.id ? 'Click again to confirm delete' : 'Delete scene'}
                   onClick={e => { e.stopPropagation(); requestDelete(scene); }}
@@ -311,6 +316,7 @@ export function SceneRail({
       {/* Add scene button */}
       <button
         class="sb-btn sb-btn-ghost"
+        data-testid="new-scene-button"
         style={{
           margin: '8px',
           width: 'calc(100% - 16px)',

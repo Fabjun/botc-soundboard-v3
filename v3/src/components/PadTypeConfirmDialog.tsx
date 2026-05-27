@@ -69,6 +69,7 @@ export function PadTypeConfirmDialog({
   const dialogContent = (
     <div
       class={isMobile ? 'sb-creation-sheet' : 'sb-type-confirm'}
+      data-testid="type-confirm-dialog"
       style={isMobile ? {} : {
         top: '50%',
         left: '50%',
@@ -174,6 +175,7 @@ export function PadTypeConfirmDialog({
       >
         <button
           class="sb-btn sb-btn-sm sb-btn-ghost"
+          data-testid="type-confirm-cancel"
           onClick={onCancel}
           style={{ minWidth: 80 }}
         >
@@ -181,6 +183,7 @@ export function PadTypeConfirmDialog({
         </button>
         <button
           class={`sb-btn sb-btn-sm ${isDangerous ? 'sb-btn-danger' : 'sb-btn-primary'}`}
+          data-testid="type-confirm-switch"
           onClick={onConfirm}
           style={{ minWidth: 80 }}
         >

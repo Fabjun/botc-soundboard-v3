@@ -47,6 +47,7 @@ export function PadGridCell({
         ref={cellRef as ((el: Element | null) => void) | undefined}
         class="sb-pad-grid-cell is-empty"
         data-pos={`${col},${row}`}
+        data-testid={`pad-cell-empty-${col}-${row}`}
         onClick={(e) => onEmpty((e.currentTarget as HTMLElement).getBoundingClientRect())}
         role="button"
         aria-label="Add pad"
@@ -71,6 +72,7 @@ export function PadGridCell({
       ref={cellRef as ((el: Element | null) => void) | undefined}
       class="sb-pad-grid-cell"
       data-pos={`${col},${row}`}
+      data-testid={`pad-cell-${pad.id}`}
     >
       <div
         class={
