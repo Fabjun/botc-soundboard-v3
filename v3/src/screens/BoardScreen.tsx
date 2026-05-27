@@ -15,7 +15,15 @@
 
 import { useState, useEffect } from 'preact/hooks';
 import type { JSX } from 'preact';
-import { currentScreen, currentSceneId, currentMode, currentBoard, currentScene, upsertBoard, libraryItems } from '../state/store';
+import {
+  currentScreen,
+  currentSceneId,
+  currentMode,
+  currentBoard,
+  currentScene,
+  upsertBoard,
+  libraryItems,
+} from '../state/store';
 import { boardPut } from '../db/idb';
 import { BoardTopBarV3 } from '../components/BoardTopBarV3';
 import { SceneRail } from '../components/SceneRail';
@@ -41,12 +49,15 @@ export function BoardScreen(): JSX.Element {
   /** Mobile Place-Mode: non-null while user is tapping a slot to place a library item. */
   const [placeMode, setPlaceMode] = useState<{ itemId: string } | null>(null);
 
-  // Select first scene if none selected
+  // Select first scene if none selected.
+  // Dep is board?.id intentionally — we only auto-select on BOARD IDENTITY change,
+  // not on every board mutation (which would re-override a user scene selection).
   useEffect(() => {
     if (board && !currentSceneId.value && board.scenes.length > 0) {
       const first = [...board.scenes].sort((a, b) => a.order - b.order)[0];
       currentSceneId.value = first.id;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [board?.id]);
 
   // Close editor panel when mode switches to GAME
@@ -56,6 +67,54 @@ export function BoardScreen(): JSX.Element {
       setSelectedPadId(null);
     }
   }, [mode]);
+
+  // Path C — ADD PAD keyboard shortcut (key 'A' in SETUP mode)
+  // Defined here (before early return) to satisfy Rules of Hooks — hooks must
+  // always be called unconditionally. handleAddPad guards for !board/!scene.
+  async function handleAddPad() {
+    if (!scene || !board) return;
+    const pos = nextFreeSlot(scene.pads, scene.gridConfig.cols, scene.gridConfig.rows);
+    if (!pos) return; // Grid full
+    const newPad: Pad = {
+      id: nanoid(),
+      type: 'single',
+      name: '',
+      position: pos,
+      volume: 80,
+      fadeIn: 0,
+      fadeOut: 0,
+    };
+    const updatedScene: Scene = { ...scene, pads: [...scene.pads, newPad] };
+    const updatedBoard: Board = {
+      ...board,
+      scenes: board.scenes.map((s) => (s.id === scene.id ? updatedScene : s)),
+    };
+    try {
+      await boardPut(updatedBoard);
+      upsertBoard(updatedBoard);
+      setSelectedPadId(newPad.id);
+      setRightPanel('editor');
+    } catch (e) {
+      console.error('Add pad failed:', e);
+    }
+  }
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (mode !== 'edit') return;
+      const tag = (e.target as HTMLElement).tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (e.key === 'a' || e.key === 'A') {
+        handleAddPad();
+      }
+    }
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+    // handleAddPad intentionally omitted: it's a new function ref every render but
+    // captures mode/scene/board via closure — adding it would re-register the
+    // listener on every render. The real deps (mode, scene, board) are listed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, scene, board]);
 
   if (!board) {
     return (
@@ -81,7 +140,9 @@ export function BoardScreen(): JSX.Element {
           <button
             class="sb-btn sb-btn-sm sb-btn-ghost"
             style={{ marginLeft: 12 }}
-            onClick={() => { currentScreen.value = 'board-list'; }}
+            onClick={() => {
+              currentScreen.value = 'board-list';
+            }}
           >
             Back
           </button>
@@ -108,7 +169,7 @@ export function BoardScreen(): JSX.Element {
   }
 
   function handleLibraryToggle() {
-    setRightPanel(prev => prev === 'library' ? 'empty' : 'library');
+    setRightPanel((prev) => (prev === 'library' ? 'empty' : 'library'));
     setSelectedPadId(null);
     setPlaceMode(null); // cancel any pending place-mode
   }
@@ -121,14 +182,14 @@ export function BoardScreen(): JSX.Element {
 
     // If the target slot is occupied, fall back to the next free slot
     const occupied = scene.pads.find(
-      p => p.position?.col === targetPos.col && p.position?.row === targetPos.row
+      (p) => p.position?.col === targetPos.col && p.position?.row === targetPos.row,
     );
     const finalPos = occupied
       ? nextFreeSlot(scene.pads, scene.gridConfig.cols, scene.gridConfig.rows)
       : targetPos;
     if (!finalPos) return; // grid full
 
-    const item = libraryItems.value.find(m => m.id === itemId);
+    const item = libraryItems.value.find((m) => m.id === itemId);
     if (!item) return;
 
     const newPad: Pad = {
@@ -145,7 +206,7 @@ export function BoardScreen(): JSX.Element {
     const updatedScene: Scene = { ...scene, pads: [...scene.pads, newPad] };
     const updatedBoard: Board = {
       ...board,
-      scenes: board.scenes.map(s => s.id === scene.id ? updatedScene : s),
+      scenes: board.scenes.map((s) => (s.id === scene.id ? updatedScene : s)),
     };
     try {
       await boardPut(updatedBoard);
@@ -169,7 +230,7 @@ export function BoardScreen(): JSX.Element {
 
     // Occupied slot → fall back to next free slot (consistent with handleLibDrop)
     const occupied = scene.pads.find(
-      p => p.position?.col === pos.col && p.position?.row === pos.row
+      (p) => p.position?.col === pos.col && p.position?.row === pos.row,
     );
     const finalPos = occupied
       ? nextFreeSlot(scene.pads, scene.gridConfig.cols, scene.gridConfig.rows)
@@ -182,11 +243,11 @@ export function BoardScreen(): JSX.Element {
     if (!scene || !board) return;
     const updatedScene: Scene = {
       ...scene,
-      pads: scene.pads.filter(p => p.id !== padId),
+      pads: scene.pads.filter((p) => p.id !== padId),
     };
     const updatedBoard: Board = {
       ...board,
-      scenes: board.scenes.map(s => s.id === scene.id ? updatedScene : s),
+      scenes: board.scenes.map((s) => (s.id === scene.id ? updatedScene : s)),
     };
     try {
       await boardPut(updatedBoard);
@@ -198,55 +259,13 @@ export function BoardScreen(): JSX.Element {
     }
   }
 
-  // Path C — ADD PAD keyboard shortcut (key 'A' in SETUP mode)
-  useEffect(() => {
-    function onKeyDown(e: KeyboardEvent) {
-      if (mode !== 'edit') return;
-      const tag = (e.target as HTMLElement).tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-      if (e.key === 'a' || e.key === 'A') {
-        handleAddPad();
-      }
-    }
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, [mode, scene, board]);
-
-  async function handleAddPad() {
-    if (!scene || !board) return;
-    const pos = nextFreeSlot(scene.pads, scene.gridConfig.cols, scene.gridConfig.rows);
-    if (!pos) return; // Grid full
-    const newPad: Pad = {
-      id: nanoid(),
-      type: 'single',
-      name: '',
-      position: pos,
-      volume: 80,
-      fadeIn: 0,
-      fadeOut: 0,
-    };
-    const updatedScene: Scene = { ...scene, pads: [...scene.pads, newPad] };
-    const updatedBoard: Board = {
-      ...board,
-      scenes: board.scenes.map(s => s.id === scene.id ? updatedScene : s),
-    };
-    try {
-      await boardPut(updatedBoard);
-      upsertBoard(updatedBoard);
-      setSelectedPadId(newPad.id);
-      setRightPanel('editor');
-    } catch (e) {
-      console.error('Add pad failed:', e);
-    }
-  }
-
   // ── Empty Board state ──────────────────────────────────────────────────────
 
   const hasScenes = board.scenes.length > 0;
 
   // ── Pad for editor ─────────────────────────────────────────────────────────
 
-  const selectedPad = scene?.pads.find(p => p.id === selectedPadId) ?? null;
+  const selectedPad = scene?.pads.find((p) => p.id === selectedPadId) ?? null;
 
   // ── Layout ─────────────────────────────────────────────────────────────────
 
@@ -267,7 +286,9 @@ export function BoardScreen(): JSX.Element {
         onModeSwitch={handleModeSwitch}
         libraryOpen={rightPanel === 'library'}
         onLibraryToggle={handleLibraryToggle}
-        onBack={() => { currentScreen.value = 'board-list'; }}
+        onBack={() => {
+          currentScreen.value = 'board-list';
+        }}
       />
 
       {/* Main content */}
@@ -300,23 +321,25 @@ export function BoardScreen(): JSX.Element {
           }}
         >
           {!hasScenes ? (
-            <EmptyBoardState onAddScene={async () => {
-              const newScene: Scene = {
-                id: nanoid(),
-                name: 'Scene 1',
-                order: 0,
-                gridConfig: { cols: 4, rows: 4, gap: 8, padSize: 'md' },
-                pads: [],
-              };
-              const updatedBoard: Board = { ...board, scenes: [newScene] };
-              try {
-                await boardPut(updatedBoard);
-                upsertBoard(updatedBoard);
-                currentSceneId.value = newScene.id;
-              } catch (e) {
-                console.error('Add scene failed:', e);
-              }
-            }} />
+            <EmptyBoardState
+              onAddScene={async () => {
+                const newScene: Scene = {
+                  id: nanoid(),
+                  name: 'Scene 1',
+                  order: 0,
+                  gridConfig: { cols: 4, rows: 4, gap: 8, padSize: 'md' },
+                  pads: [],
+                };
+                const updatedBoard: Board = { ...board, scenes: [newScene] };
+                try {
+                  await boardPut(updatedBoard);
+                  upsertBoard(updatedBoard);
+                  currentSceneId.value = newScene.id;
+                } catch (e) {
+                  console.error('Add scene failed:', e);
+                }
+              }}
+            />
           ) : !scene ? (
             <div
               style={{
@@ -352,7 +375,8 @@ export function BoardScreen(): JSX.Element {
                       color: 'var(--night)',
                     }}
                   >
-                    Tap a slot to place &quot;{libraryItems.value.find(m => m.id === placeMode.itemId)?.name ?? '…'}&quot;
+                    Tap a slot to place &quot;
+                    {libraryItems.value.find((m) => m.id === placeMode.itemId)?.name ?? '…'}&quot;
                   </span>
                   <button
                     class="sb-btn sb-btn-sm sb-btn-ghost"
@@ -469,9 +493,10 @@ export function BoardScreen(): JSX.Element {
       <StatusBarV2
         mode={mode}
         boardName={board.name}
-        infoText={scene
-          ? `${scene.name} · ${scene.pads.length} pad${scene.pads.length !== 1 ? 's' : ''}`
-          : 'No scene selected'
+        infoText={
+          scene
+            ? `${scene.name} · ${scene.pads.length} pad${scene.pads.length !== 1 ? 's' : ''}`
+            : 'No scene selected'
         }
       />
     </div>
@@ -495,10 +520,7 @@ function EmptyBoardState({ onAddScene }: { onAddScene: () => void }): JSX.Elemen
       }}
     >
       <PixelIcon name="scroll" size={40} color="var(--border)" />
-      <div
-        class="sb-display-vt"
-        style={{ fontSize: 22, textAlign: 'center' }}
-      >
+      <div class="sb-display-vt" style={{ fontSize: 22, textAlign: 'center' }}>
         Empty Board
       </div>
       <div
@@ -511,16 +533,14 @@ function EmptyBoardState({ onAddScene }: { onAddScene: () => void }): JSX.Elemen
           lineHeight: 1.6,
         }}
       >
-        Add a scene to start placing pads.
-        Scenes group pads by narrative moment.
+        Add a scene to start placing pads. Scenes group pads by narrative moment.
       </div>
       <button
         class="sb-btn sb-btn-primary"
         style={{ minWidth: 200, minHeight: 44, gap: 8 }}
         onClick={onAddScene}
       >
-        <PixelIcon name="sparkle" size={14} />
-        + NEW SCENE
+        <PixelIcon name="sparkle" size={14} />+ NEW SCENE
       </button>
     </div>
   );

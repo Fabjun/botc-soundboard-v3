@@ -62,7 +62,10 @@ export function PadEditorPanel({
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Sync from prop changes (when pad changes externally)
+  // Sync from prop changes (when pad changes externally).
+  // Dep is pad.id intentionally — we only reset local state on PAD IDENTITY change,
+  // not on every field mutation. Reacting to all pad.* fields would reset the
+  // in-progress edit state on each auto-save (cursor jumps in inputs).
   useEffect(() => {
     setName(pad.name);
     setType(pad.type);
@@ -70,6 +73,7 @@ export function PadEditorPanel({
     setVolume(pad.volume);
     setFadeIn(pad.fadeIn);
     setFadeOut(pad.fadeOut);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pad.id]);
 
   // ── Auto-save with 500ms debounce ────────────────────────────────────────
@@ -79,11 +83,11 @@ export function PadEditorPanel({
     debounceRef.current = setTimeout(async () => {
       const updatedScene: Scene = {
         ...scene,
-        pads: scene.pads.map(p => p.id === updatedPad.id ? updatedPad : p),
+        pads: scene.pads.map((p) => (p.id === updatedPad.id ? updatedPad : p)),
       };
       const updatedBoard: Board = {
         ...board,
-        scenes: board.scenes.map(s => s.id === updatedScene.id ? updatedScene : s),
+        scenes: board.scenes.map((s) => (s.id === updatedScene.id ? updatedScene : s)),
       };
       try {
         await boardPut(updatedBoard);
@@ -158,11 +162,11 @@ export function PadEditorPanel({
 
   // ── Library picker ───────────────────────────────────────────────────────
 
-  const allAudio = libraryItems.value.filter(m => m.type === 'audio');
+  const allAudio = libraryItems.value.filter((m) => m.type === 'audio');
   const filteredAudio = libSearch.trim()
-    ? allAudio.filter(m => m.name.toLowerCase().includes(libSearch.toLowerCase()))
+    ? allAudio.filter((m) => m.name.toLowerCase().includes(libSearch.toLowerCase()))
     : allAudio;
-  const selectedItem = allAudio.find(m => m.id === libraryRef);
+  const selectedItem = allAudio.find((m) => m.id === libraryRef);
 
   // ── Render ───────────────────────────────────────────────────────────────
 
@@ -171,10 +175,7 @@ export function PadEditorPanel({
   return (
     <div class="sb-pad-editor" data-testid="pad-editor">
       {/* Header */}
-      <div
-        class="sb-panel-header is-active"
-        style={{ borderBottom: `2px solid ${typeColor}` }}
-      >
+      <div class="sb-panel-header is-active" style={{ borderBottom: `2px solid ${typeColor}` }}>
         <span
           style={{
             width: 8,
@@ -183,7 +184,9 @@ export function PadEditorPanel({
             flexShrink: 0,
           }}
         />
-        <span style={{ flex: 1, color: 'var(--text)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>
+        <span
+          style={{ flex: 1, color: 'var(--text)', fontFamily: 'var(--font-mono)', fontSize: 12 }}
+        >
           Pad Editor
         </span>
         <button
@@ -214,7 +217,7 @@ export function PadEditorPanel({
           data-testid="editor-name-input"
           value={name}
           placeholder="Pad name…"
-          onInput={e => handleNameChange((e.target as HTMLInputElement).value)}
+          onInput={(e) => handleNameChange((e.target as HTMLInputElement).value)}
           style={{
             width: '100%',
             background: 'var(--sunk)',
@@ -245,7 +248,7 @@ export function PadEditorPanel({
           TYPE
         </label>
         <div style={{ display: 'flex', gap: 4 }}>
-          {PAD_TYPES.map(t => (
+          {PAD_TYPES.map((t) => (
             <button
               key={t}
               class={`sb-btn sb-btn-sm ${type === t ? 'sb-btn-primary' : 'sb-btn-ghost'}`}
@@ -289,7 +292,7 @@ export function PadEditorPanel({
           <button
             class="sb-btn sb-btn-sm sb-btn-ghost"
             style={{ padding: '1px 6px', fontSize: 'var(--fs-xs)' }}
-            onClick={() => setLibPickerOpen(o => !o)}
+            onClick={() => setLibPickerOpen((o) => !o)}
           >
             {libPickerOpen ? 'CLOSE' : 'BROWSE'}
           </button>
@@ -319,9 +322,7 @@ export function PadEditorPanel({
             >
               {selectedItem.name}
             </div>
-            {selectedItem.peaks.length > 0 && (
-              <Waveform peaks={selectedItem.peaks} height={24} />
-            )}
+            {selectedItem.peaks.length > 0 && <Waveform peaks={selectedItem.peaks} height={24} />}
           </div>
         ) : (
           <div
@@ -361,7 +362,7 @@ export function PadEditorPanel({
                 type="text"
                 placeholder="Search…"
                 value={libSearch}
-                onInput={e => setLibSearch((e.target as HTMLInputElement).value)}
+                onInput={(e) => setLibSearch((e.target as HTMLInputElement).value)}
                 style={{
                   width: '100%',
                   background: 'none',
@@ -374,7 +375,7 @@ export function PadEditorPanel({
                 autoFocus
               />
             </div>
-            {filteredAudio.slice(0, 50).map(item => (
+            {filteredAudio.slice(0, 50).map((item) => (
               <div
                 key={item.id}
                 onClick={() => handleLibrarySelect(item.id)}
@@ -419,7 +420,7 @@ export function PadEditorPanel({
           min={0}
           max={100}
           step={1}
-          format={v => `${v}%`}
+          format={(v) => `${v}%`}
           onChange={handleVolumeChange}
           testid="editor-volume-slider"
         />
@@ -433,7 +434,7 @@ export function PadEditorPanel({
           min={0}
           max={10}
           step={0.1}
-          format={v => `${v.toFixed(1)}s`}
+          format={(v) => `${v.toFixed(1)}s`}
           onChange={handleFadeInChange}
           testid="editor-fade-in-slider"
         />
@@ -447,7 +448,7 @@ export function PadEditorPanel({
           min={0}
           max={10}
           step={0.1}
-          format={v => `${v.toFixed(1)}s`}
+          format={(v) => `${v.toFixed(1)}s`}
           onChange={handleFadeOutChange}
           testid="editor-fade-out-slider"
         />
@@ -589,7 +590,7 @@ function SliderRow({
         max={max}
         step={step}
         value={value}
-        onInput={e => onChange(parseFloat((e.target as HTMLInputElement).value))}
+        onInput={(e) => onChange(parseFloat((e.target as HTMLInputElement).value))}
         style={{
           width: '100%',
           accentColor: 'var(--gold)',
