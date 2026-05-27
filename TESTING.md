@@ -2,21 +2,26 @@
 
 ## Überblick
 
-Drei Schichten, eingeführt in Phase 1 (Slice 3.5):
+Vier Schichten, eingeführt in Phase 1 & 2 (Slice 3.5):
 
 | Schicht | Werkzeug | Zweck | Laufzeit |
 |---------|---------|-------|---------|
 | Unit | Vitest | Logik-Korrektheit (pure functions, signals, IDB-API) | ~1s |
-| E2E | Playwright | Smoke-Pfade in echtem Browser | ~10–30s |
-| Visual Regression | Playwright Screenshots | Pixel-Vergleich | Phase 2 |
+| E2E Smoke | Playwright | Kritische Pfade in Chromium + WebKit | ~6s |
+| E2E Full | Playwright | Alle 22 Slice-3-Verifikationspunkte | ~90s |
+| Visual Regression | Playwright Screenshots | Pixel-Vergleich (lokal-only) | ~30s |
 
 ---
 
 ## Werkzeuge
 
 - **Vitest** — Unit-Tests. Schnell (ms), kein Browser, keine Netzwerk-Abhängigkeit. Konfiguration: [v3/vitest.config.ts](v3/vitest.config.ts)
-- **Playwright** — E2E-Tests in Chromium + WebKit. Startet den Vite-Dev-Server automatisch. Konfiguration: [v3/playwright.config.ts](v3/playwright.config.ts)
+- **Playwright** — E2E-Tests in Chromium (+ WebKit für Smoke). Startet den Vite-Dev-Server automatisch via `webServer`. Konfiguration: [v3/playwright.config.ts](v3/playwright.config.ts)
 - **fake-indexeddb** — In-Memory-IndexedDB für Unit-Tests. Ersetzt jsdom's fehlende IDB-Implementierung. Setup: [v3/tests/unit/setup.ts](v3/tests/unit/setup.ts)
+- **@vitest/coverage-v8** — Coverage-Report via V8 (`npm run test:coverage`)
+- **ESLint** — Statische Analyse. Flat-Config in [v3/eslint.config.js](v3/eslint.config.js). TypeScript + react-hooks Regeln.
+- **Prettier** — Code-Formatierung. Konfiguration: [v3/.prettierrc.json](v3/.prettierrc.json)
+- **size-limit** — Bundle-Größen-Monitoring. Limits: JS 200 KB, CSS 50 KB (gzip). Konfiguration: [v3/.size-limit.json](v3/.size-limit.json)
 
 ---
 
@@ -25,72 +30,185 @@ Drei Schichten, eingeführt in Phase 1 (Slice 3.5):
 ```
 v3/
   tests/
+    fixtures/
+      test-audio-1s.wav       ← Minimal-WAV (8-bit mono 8kHz, 1s silence)
     unit/
-      setup.ts            ← Vitest-Globales: fake-indexeddb/auto
-      padUtils.test.ts    ← pure functions (nextFreeSlot, typeInference, migration)
-      padDnd.test.ts      ← applySwap, applyInsert (pure, kein DOM)
-      store.test.ts       ← Preact Signals mutations + computed reactivity
-      idb.test.ts         ← IDB-Layer round-trips (boardPut/Get/Delete, libGetAllMeta)
+      setup.ts                ← Vitest-Globales: fake-indexeddb/auto
+      padUtils.test.ts        ← pure functions (nextFreeSlot, typeInference, migration)
+      padDnd.test.ts          ← applySwap, applyInsert (pure, kein DOM)
+      store.test.ts           ← Preact Signals mutations + computed reactivity
+      idb.test.ts             ← IDB-Layer round-trips (boardPut/Get/Delete, libGetAllMeta)
     e2e/
-      app-loads.spec.ts         ← StartScreen mit TAP TO UNLOCK
-      library-empty.spec.ts     ← LIBRARY-Button → LibraryScreen
-      board-list-empty.spec.ts  ← BOARD-Button → BoardListScreen
-      board-create.spec.ts      ← Board anlegen → navigieren → BoardScreen
-      mode-toggle.spec.ts       ← GAME ↔ SETUP umschalten
+      helpers.ts              ← Shared helpers: goToBoardList, createBoardAndNavigate, ...
+      app-loads.spec.ts       ← Smoke: StartScreen mit TAP TO UNLOCK
+      library-empty.spec.ts   ← Smoke: LIBRARY-Button → LibraryScreen
+      board-list-empty.spec.ts← Smoke: BOARD-Button → BoardListScreen
+      board-create.spec.ts    ← Smoke: Board anlegen → BoardScreen
+      mode-toggle.spec.ts     ← Smoke: GAME ↔ SETUP umschalten
+      board-crud.spec.ts      ← Full: Tests 1–5 (Board CRUD + Reload)
+      scene-crud.spec.ts      ← Full: Tests 6–11 (Scene CRUD + Undo)
+      pad-creation.spec.ts    ← Full: Tests 12–15 (Pad erzeugen: Popover, Drag)
+      pad-editing.spec.ts     ← Full: Tests 16–19 (PadEditorPanel, TypChange)
+      pad-dnd.spec.ts         ← Full: Tests 20–21 (SWAP/INSERT DnD) [test.skip]
+      game-mode.spec.ts       ← Full: Test 22 (GAME-Modus: kein CRUD)
+      visual/
+        visual-setup.ts               ← stableScreenshot() Hilfsfunktion
+        visual-startscreen.spec.ts
+        visual-boardlist-empty.spec.ts
+        visual-boardlist-with-board.spec.ts
+        visual-boardscreen-setup.spec.ts
+        visual-boardscreen-game.spec.ts
+        visual-modetoggle-states.spec.ts
+        visual-scene-rail.spec.ts
+        visual-library-empty.spec.ts
   vitest.config.ts
   playwright.config.ts
-  tsconfig.test.json      ← Relaxte TypeScript-Config für Test-Dateien
+  eslint.config.js
+  .prettierrc.json
+  .size-limit.json
+  tsconfig.test.json          ← Relaxte TypeScript-Config für Unit-Test-Dateien
+  tsconfig.e2e.json           ← TypeScript-Config für E2E-Test-Dateien
 ```
 
 ---
 
-## Konventionen
+## Test-Selector-Konvention
 
-- **Test-Datei-Naming**: `<modul>.test.ts` (Unit), `<feature>.spec.ts` (E2E)
-- **Ein Test = eine Annahme** — kein Multi-Assert-Chaos pro `test()`
-- **Sprache**: TypeScript (konsistent mit Produktionscode)
-- **Tests dokumentieren Verhalten**, nicht Implementierung
-- **Keine magic strings** — Selektoren als Kommentar dokumentieren wenn nicht selbsterklärend
-- **import type** für Type-only-Imports (verbatimModuleSyntax: true im tsconfig)
+Alle E2E-Tests verwenden `data-testid`-Attribute für stabile Selektoren.
+**Keine CSS-Klassen als primäre Selektoren** (brechen bei Refactoring/Slice 8).
+
+### Namensgebung
+
+```
+data-testid="<component>-<element>"
+data-testid="<component>-<element>-<instance-id>"
+```
+
+**Beispiele:**
+```
+new-board-button           ← eindeutig, kein Suffix nötig
+board-row-{board.id}       ← Instanz-ID für Listen-Elemente
+scene-tab-{scene.id}
+scene-delete-{scene.id}
+mode-toggle                ← Container
+mode-toggle-setup          ← Unter-Element
+pad-cell-empty-{col}-{row} ← Koordinaten als Suffix
+```
+
+### Regeln
+
+- Nur test-kritische Elemente bekommen `data-testid` (kein vollständiges DOM-Coverage)
+- IDs werden nur wo nötig angefügt (Listen-Items, mehrfach vorkommende Typen)
+- In Playwright verwenden: `page.getByTestId('...')` oder `page.locator('[data-testid^="..."]')` für Prefix-Matches
 
 ---
 
-## Wann läuft welche Schicht
+## Visual Regression (lokal-only)
 
-| Moment | Schicht | Befehl |
-|--------|---------|--------|
-| Beim Speichern (lokal) | Unit (watch) | `npm run test:watch` |
-| Vor jedem Commit (automatisch) | Unit | Husky-Hook |
-| **Vor jedem Push (manuell)** | E2E | `npm run test:e2e` |
-| Slice-Abschluss | Unit + E2E | `npm run test && npm run test:e2e` |
-| Phase 2 (CI, geplant) | Unit + E2E + Visual | GitHub Actions |
+Screenshot-Baselines für Komponenten-Vergleiche. **Nicht in CI** (macOS und Ubuntu
+haben unterschiedliches Font-Rendering → Baseline-Mismatch auf Ubuntu).
 
-> **Phase-1-Pflicht bis CI-Integration**: Vor jedem `git push` manuell
-> `npm run test:e2e` ausführen. E2E-Tests sind noch nicht im Pre-Commit-Hook
-> (zu langsam, ~10–30s). Das kommt in Phase 2.
+### Baselines generieren / aktualisieren
+
+```bash
+cd v3 && npm run test:e2e:update-snapshots
+```
+
+Generiert `*.png`-Dateien in `tests/e2e/visual/__snapshots__/` (Format: `<name>-darwin.png`).
+Diese Dateien werden committed und gehören zum Repo.
+
+### Verifikation
+
+```bash
+cd v3 && npm run test:e2e:visual
+```
+
+Läuft gegen committed Baselines. Bei Diff: Test schlägt fehl mit Screenshot-Vergleich im Report.
+
+### Wann ausführen
+
+**Vor UI-relevanten Commits** (Komponenten, CSS, Design-System-Token):
+```bash
+cd v3 && npm run test:e2e:visual
+```
+Regressionen prüfen → bei absichtlichem Change: `--update-snapshots` + neue Baseline committen.
+
+### Anti-Flakiness
+
+Alle Visual-Tests rufen `stableScreenshot(page)` auf, das:
+- `reducedMotion: 'reduce'` setzt (CSS-Animationen stoppen)
+- `waitForLoadState('networkidle')` wartet
+- `document.fonts.ready` abwartet
+- 100ms extra Buffer wartet
+
+---
+
+## CI-Integration
+
+GitHub Actions unter [`.github/workflows/tests.yml`](.github/workflows/tests.yml).
+
+### Workflows
+
+**`tests.yml`** — Läuft auf Push zu `main` und Pull Requests:
+
+```
+unit-build-lint
+  ├── npm run build     (tsc + vite)
+  ├── npm run test      (vitest 91 Tests)
+  ├── npm run lint      (eslint)
+  ├── npm run format:check (prettier)
+  └── npm run size      (size-limit)
+
+e2e-smoke (needs: unit-build-lint)
+  └── npm run test:e2e:smoke  (10 Tests: 5 × Chromium + 5 × WebKit)
+
+e2e-full (needs: unit-build-lint)
+  └── npm run test:e2e:full   (18+ Tests in Chromium)
+```
+
+Playwright-Reports werden als Artifact hochgeladen (7 Tage, bei Fehler).
+
+**`deploy-pages.yml`** — Läuft nur wenn `tests.yml` auf `main` erfolgreich abgeschlossen hat:
+- Trigger: `workflow_run` (Tests, completed, success) + `workflow_dispatch`
+- Visual Tests werden **nicht** in CI ausgeführt (macOS-only Baselines)
+
+### Pre-Commit-Hook
+
+Husky-Hook führt vor jedem lokalen Commit aus:
+1. `npm run build` (~4s)
+2. `npm run test` (~1s)
+3. `npm run test:e2e:smoke` (~6s)
+
+Gesamt ~11s. Schlägt einer der drei Schritte fehl → Commit wird abgebrochen.
 
 ---
 
 ## Befehle
 
 ```bash
-# Alle Unit-Tests einmal ausführen
-cd v3 && npm run test
+# ── Unit ──────────────────────────────────────────────────────────────────
+cd v3 && npm run test              # Einmalig ausführen
+cd v3 && npm run test:watch        # Watch-Mode (beim Entwickeln)
+cd v3 && npm run test:coverage     # Mit Coverage-Report (v3/coverage/)
+cd v3 && npm run test:ui           # Browser-Interface
 
-# Unit-Tests im Watch-Mode (beim Entwickeln)
-cd v3 && npm run test:watch
+# ── E2E ───────────────────────────────────────────────────────────────────
+cd v3 && npm run test:e2e:smoke    # 10 Smoke-Tests (Chromium + WebKit)
+cd v3 && npm run test:e2e:full     # 18+ Slice-3-Tests (Chromium)
+cd v3 && npm run test:e2e          # Smoke + Full kombiniert
 
-# Vitest-UI (Browser-Interface für Tests)
-cd v3 && npm run test:ui
+# ── Visual Regression (lokal only) ────────────────────────────────────────
+cd v3 && npm run test:e2e:visual           # Gegen bestehende Baselines prüfen
+cd v3 && npm run test:e2e:update-snapshots # Baselines neu generieren
 
-# E2E-Tests (startet Dev-Server automatisch)
-cd v3 && npm run test:e2e
+# ── Lint + Format ─────────────────────────────────────────────────────────
+cd v3 && npm run lint          # ESLint (exit 0 = sauber)
+cd v3 && npm run lint:fix      # ESLint mit Auto-Fix
+cd v3 && npm run format        # Prettier: alle Dateien formatieren
+cd v3 && npm run format:check  # Prettier: nur prüfen (CI-Mode)
 
-# E2E mit UI-Runner (Playwright)
-cd v3 && npm run test:e2e:ui
-
-# E2E mit Debug-Modus (Step-through)
-cd v3 && npm run test:e2e:debug
+# ── Bundle Size ───────────────────────────────────────────────────────────
+cd v3 && npm run build && npm run size  # Build + Größen-Check
 ```
 
 ---
@@ -133,30 +251,40 @@ Für jeden neuen Nutzer-Flow:
 ```typescript
 // v3/tests/e2e/meinFeature.spec.ts
 import { test, expect } from '@playwright/test';
+import { goToBoardList, createBoardAndNavigate, enterSetupMode } from './helpers';
 
 test('beschreibt den Nutzer-Flow in einem Satz', async ({ page }) => {
   await page.goto('/botc-soundboard-v3/');
-  // Navigieren
-  await page.getByRole('button', { name: 'BOARD' }).click();
-  // Verifizieren
-  await expect(page.locator('.sb-mode-toggle')).toBeVisible();
+  await goToBoardList(page);
+  await createBoardAndNavigate(page);
+  // Verifizieren via data-testid
+  await expect(page.getByTestId('mode-toggle')).toBeVisible();
 });
 ```
 
 **Richtlinien:**
 - Jeder Test ist self-contained (eigener Zustand, keine Abhängigkeit von anderen Tests)
 - `page.goto('/botc-soundboard-v3/')` am Anfang jedes Tests (IndexedDB ist per Browser-Context isoliert)
-- Selektoren in Reihenfolge der Robustheit: `getByRole` > `.filter({ hasText })` > CSS-Klasse
-- Tests müssen in Chromium UND WebKit bestehen (beide Browser im `playwright.config.ts`)
+- **Selector-Priorität**: `getByTestId` > `getByRole` > `.filter({ hasText })` > CSS-Klasse
+- Tests in der `full`-Suite müssen in Chromium bestehen; Smoke auch in WebKit
+- `test.skip` mit Begründung für bekannt flaky Tests (z.B. Pointer-Events-Drag in Playwright)
+
+### Wohin gehört der Test?
+
+| Flow | Datei | Projekt |
+|------|-------|---------|
+| Kern-Navigation, App-Start | `tests/e2e/*.spec.ts` (Smoke-Namelist in playwright.config) | `smoke` |
+| Slice-3 Verifikation | `tests/e2e/<feature>.spec.ts` (Full-Namelist) | `full` |
+| Pixel-Vergleich | `tests/e2e/visual/*.spec.ts` | `visual` |
 
 ---
 
 ## Tests aktualisieren
 
 - Bei Funktions-Änderung: Tests anpassen ist Teil der Aufgabe, nicht optional
-- Bei UI-Änderung (Klassen, Texte): E2E-Selektoren sofort prüfen und korrigieren
-- Bei Visual-Regression-Änderung (Phase 2): Screenshot-Baseline aktualisieren mit `playwright test --update-snapshots`
-- Bei flakey Tests: **erst untersuchen warum**, dann fixen oder als `test.skip` mit Issue-Referenz markieren. Nie stillschweigend ignorieren.
+- Bei UI-Änderung (Texte, Struktur): E2E-Selektoren sofort prüfen und korrigieren
+- Bei Visual-Regression-Änderung (Slice 8 / Polish): `npm run test:e2e:update-snapshots` lokal ausführen, neue Baseline committen
+- Bei flaky Tests: **erst untersuchen warum**, dann fixen oder als `test.skip` mit Begründung markieren. Nie stillschweigend ignorieren.
 
 ---
 
@@ -182,35 +310,30 @@ beforeEach(() => {
 derselben Fake-DB-Instanz operieren. Lösung: `_resetDB()` aus `idb.ts` exportiert
 und in `beforeEach` aufrufen (zusammen mit `new IDBFactory()`).
 
-### 3. CSS-Klassen-Selektoren brechen bei Refactoring
+### 3. CSS textTransform ist visuell-only
 
-Die E2E-Tests verwenden CSS-Klassen wie `.sb-mode-toggle`, `.sb-pad-grid-cell`,
-`.sb-menu-row`. Diese sind stabil solange die Design-System-Klassen sich nicht
-ändern (Slice 8 / Polish ist ein Risiko-Moment). **Langfristiger Fix**: auf
-`data-testid`-Attribute umstellen. Das ist kein Breaking-Bug, aber ein bekannter
-Schwachpunkt. In Phase 2 adressieren.
+`textTransform: uppercase` im CSS zeigt Text großgeschrieben an, aber der DOM-Wert
+ist immer der gespeicherte (gemischte) String. Playwright-Assertions müssen den
+gespeicherten String verwenden:
+- ✅ `await expect(el).toContainText('My Renamed Board')`
+- ❌ `await expect(el).toContainText('MY RENAMED BOARD')` (scheitert auch wenn visuell uppercase)
 
-### 4. getByText-Ambiguität in Playwright
+### 4. Visual Regression: macOS vs. Ubuntu
+
+Screenshot-Baselines (`.png`-Dateien mit `-darwin.png`-Suffix) passen nur auf macOS.
+Ubuntu-CI rendert Fonts anders → Visual-Tests sind aus CI ausgeschlossen.
+Nur lokal ausführen. Bei UI-Änderungen: Baselines lokal neu generieren + committen.
+
+### 5. Pointer-Events-Drag in Playwright
+
+Tests 9, 14, 20, 21 (Scene-Reorder, Library-Drag Path B, Pad SWAP, Pad INSERT)
+erfordern pointer-event-basiertes Drag (`mouse.down + move + up`). Diese Tests
+sind als `test.skip` markiert — in Phase 3 aktivieren wenn Drag-Sequenz stabil ist.
+
+### 6. getByText-Ambiguität in Playwright
 
 `page.getByText('X')` schlägt fehl wenn "X" mehrfach im DOM vorkommt (strict mode
 violation). Immer präzisere Selektoren verwenden:
+- `page.getByTestId('...')`
 - `.locator('.some-class').filter({ hasText: 'X' })`
 - `getByRole('button', { name: /X/ })`
-- `.locator('button.specific-class')`
-
-### 5. IMPORT vs UPLOAD — CLAUDE.md-Diskrepanz
-
-Die LibraryScreen-Schaltfläche heißt im Code **IMPORT** (nicht UPLOAD, wie in
-CLAUDE.md fälschlich dokumentiert). Der E2E-Test verwendet korrekt "IMPORT".
-CLAUDE.md ist bereits aktualisiert.
-
----
-
-## Phase 2 (geplant)
-
-- Visual Regression mit Screenshot-Baseline (Playwright Screenshots)
-- Volle E2E-Suite für alle 22 Slice-3-Verifikationspunkte aus CLAUDE.md
-- CI-Integration via GitHub Actions (`.github/workflows/test.yml`)
-- Pre-Commit-Hook-Erweiterung um E2E-Tests (oder Subset davon)
-- `@vitest/coverage-v8` für Coverage-Reports
-- `data-testid`-Migration für robustere E2E-Selektoren

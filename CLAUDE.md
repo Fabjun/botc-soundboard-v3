@@ -237,28 +237,40 @@ fonts, or spacing.
 7. **Update this CLAUDE.md** when permanent standards change.
 8. **Update `update_log.md`** after every commit (if the file exists;
    create on first commit).
-9. **Testing**: see `TESTING.md` for test architecture, conventions, and
-   commands. Unit tests run automatically via the Pre-Commit-Hook.
-   **Before every `git push`** (until Phase 2 CI): run `npm run test:e2e`
-   manually — E2E tests are not yet in the pre-commit hook.
+9. **Testing**: see `TESTING.md` for full test architecture, commands, and
+   conventions. Phase 2 testing infrastructure is complete:
+   - Pre-commit: build + unit tests + smoke E2E (auto via Husky)
+   - CI: GitHub Actions `tests.yml` runs unit + lint + size + full E2E
+   - Deploy is gated on green `tests.yml` run (via `workflow_run`)
+10. **Visual Regression**: Before UI-relevant commits (components, CSS,
+    design-system tokens — especially Slice 8 / Polish), run:
+    `cd v3 && npm run test:e2e:visual`
+    Check for unexpected diffs. If change is intentional: update baselines
+    with `npm run test:e2e:update-snapshots` and commit the new `.png` files.
+    Visual tests are macOS-only (Ubuntu CI excluded — font rendering differs).
+11. **Lint + Format**: ESLint and Prettier are configured. Before committing
+    any TypeScript/TSX: `npm run lint` must exit 0. Format with
+    `npm run format` if needed. CI enforces both.
 
 ### Pre-commit checklist (mandatory before ANY commit)
 
 Applies to slices, refactors, audit passes, bugfixes — every commit
 without exception:
 
-> **Automatisch erzwungen**: Ein Husky-Pre-Commit-Hook führt
-> `npm run build` und `npm run test` (Unit-Tests) vor jedem Commit aus
-> und blockt bei Fehler. Das manuelle Vorgehen unten bleibt als Baseline
-> dokumentiert — der Hook ist die Enforcement-Schicht.
-> Nach `git clone`: `cd v3 && npm install` aktiviert den Hook via
-> `prepare`-Script automatisch.
+> **Automatisch erzwungen** (Phase 2): Husky-Pre-Commit-Hook führt drei
+> Gates in Folge aus und blockt bei Fehler:
+> 1. `npm run build` (tsc + vite, ~4s)
+> 2. `npm run test` (vitest, ~1s)
+> 3. `npm run test:e2e:smoke` (Chromium + WebKit, ~6s)
+>
+> Das manuelle Vorgehen unten bleibt als Baseline dokumentiert.
+> Nach `git clone`: `cd v3 && npm install` aktiviert den Hook automatisch.
 
 1. `cd v3 && npm run build` — must exit 0 with zero TypeScript errors
 2. `cd v3 && npm run test` — all unit tests must pass (exit 0)
-3. `cd v3 && npm run dev` — must start without errors (verify briefly,
-   then stop with `pkill -f vite` before committing)
-4. Only then: `git add . && git commit -m "..." && git push`
+3. `cd v3 && npm run test:e2e:smoke` — 10 smoke tests must pass
+4. `cd v3 && npm run dev` — must start without errors (verify briefly)
+5. Only then: `git add . && git commit -m "..." && git push`
 
 If any check fails: **do not commit**. Report the failure, ask for direction.
 
@@ -394,7 +406,11 @@ boardDelete(id: string): Promise<void>
 - `LibraryItem.blob` never stored in Signals: type split into `LibraryItemMeta` (in state) + `LibraryItem` (IDB only).
 - SHA-256 uses `@noble/hashes/sha2.js` (not Web Crypto API) — required for iPhone LAN dev server (no Secure Context at http://IP).
 - Library screen is 2-column in Slice 2; inspector panel deferred to Slice 8+.
-- npm cache: `~/.npm` is user-owned on this machine; no `--cache` flag needed for npm installs.
+- npm cache: `~/.npm/_cacache/` partially root-owned on this machine; use `--cache /tmp/npm-cache-sos` flag for npm installs if permission error occurs.
 - Slice 3: Board persistence as full JSON document (Board + Scenes + Pads); trade-off documented in idb.ts and DESIGN_NOTES.md.
 - Slice 3: `libDragItemId` state removed from BoardScreen — PadGrid reads drag payload directly from `e.dataTransfer`, not from React state.
 - Slice 3: `Waveform` component has no `width` prop (fills flex container); fixed in PadEditorPanel, LibraryPanel, PadCreationPopover.
+- Phase 2 (Testing Infra): `@size-limit/preset-app` replaced with `@size-limit/file` — preset-app uses Chrome for timing (crashes on this ARM mac due to estimo/chromium issue); file plugin measures gzip size only, which is what we need.
+- Phase 2: Visual regression baselines are macOS-only (`*-darwin.png`); excluded from CI (Ubuntu font rendering differs).
+- Phase 2: `no-unused-vars: 'off'` in eslint.config.js — handled by `noUnusedLocals: true` in tsconfig.app.json. Re-enable if tsconfig flag is ever disabled.
+- Phase 2: deploy-pages.yml uses `workflow_run` (not `needs`) for cross-workflow sequencing — `needs` only works within the same workflow file.
