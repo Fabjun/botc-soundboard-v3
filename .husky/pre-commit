@@ -6,4 +6,12 @@ npm run build || {
   printf '   Fehler beheben und dann erneut git commit ausführen.\n\n'
   exit 1
 }
-echo "✅ Build passed — Commit wird fortgesetzt."
+echo "✅ Build passed."
+
+echo "🧪 Pre-commit: running unit tests in v3/..."
+npm run test || {
+  printf '\n❌ Unit tests failed — Commit abgebrochen.\n'
+  printf '   Tests fixen und dann erneut git commit ausführen.\n\n'
+  exit 1
+}
+echo "✅ Unit tests passed — Commit wird fortgesetzt."
