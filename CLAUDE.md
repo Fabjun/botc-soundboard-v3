@@ -60,6 +60,44 @@
 
 ---
 
+## Supported Platforms (Minimum)
+
+**Primary target:** iPhone 13 Pro (iOS 17/18) with Brave browser.
+
+**Minimum supported versions:**
+- iOS Safari 15+ (iPhone 6s, 2015, and newer)
+- Android Chrome 100+ (~2022 and newer)
+- Desktop: current Chromium, Firefox, Safari (last 2 major versions)
+
+**Available modern features (all supported on minimum):**
+- Pointer Events API (iOS 13+)
+- IndexedDB
+- Web Audio API (with user-gesture unlock)
+- Service Worker / PWA (Add to Home Screen)
+- CSS `clamp()`, `prefers-reduced-motion`
+- IntersectionObserver, ResizeObserver
+
+**Features requiring graceful degradation:**
+- Container Queries (iOS 16+) — fall back to Media Queries on iOS 15
+- View Transitions API (iOS 18+) — optional polish only; never a hard dep
+
+**Features explicitly avoided (not supported on minimum):**
+- **HTML5 Drag-and-Drop on iOS — always use Pointer Events instead.**
+  `draggable`, `ondragstart`, `ondragover`, `ondrop` are not supported
+  on iOS Safari/Brave. Any DnD interaction (pad-to-pad, library-to-grid,
+  future scene reorder etc.) MUST use Pointer Events.
+  Pattern: see `src/lib/padDnd.ts` (pad DnD) and `src/lib/libDnd.ts` (library DnD).
+- Anything requiring iOS 17+ as a hard dependency
+
+**Why this section exists:**
+During Slice 3, Path B (library → grid drag) was accidentally implemented
+with HTML5 DnD. It worked on desktop but was silently broken on the primary
+target (iPhone + Brave). The fix required a new `libDnd.ts` module.
+Having explicit platform constraints prevents the same category of bug
+in future slices.
+
+---
+
 ## iPhone / iOS Safari — memory & stability rules (CRITICAL)
 
 iOS Safari kills the tab when JS heap exceeds ~600 MB (older iPhones)

@@ -262,6 +262,26 @@ in JSX).
 Baseline (semantic HTML, design-system contrasts) but no dedicated
 a11y pass.
 
+### 4.13 · Supported platforms (binding)
+
+**Primary target:** iPhone 13 Pro (iOS 17/18) + Brave browser.
+
+**Minimum supported:**
+- iOS Safari 15+ (iPhone 6s and newer)
+- Android Chrome 100+ (~2022)
+- Desktop: current Chromium, Firefox, Safari (last 2 major versions)
+
+**Guaranteed APIs (all on minimum):** Pointer Events, IndexedDB, Web Audio API,
+Service Worker / PWA, CSS clamp()/prefers-reduced-motion, IntersectionObserver.
+
+**Graceful degradation only:** Container Queries (iOS 16+), View Transitions (iOS 18+).
+
+**Explicitly avoided:**
+- HTML5 Drag-and-Drop (`draggable`, `ondragstart`, `ondrop`) — not supported
+  on iOS Safari/Brave. **All DnD must use Pointer Events.**
+  See `src/lib/padDnd.ts` and `src/lib/libDnd.ts` as canonical patterns.
+- Any API requiring iOS 17+ as a hard dependency.
+
 ## 5 · Working method
 
 ### 5.1 · Vertical slices

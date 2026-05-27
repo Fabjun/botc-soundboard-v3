@@ -63,6 +63,42 @@ v19 Empty-Scene mobile updated from a teaching 3×4 hint to the real
 
 ---
 
+## Slice 3 / Lessons — DnD pattern for future slices
+
+During Slice 3, Path B (Library → Grid drag) was initially implemented with
+HTML5 DnD (`draggable`, `ondragstart`, `ondrop`). This worked on desktop
+Brave but was silently broken on the primary target (iPhone + Brave) because
+iOS WebKit does not support HTML5 DnD.
+
+**What to use for every DnD interaction going forward:**
+
+Pointer Events. Two canonical reference implementations exist:
+
+- `v3/src/lib/padDnd.ts` — Pad-to-pad drag (SWAP + INSERT, ghost, cellRef registry)
+- `v3/src/lib/libDnd.ts` — Library-to-grid drag (drop only, ghost, elementFromPoint)
+
+Key patterns:
+1. `element.setPointerCapture(e.pointerId)` on `pointerdown`
+2. `document.addEventListener('pointermove', ...)` for tracking
+3. `document.addEventListener('pointerup', ...)` for drop detection
+4. Ghost element: `position: fixed; pointer-events: none` — allows
+   `document.elementFromPoint` to see through to the grid cell beneath
+5. `touch-action: none` on draggable elements — prevents scroll from
+   capturing the pointer before the drag starts
+6. Threshold: 8px movement before entering drag mode (prevents accidental drags)
+7. Separate module-level state per DnD type — never share state between
+   `padDnd.ts` and `libDnd.ts` to avoid conflicts
+
+**Plan-deviation lesson:** If a Slice plan says "Pointer Events" and you
+implement HTML5 DnD instead, that's a deviation — declare it explicitly in the
+Slice summary with a rationale. Undeclared drift causes bugs that are hard to
+trace later (e.g., "why doesn't drag work on iPhone?").
+
+Future slices requiring DnD (Slice 6 Set reorder, Slice 8 Scene rail touch):
+use the patterns above, build a new isolated module if needed.
+
+---
+
 ## Slice 8 — to decide at implementation time
 
 > Open questions surfaced during A4 (gridConfig popover). All non-
