@@ -35,6 +35,9 @@ const DB_VERSION = 2;
 
 let _db: IDBPDatabase | null = null;
 
+/** @internal Test-only: resets the DB singleton so unit tests get a fresh IDBFactory. */
+export function _resetDB(): void { _db = null; }
+
 async function getDB(): Promise<IDBPDatabase> {
   if (_db) return _db;
   _db = await openDB(DB_NAME, DB_VERSION, {

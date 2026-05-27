@@ -7,7 +7,13 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "prepare": "cd .. && husky"
+    "prepare": "cd .. && husky",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug"
   },
   "dependencies": {
     "@noble/hashes": "^2.2.0",
@@ -16,11 +22,16 @@
     "preact": "^10.29.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@preact/preset-vite": "^2.10.5",
     "@types/node": "^24.12.3",
+    "@vitest/ui": "^4.1.7",
+    "fake-indexeddb": "^6.2.5",
     "husky": "^9.1.7",
+    "jsdom": "^29.1.1",
     "typescript": "~6.0.2",
     "vite": "^8.0.12",
-    "vite-plugin-pwa": "^1.3.0"
+    "vite-plugin-pwa": "^1.3.0",
+    "vitest": "^4.1.7"
   }
 }
