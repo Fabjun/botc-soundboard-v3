@@ -1,7 +1,13 @@
 name: Deploy to GitHub Pages
 
+# Deploy only after the Tests workflow completes successfully on main.
+# workflow_run is the correct cross-workflow dependency mechanism in
+# GitHub Actions (needs: only works within the same workflow file).
+# workflow_dispatch allows manual re-deploys.
 on:
-  push:
+  workflow_run:
+    workflows: ['Tests']
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
@@ -16,9 +22,17 @@ concurrency:
 
 jobs:
   build:
+    # Skip if triggered by a failed Tests run (not workflow_dispatch).
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # workflow_run: check out the same SHA the Tests workflow used.
+          # workflow_dispatch: github.sha is already the right ref.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - uses: actions/configure-pages@v5
 
