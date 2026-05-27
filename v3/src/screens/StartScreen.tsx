@@ -29,7 +29,7 @@ function FlameLogo({ size = 80 }: FlameLogoProps): JSX.Element {
     <div
       style={{
         color: 'var(--flame)',
-        filter: 'drop-shadow(0 0 14px rgba(232,130,30,.55))',
+        filter: 'var(--glow-flame)',
       }}
     >
       <PixelIcon name="flame" size={size} />
@@ -82,7 +82,7 @@ export function StartScreen(): JSX.Element {
         height: '100%',
         minHeight: '100dvh',
         background: `
-          radial-gradient(60% 50% at 50% 65%, rgba(232,130,30,.15) 0%, transparent 70%),
+          radial-gradient(60% 50% at 50% 65%, var(--flame-soft) 0%, transparent 70%),
           radial-gradient(120% 70% at 50% -10%, var(--glow-radial) 0%, transparent 65%),
           var(--night)
         `,
@@ -108,7 +108,7 @@ export function StartScreen(): JSX.Element {
             height: 220,
             borderRadius: '50%',
             background:
-              'radial-gradient(circle, rgba(232,130,30,.32) 0%, transparent 60%)',
+              'radial-gradient(circle, var(--flame-aura) 0%, transparent 60%)',
             animation: 'sb-flicker 1.6s ease-in-out infinite',
           }}
         />

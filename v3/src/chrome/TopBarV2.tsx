@@ -54,10 +54,9 @@ export function TopBarV2({
         }}
       >
         <span
+          class="sb-display-vt"
           style={{
-            fontFamily: 'var(--font-ui)',
-            fontSize: 16,
-            color: 'var(--text)',
+            fontSize: 22,
             letterSpacing: '.08em',
             whiteSpace: 'nowrap',
             overflow: 'hidden',

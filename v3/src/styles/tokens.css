@@ -59,9 +59,13 @@
   --gold-soft:    rgba(212, 178, 92, 0.18);
 
   --flame:        #E8821E;   /* the logo flame                          */
+  --flame-soft:   rgba(232, 130, 30, 0.15);  /* ambient bg wash (StartScreen radial) */
+  --flame-aura:   rgba(232, 130, 30, 0.32);  /* mid-alpha glow ring                  */
 
   --blood:        #A02828;   /* +14% L* over #8b1a1a — readable on dark */
-  --blood-bright: #D04545;
+  --blood-bright: #EF7575;   /* lifted from #D04545 for small-UI legibility —
+                                 needed for danger button labels (DELETE,
+                                 CLEAR, SWITCH) at fs-sm + letter-spacing.   */
   --blood-soft:   rgba(160, 40, 40, 0.18);
 
   /* ── PAD TYPES ── each = a hue family with idle / hot / glow ────── */
@@ -77,25 +81,59 @@
   --pad-playlist:      #9D7FC7;
   --pad-playlist-soft: rgba(157, 127, 199, 0.16);
   --pad-playlist-glow: rgba(189, 159, 231, 0.55);
-  /* COMBO · copper — orchestral, chain                                */
-  --pad-combo:         #D18B4A;
-  --pad-combo-soft:    rgba(209, 139, 74, 0.16);
-  --pad-combo-glow:    rgba(241, 171, 90, 0.55);
+  /* COMBO · rose magenta — orchestral, chain; pink opens the "theatrical /
+     spell-cast" pole the other pad types don't cover. Gold-coral were too
+     close (hue 46° vs 28°); rose at hue ~325° sits clearly apart from
+     gold (46°), playlist violet (265°), and blood (0°).                  */
+  --pad-combo:         #C9529D;
+  --pad-combo-soft:    rgba(201, 82, 157, 0.18);
+  --pad-combo-glow:    rgba(225, 110, 185, 0.55);
+
+  /* ── PAD SURFACE ── ingredients for the `is-deep` depth treatment ──
+     (sb-pad.is-deep — opt-in, used on the GAME-mode board grid). The
+     same two values describe both the 1px pixel-edge relief (inset
+     box-shadow) AND the light-from-above bevel gradient: light on
+     top+left, dark on bottom+right. Anchored on pure white/black alpha
+     so they read correctly against every theme's --raised face —
+     themes never override these.                                      */
+  --pad-edge-light:    rgba(255, 255, 255, 0.12);
+  --pad-edge-dark:     rgba(0,   0,   0,   0.40);
+
+  /* FADE · moss green — for audio fade-in/fade-out ramps. Not a
+     semantic "success" color; feature-specific accent distinct from
+     teal loop and gold playhead.                                      */
+  --fade:              #6FA85F;
+  --fade-soft:         rgba(111, 168, 95, 0.18);
 
   /* ── SEMANTIC ── all derived from palette, no foreign greens ──── */
   --success: #6DB5B8;   /* WAS #81c784 — replaced with the loop teal.
                             Same "calm-positive" reading, palette-native. */
   --warning: #D4B25C;   /* gold doubles as caution                       */
-  --danger:  var(--blood);
+  /* --danger is the foreground color for destructive text on dark
+     surfaces. Pointed at --blood-bright (not --blood) because the
+     baseline --blood (#A02828) sits below AA on --surface at small
+     sizes — button labels like "DELETE · 12 FILES" become unreadable. */
+  --danger:  var(--blood-bright);
   --info:    #9D7FC7;   /* violet for hints / metadata                   */
 
   /* ── MODE ── SETUP vs GAME. Differentiation is multi-cue
      (see components.jsx PadShell + screens.jsx Board). The colour token
-     here is just for accents — borders/badges/panel chrome.            */
+     here is just for accents — borders/badges/panel chrome.
+
+     Each mode has THREE alpha tiers, mirroring the pad-type pattern
+     (`--pad-*` + `-soft` + `-glow`):
+       · base   — solid token, used for borders / fills / active text
+       · -soft  — very low alpha (0.05–0.06), tinted page wash
+       · -glow  — mid alpha (0.55), for text-shadow, drop-shadow,
+                  and spark sprites in sb-mode-toggle. The bright base
+                  mirrors pad-loop / pad-single glow values intentionally
+                  — SETUP shares the loop hue family, GAME shares single. */
   --mode-setup:        #6DB5B8;
   --mode-setup-soft:   rgba(109, 181, 184, 0.06);
+  --mode-setup-glow:   rgba(141, 213, 216, 0.55);
   --mode-game:         #D4B25C;
   --mode-game-soft:    rgba(212, 178, 92, 0.05);
+  --mode-game-glow:    rgba(245, 213, 122, 0.55);
 
   /* ── ATMOSPHERE ── the radial glow behind the home logo            */
   --glow-radial:  #2C1F4A;
@@ -122,6 +160,10 @@
   /* ── ELEVATION ── filter:drop-shadow because clip-path eats box-shadow */
   --shadow-card:  drop-shadow(0 4px 8px rgba(0,0,0,.28));
   --shadow-pop:   drop-shadow(0 8px 24px rgba(0,0,0,.45));
+  /* Chunky pixel-art lift — hard offset, NO blur. Used by sb-pad.is-deep
+     via the --pad-filter-base channel so .is-hot can stack the glow on
+     top instead of clobbering. From v15-pad-depth.jsx treatment F.       */
+  --shadow-pad-lift: drop-shadow(3px 3px 0 rgba(0,0,0,.65));
   --glow-gold:    drop-shadow(0 0 6px rgba(245,213,122,.55))
                   drop-shadow(0 0 14px rgba(245,213,122,.28));
   --glow-flame:   drop-shadow(0 0 6px rgba(232,130,30,.55));
@@ -149,11 +191,24 @@
   --fs-pixel-md: 32px;
   --fs-pixel-lg: 48px;
 
-  /* ════════════════════════════════════════════════════════════════
-     LEGACY ALIASES — keep older screens (foundations / components /
-     home / library / settings) rendering while we migrate. Every
-     --sb-* token below resolves to a v2 canonical token.
-     ════════════════════════════════════════════════════════════════ */
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   LEGACY ALIASES — keep older screens (foundations / components /
+   home / library / settings) rendering while we migrate. Every
+   --sb-* token below resolves to a v2 canonical token.
+
+   IMPORTANT — these aliases live on EVERY theme root (:root and
+   each .theme-*) so that var() substitutions resolve against the
+   canonical tokens AT THAT THEME'S LEVEL. If the aliases were only
+   on :root, they'd lock to root's resolved colors and never pick
+   up theme overrides (since custom properties inherit as computed
+   values, not as var() expressions).
+   ════════════════════════════════════════════════════════════════════ */
+:root,
+.theme-verdant,
+.theme-neon,
+.theme-crimson {
   --sb-bg-deep:        var(--night);
   --sb-bg-base:        var(--deep);
   --sb-bg-panel:       var(--surface);
@@ -177,7 +232,10 @@
   --sb-accent-1:       var(--gold);
   --sb-accent-1-soft:  var(--gold-dim);
 
-  --sb-danger:         var(--blood);
+  /* Foreground danger color follows --danger (now --blood-bright)
+     so v1 components stay legible. Border alias keeps --blood —
+     borders need less contrast.                                    */
+  --sb-danger:         var(--blood-bright);
   --sb-warning:        var(--warning);
   --sb-success:        var(--success);
   --sb-info:           var(--info);
@@ -249,9 +307,21 @@
   --gold:        #C9A04F;
   --gold-bright: #F2CC5C;
 
-  --pad-loop:    #4FA67A;
-  --pad-loop-soft: rgba(79,166,122,.16);
-  --pad-loop-glow: rgba(95,200,144,.55);
+  /* SINGLE · toasted amber — distinct from Verdant's --gold (#C9A04F)
+     so the SINGLE pad type reads as its own hue family.               */
+  --pad-single:        #C97D3A;
+  --pad-single-soft:   rgba(201,125,58,.16);
+  --pad-single-glow:   rgba(232,158,80,.55);
+
+  --pad-loop:          #4FA67A;
+  --pad-loop-soft:     rgba(79,166,122,.16);
+  --pad-loop-glow:     rgba(95,200,144,.55);
+
+  /* PLAYLIST · dusk-violet — earthier than Hearth's #9D7FC7.
+     Reads as forest-twilight / ritual / lore.                         */
+  --pad-playlist:      #8A6FA0;
+  --pad-playlist-soft: rgba(138,111,160,.16);
+  --pad-playlist-glow: rgba(176,144,202,.55);
 
   --glow-radial: #18402F;
 }
@@ -312,10 +382,24 @@
   --gold:        #D63A3A;
   --gold-bright: #F26666;
 
-  --pad-loop:    #C04C75;
-  --pad-loop-glow: rgba(192,76,117,.55);
-  --pad-playlist:#7A5295;
+  /* SINGLE · bone-yellow — sickly candle-flame in the dark. Cool-warm
+     contrast against dominant blood-red gives a SINGLE hit visual
+     weight without joining the gore.                                   */
+  --pad-single:        #C7B07A;
+  --pad-single-soft:   rgba(199,176,122,.14);
+  --pad-single-glow:   rgba(225,205,150,.50);
+
+  --pad-loop:          #C04C75;
+  --pad-loop-glow:     rgba(192,76,117,.55);
+
+  --pad-playlist:      #7A5295;
   --pad-playlist-glow: rgba(122,82,149,.55);
+
+  /* COMBO · desaturated cyan — icy "spell" kontrapunkt to the blood
+     palette. Sits clearly apart from --blood, --gold, and --pad-loop. */
+  --pad-combo:         #5A9FB0;
+  --pad-combo-soft:    rgba(90,159,176,.16);
+  --pad-combo-glow:    rgba(120,195,212,.55);
 
   --glow-radial: #3A1416;
 }
