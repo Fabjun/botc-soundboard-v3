@@ -38,10 +38,10 @@ export function LibraryPanel({
   onEnterPlaceMode,
 }: LibraryPanelProps): JSX.Element {
   const [search, setSearch] = useState('');
-  const items = libraryItems.value.filter(m => m.type === 'audio');
+  const items = libraryItems.value.filter((m) => m.type === 'audio');
 
   const filtered = search.trim()
-    ? items.filter(m => m.name.toLowerCase().includes(search.toLowerCase()))
+    ? items.filter((m) => m.name.toLowerCase().includes(search.toLowerCase()))
     : items;
 
   // Sort recent-first by default
@@ -159,7 +159,7 @@ export function LibraryPanel({
             {items.length === 0 ? 'No audio files in library.' : `No files matching "${search}"`}
           </div>
         ) : (
-          sorted.map(item => (
+          sorted.map((item) => (
             <LibraryPanelRow
               key={item.id}
               item={item}
@@ -181,11 +181,7 @@ interface LibraryPanelRowProps {
   onLongPress?: () => void;
 }
 
-function LibraryPanelRow({
-  item,
-  onLibDrop,
-  onLongPress,
-}: LibraryPanelRowProps): JSX.Element {
+function LibraryPanelRow({ item, onLibDrop, onLongPress }: LibraryPanelRowProps): JSX.Element {
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function formatDuration(s: number): string {
@@ -229,7 +225,7 @@ function LibraryPanelRow({
         borderBottom: '1px solid var(--border-soft)',
         cursor: 'grab',
         userSelect: 'none',
-        touchAction: 'none',  // Required: prevents scroll from capturing the pointer
+        touchAction: 'none', // Required: prevents scroll from capturing the pointer
         gap: 3,
       }}
     >
@@ -267,9 +263,7 @@ function LibraryPanelRow({
           </span>
         )}
       </div>
-      {item.peaks && item.peaks.length > 0 && (
-        <Waveform peaks={item.peaks} height={20} />
-      )}
+      {item.peaks && item.peaks.length > 0 && <Waveform peaks={item.peaks} height={20} />}
     </div>
   );
 }

@@ -85,11 +85,7 @@ export function BoardTopBarV3({
       </div>
 
       {/* Center: Mode toggle */}
-      <ModeToggle
-        mode={mode}
-        onSwitch={onModeSwitch}
-        compact={compact}
-      />
+      <ModeToggle mode={mode} onSwitch={onModeSwitch} compact={compact} />
 
       {/* Right: library toggle + secondary actions */}
       <div class="sb-board-topbar-right">

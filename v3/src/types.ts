@@ -68,8 +68,8 @@ export type Pad = {
   libraryItemRef?: string;
   iconRef?: string;
   color?: string;
-  volume: number;  // 0–100
-  fadeIn: number;  // seconds
+  volume: number; // 0–100
+  fadeIn: number; // seconds
   fadeOut: number; // seconds
 };
 
@@ -81,14 +81,14 @@ export type LibraryItemType = 'audio' | 'icon' | 'image';
  * The `id` field IS the SHA-256 hash of the file's raw bytes — no separate UUID.
  */
 export type LibraryItemMeta = {
-  id: string;       // SHA-256 hash of the raw file bytes — IS the identity; no separate UUID
+  id: string; // SHA-256 hash of the raw file bytes — IS the identity; no separate UUID
   type: LibraryItemType;
   name: string;
-  size: number;     // bytes
+  size: number; // bytes
   tags: string[];
-  addedAt: number;  // ms since epoch
+  addedAt: number; // ms since epoch
   duration: number; // seconds (0 for non-audio types)
-  peaks: number[];  // 30 peak values [0–1], computed once at upload time
+  peaks: number[]; // 30 peak values [0–1], computed once at upload time
 };
 
 /**

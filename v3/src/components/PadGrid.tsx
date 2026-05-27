@@ -89,7 +89,7 @@ export function PadGrid({
     const updatedScene: Scene = { ...scene, pads: updatedPads };
     const updatedBoard: Board = {
       ...board,
-      scenes: board.scenes.map(s => s.id === scene.id ? updatedScene : s),
+      scenes: board.scenes.map((s) => (s.id === scene.id ? updatedScene : s)),
     };
     try {
       await boardPut(updatedBoard);
@@ -112,7 +112,7 @@ export function PadGrid({
     const updatedScene: Scene = { ...scene, pads: [...scene.pads, newPad] };
     const updatedBoard: Board = {
       ...board,
-      scenes: board.scenes.map(s => s.id === scene.id ? updatedScene : s),
+      scenes: board.scenes.map((s) => (s.id === scene.id ? updatedScene : s)),
     };
     try {
       await boardPut(updatedBoard);
@@ -144,11 +144,13 @@ export function PadGrid({
     <>
       <div
         class={'sb-pad-grid' + (isSetup ? ' sb-grid-bg' : '')}
-        style={{
-          '--grid-cols': String(cols),
-          '--grid-rows': String(rows),
-          '--grid-gap': `${scene.gridConfig.gap}px`,
-        } as Record<string, string>}
+        style={
+          {
+            '--grid-cols': String(cols),
+            '--grid-rows': String(rows),
+            '--grid-gap': `${scene.gridConfig.gap}px`,
+          } as Record<string, string>
+        }
       >
         {Array.from({ length: rows }, (_, row) =>
           Array.from({ length: cols }, (_, col) => {
@@ -162,7 +164,7 @@ export function PadGrid({
                 col={col}
                 row={row}
                 selected={!!pad && pad.id === selectedPadId}
-                cellRef={el => registerCellRef(key, el)}
+                cellRef={(el) => registerCellRef(key, el)}
                 onEmpty={(rect) => {
                   // Place-Mode (Path B mobile): tap → place library item
                   if (placeMode && onPlaceModeTap) {
@@ -178,7 +180,7 @@ export function PadGrid({
                 onPadPointerDown={isSetup ? handlePadPointerDown : undefined}
               />
             );
-          })
+          }),
         )}
       </div>
 

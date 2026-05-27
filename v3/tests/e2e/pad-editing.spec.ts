@@ -42,9 +42,7 @@ test('16 — tap pad in SETUP mode → PadEditorPanel opens', async ({ page }) =
 
 // ── Test 17: Change pad name → auto-saved ────────────────────────────────────
 
-test('17 — change pad name in editor → persists after page reload', async ({
-  page,
-}) => {
+test('17 — change pad name in editor → persists after page reload', async ({ page }) => {
   // Open editor
   const padCell = page
     .locator('[data-testid^="pad-cell-"]:not([data-testid^="pad-cell-empty-"])')
@@ -71,17 +69,13 @@ test('17 — change pad name in editor → persists after page reload', async ({
 
   // The pad cell should show the new name (DOM text; textTransform is CSS-visual only)
   await expect(
-    page
-      .locator('[data-testid^="pad-cell-"]:not([data-testid^="pad-cell-empty-"])')
-      .first(),
+    page.locator('[data-testid^="pad-cell-"]:not([data-testid^="pad-cell-empty-"])').first(),
   ).toContainText('Renamed Pad');
 });
 
 // ── Test 18: Trivial type change → no dialog ─────────────────────────────────
 
-test('18 — trivial type change (single→loop) → no confirmation dialog', async ({
-  page,
-}) => {
+test('18 — trivial type change (single→loop) → no confirmation dialog', async ({ page }) => {
   // Open editor
   const padCell = page
     .locator('[data-testid^="pad-cell-"]:not([data-testid^="pad-cell-empty-"])')
@@ -102,9 +96,7 @@ test('18 — trivial type change (single→loop) → no confirmation dialog', as
 
 // ── Test 19: Lossy type change → PadTypeConfirmDialog appears ────────────────
 
-test('19 — lossy type change → PadTypeConfirmDialog appears', async ({
-  page,
-}) => {
+test('19 — lossy type change → PadTypeConfirmDialog appears', async ({ page }) => {
   // First set the pad type to playlist (requires: open editor, click playlist)
   const padCell = page
     .locator('[data-testid^="pad-cell-"]:not([data-testid^="pad-cell-empty-"])')

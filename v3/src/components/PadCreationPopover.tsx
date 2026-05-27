@@ -46,10 +46,8 @@ export function PadCreationPopover({
 }: PadCreationPopoverProps): JSX.Element {
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 600;
 
-  const allAudio = libraryItems.value.filter(m => m.type === 'audio');
-  const recentAudio = [...allAudio]
-    .sort((a, b) => b.addedAt - a.addedAt)
-    .slice(0, 5);
+  const allAudio = libraryItems.value.filter((m) => m.type === 'audio');
+  const recentAudio = [...allAudio].sort((a, b) => b.addedAt - a.addedAt).slice(0, 5);
 
   const [sourceTab, setSourceTab] = useState<SourceTab>('RECENT');
   const [search, setSearch] = useState('');
@@ -58,18 +56,18 @@ export function PadCreationPopover({
   const [padType, setPadType] = useState<PadType>('single');
 
   const selectedItem = selectedItemId
-    ? allAudio.find(m => m.id === selectedItemId) ?? null
+    ? (allAudio.find((m) => m.id === selectedItemId) ?? null)
     : null;
 
   // Update type and name when item is selected
   function selectItem(item: LibraryItemMeta) {
     setSelectedItemId(item.id);
-    setPadName(prev => (prev === '' ? item.name : prev));
+    setPadName((prev) => (prev === '' ? item.name : prev));
     setPadType(typeInference(item.duration, 1));
   }
 
   const filteredBrowse = search.trim()
-    ? allAudio.filter(m => m.name.toLowerCase().includes(search.toLowerCase()))
+    ? allAudio.filter((m) => m.name.toLowerCase().includes(search.toLowerCase()))
     : allAudio;
 
   // Close on Escape
@@ -119,7 +117,7 @@ export function PadCreationPopover({
           flexShrink: 0,
         }}
       >
-        {(['RECENT', 'BROWSE'] as SourceTab[]).map(tab => (
+        {(['RECENT', 'BROWSE'] as SourceTab[]).map((tab) => (
           <button
             key={tab}
             data-testid={`creation-tab-${tab.toLowerCase()}`}
@@ -176,7 +174,7 @@ export function PadCreationPopover({
             {recentAudio.length === 0 ? (
               <EmptyHint text="No audio in library yet." />
             ) : (
-              recentAudio.map(item => (
+              recentAudio.map((item) => (
                 <SourceItem
                   key={item.id}
                   item={item}
@@ -201,7 +199,7 @@ export function PadCreationPopover({
                 type="text"
                 placeholder={`Search ${allAudio.length} files…`}
                 value={search}
-                onInput={e => setSearch((e.target as HTMLInputElement).value)}
+                onInput={(e) => setSearch((e.target as HTMLInputElement).value)}
                 style={{
                   width: '100%',
                   background: 'none',
@@ -217,14 +215,16 @@ export function PadCreationPopover({
             {filteredBrowse.length === 0 ? (
               <EmptyHint text="No matches." />
             ) : (
-              filteredBrowse.slice(0, 30).map(item => (
-                <SourceItem
-                  key={item.id}
-                  item={item}
-                  selected={selectedItemId === item.id}
-                  onSelect={() => selectItem(item)}
-                />
-              ))
+              filteredBrowse
+                .slice(0, 30)
+                .map((item) => (
+                  <SourceItem
+                    key={item.id}
+                    item={item}
+                    selected={selectedItemId === item.id}
+                    onSelect={() => selectItem(item)}
+                  />
+                ))
             )}
           </>
         )}
@@ -246,7 +246,7 @@ export function PadCreationPopover({
           data-testid="creation-pad-name-input"
           value={padName}
           placeholder={selectedItem?.name ?? 'Pad name…'}
-          onInput={e => setPadName((e.target as HTMLInputElement).value)}
+          onInput={(e) => setPadName((e.target as HTMLInputElement).value)}
           style={{
             width: '100%',
             background: 'var(--sunk)',
@@ -261,14 +261,17 @@ export function PadCreationPopover({
           }}
         />
         <div style={{ display: 'flex', gap: 4 }}>
-          {PAD_TYPES.map(t => (
+          {PAD_TYPES.map((t) => (
             <button
               key={t}
               onClick={() => setPadType(t)}
               style={{
                 flex: 1,
                 padding: '2px 0',
-                background: padType === t ? `color-mix(in srgb, ${padTypeColor(t)}, transparent 80%)` : 'var(--sunk)',
+                background:
+                  padType === t
+                    ? `color-mix(in srgb, ${padTypeColor(t)}, transparent 80%)`
+                    : 'var(--sunk)',
                 border: `1px solid ${padType === t ? padTypeColor(t) : 'var(--border-soft)'}`,
                 color: padType === t ? padTypeColor(t) : 'var(--text-mute)',
                 fontFamily: 'var(--font-mono)',
@@ -332,10 +335,7 @@ export function PadCreationPopover({
   if (isMobile) {
     return (
       <>
-        <div
-          class="sb-creation-sheet-backdrop"
-          onClick={() => onResult({ action: 'cancel' })}
-        />
+        <div class="sb-creation-sheet-backdrop" onClick={() => onResult({ action: 'cancel' })} />
         <div
           class="sb-creation-sheet"
           data-testid="pad-creation-popover"
@@ -370,13 +370,8 @@ export function PadCreationPopover({
   // Desktop positioning — flip above if < 240px below
   const spaceBelow = window.innerHeight - cellRect.bottom;
   const popoverHeight = 380;
-  const top = spaceBelow >= popoverHeight
-    ? cellRect.bottom + 4
-    : cellRect.top - popoverHeight - 4;
-  const left = Math.min(
-    Math.max(4, cellRect.left),
-    window.innerWidth - 304,
-  );
+  const top = spaceBelow >= popoverHeight ? cellRect.bottom + 4 : cellRect.top - popoverHeight - 4;
+  const left = Math.min(Math.max(4, cellRect.left), window.innerWidth - 304);
 
   return (
     <>
@@ -399,7 +394,7 @@ export function PadCreationPopover({
           display: 'flex',
           flexDirection: 'column',
         }}
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         {content}
       </div>
@@ -473,9 +468,7 @@ function SourceItem({
           {item.duration > 0 ? fmt(item.duration) : ''}
         </span>
       </div>
-      {selected && item.peaks.length > 0 && (
-        <Waveform peaks={item.peaks} height={18} />
-      )}
+      {selected && item.peaks.length > 0 && <Waveform peaks={item.peaks} height={18} />}
     </div>
   );
 }

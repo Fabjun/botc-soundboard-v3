@@ -150,8 +150,20 @@ describe('currentScene computed', () => {
     const board: Board = {
       ...makeBoard('b1'),
       scenes: [
-        { id: 's1', name: 'Intro', order: 0, gridConfig: { cols: 4, rows: 4, gap: 8, padSize: '1fr' }, pads: [] },
-        { id: 's2', name: 'Act 1', order: 1, gridConfig: { cols: 4, rows: 4, gap: 8, padSize: '1fr' }, pads: [] },
+        {
+          id: 's1',
+          name: 'Intro',
+          order: 0,
+          gridConfig: { cols: 4, rows: 4, gap: 8, padSize: '1fr' },
+          pads: [],
+        },
+        {
+          id: 's2',
+          name: 'Act 1',
+          order: 1,
+          gridConfig: { cols: 4, rows: 4, gap: 8, padSize: '1fr' },
+          pads: [],
+        },
       ],
     };
     upsertBoard(board);
@@ -164,7 +176,13 @@ describe('currentScene computed', () => {
     const board: Board = {
       ...makeBoard('b1'),
       scenes: [
-        { id: 's1', name: 'Intro', order: 0, gridConfig: { cols: 4, rows: 4, gap: 8, padSize: '1fr' }, pads: [] },
+        {
+          id: 's1',
+          name: 'Intro',
+          order: 0,
+          gridConfig: { cols: 4, rows: 4, gap: 8, padSize: '1fr' },
+          pads: [],
+        },
       ],
     };
     upsertBoard(board);

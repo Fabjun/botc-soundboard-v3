@@ -14,10 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 /** Absolute path to the 1-second WAV fixture (8-bit mono 8kHz, silence). */
-export const TEST_AUDIO_PATH = path.join(
-  __dirname,
-  '../fixtures/test-audio-1s.wav',
-);
+export const TEST_AUDIO_PATH = path.join(__dirname, '../fixtures/test-audio-1s.wav');
 export const TEST_AUDIO_NAME = 'test-audio-1s';
 
 // ── Navigation helpers ────────────────────────────────────────────────────────
@@ -136,9 +133,14 @@ export async function createPadAtCell00(page: Page): Promise<string> {
   // Add the pad
   await page.getByTestId('creation-add-pad').click();
   // Wait for the occupied cell (no longer pad-cell-empty-0-0)
-  await page.locator('[data-testid^="pad-cell-"]:not([data-testid^="pad-cell-empty-"])').first().waitFor();
+  await page
+    .locator('[data-testid^="pad-cell-"]:not([data-testid^="pad-cell-empty-"])')
+    .first()
+    .waitFor();
   // Return the pad ID from the testid
-  const padCell = page.locator('[data-testid^="pad-cell-"]:not([data-testid^="pad-cell-empty-"])').first();
+  const padCell = page
+    .locator('[data-testid^="pad-cell-"]:not([data-testid^="pad-cell-empty-"])')
+    .first();
   const testid = await padCell.getAttribute('data-testid');
   return testid!.replace('pad-cell-', '');
 }

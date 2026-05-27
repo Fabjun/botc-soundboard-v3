@@ -7,7 +7,14 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { signal, computed } from '@preact/signals';
-import type { AppMode, AudioContextState, Board, LibraryItemMeta, Scene, UploadResult } from '../types';
+import type {
+  AppMode,
+  AudioContextState,
+  Board,
+  LibraryItemMeta,
+  Scene,
+  UploadResult,
+} from '../types';
 
 // ---------------------------------------------------------------------------
 // Audio context
@@ -57,13 +64,9 @@ export const activeSetIds = signal<string[]>([]);
 // mutations go through the helpers below.
 // ---------------------------------------------------------------------------
 
-export const playingPads = signal<ReadonlySet<string>>(
-  new globalThis.Set<string>()
-);
+export const playingPads = signal<ReadonlySet<string>>(new globalThis.Set<string>());
 
-export const loopingPads = signal<ReadonlySet<string>>(
-  new globalThis.Set<string>()
-);
+export const loopingPads = signal<ReadonlySet<string>>(new globalThis.Set<string>());
 
 /** Mark a pad as playing (one-shot). */
 export function addPlayingPad(id: string): void {
@@ -123,14 +126,12 @@ export function addLibraryItemMeta(meta: LibraryItemMeta): void {
 
 /** Remove an entry from the in-memory list (after IDB delete). */
 export function removeLibraryItemMeta(id: string): void {
-  libraryItems.value = libraryItems.value.filter(m => m.id !== id);
+  libraryItems.value = libraryItems.value.filter((m) => m.id !== id);
 }
 
 /** Patch the name of an in-memory entry (after IDB rename). */
 export function renameLibraryItemMeta(id: string, newName: string): void {
-  libraryItems.value = libraryItems.value.map(m =>
-    m.id === id ? { ...m, name: newName } : m
-  );
+  libraryItems.value = libraryItems.value.map((m) => (m.id === id ? { ...m, name: newName } : m));
 }
 
 // ---------------------------------------------------------------------------
@@ -149,7 +150,7 @@ export const boards = signal<Board[]>([]);
  * Null when on start/library screen or no board selected.
  */
 export const currentBoard = computed<Board | null>(
-  () => boards.value.find(b => b.id === currentBoardId.value) ?? null
+  () => boards.value.find((b) => b.id === currentBoardId.value) ?? null,
 );
 
 /**
@@ -157,12 +158,12 @@ export const currentBoard = computed<Board | null>(
  * Null when no scene is selected or no board is open.
  */
 export const currentScene = computed<Scene | null>(
-  () => currentBoard.value?.scenes.find(s => s.id === currentSceneId.value) ?? null
+  () => currentBoard.value?.scenes.find((s) => s.id === currentSceneId.value) ?? null,
 );
 
 /** Replace or insert a board in the signal (after IDB boardPut). */
 export function upsertBoard(board: Board): void {
-  const existing = boards.value.findIndex(b => b.id === board.id);
+  const existing = boards.value.findIndex((b) => b.id === board.id);
   if (existing >= 0) {
     const next = [...boards.value];
     next[existing] = board;
@@ -174,5 +175,5 @@ export function upsertBoard(board: Board): void {
 
 /** Remove a board from the signal (after IDB boardDelete). */
 export function removeBoardFromStore(id: string): void {
-  boards.value = boards.value.filter(b => b.id !== id);
+  boards.value = boards.value.filter((b) => b.id !== id);
 }

@@ -78,12 +78,12 @@ export function startLibDrag(
   e.preventDefault();
   rowEl.setPointerCapture(e.pointerId);
 
-  _s.active  = true;
-  _s.itemId  = itemId;
-  _s.startX  = e.clientX;
-  _s.startY  = e.clientY;
+  _s.active = true;
+  _s.itemId = itemId;
+  _s.startX = e.clientX;
+  _s.startY = e.clientY;
   _s.dragging = false;
-  _s.onDrop  = onDrop;
+  _s.onDrop = onDrop;
 
   function onMove(me: PointerEvent): void {
     const dx = me.clientX - _s.startX;
@@ -162,7 +162,7 @@ function _moveGhost(x: number, y: number): void {
   const w = parseFloat(_s.ghost.style.width);
   const h = parseFloat(_s.ghost.style.height);
   _s.ghost.style.left = `${x - w / 2}px`;
-  _s.ghost.style.top  = `${y - h / 2}px`;
+  _s.ghost.style.top = `${y - h / 2}px`;
 }
 
 function _updateTarget(x: number, y: number): void {
@@ -187,8 +187,8 @@ function _cleanup(): void {
   _s.ghost = null;
   _s.currentTarget?.classList.remove('is-lib-drag-target');
   _s.currentTarget = null;
-  _s.active   = false;
-  _s.itemId   = null;
+  _s.active = false;
+  _s.itemId = null;
   _s.dragging = false;
-  _s.onDrop   = null;
+  _s.onDrop = null;
 }

@@ -30,11 +30,7 @@ interface Spark {
   y: number; // origin y within toggle (%)
 }
 
-function generateSparks(
-  destMode: AppMode,
-  count: number,
-  rect: DOMRect,
-): Spark[] {
+function generateSparks(destMode: AppMode, count: number, rect: DOMRect): Spark[] {
   const color = destMode === 'play' ? 'var(--mode-game)' : 'var(--mode-setup)';
   // Sparks originate at the destination half
   const originXFrac = destMode === 'play' ? 0.75 : 0.25;
@@ -65,8 +61,7 @@ export function ModeToggle({ mode, onSwitch, compact = false }: ModeToggleProps)
   const toggleRef = useRef<HTMLDivElement>(null);
   const sparksRef = useRef<HTMLElement[]>([]);
   const prefersReducedMotion =
-    typeof window !== 'undefined'
-    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function handleClick(destMode: AppMode) {
     if (destMode === mode) return;
@@ -76,7 +71,7 @@ export function ModeToggle({ mode, onSwitch, compact = false }: ModeToggleProps)
       const count = compact ? 8 : 14;
       const sparks = generateSparks(destMode, count, rect);
 
-      sparks.forEach(spark => {
+      sparks.forEach((spark) => {
         const el = document.createElement('div');
         el.className = 'sb-mode-toggle-spark';
         el.style.cssText = `
@@ -91,10 +86,13 @@ export function ModeToggle({ mode, onSwitch, compact = false }: ModeToggleProps)
         `;
         document.body.appendChild(el);
         sparksRef.current.push(el);
-        setTimeout(() => {
-          el.remove();
-          sparksRef.current = sparksRef.current.filter(s => s !== el);
-        }, spark.duration + spark.delay + 50);
+        setTimeout(
+          () => {
+            el.remove();
+            sparksRef.current = sparksRef.current.filter((s) => s !== el);
+          },
+          spark.duration + spark.delay + 50,
+        );
       });
     }
 
@@ -105,7 +103,9 @@ export function ModeToggle({ mode, onSwitch, compact = false }: ModeToggleProps)
     'sb-mode-toggle',
     mode === 'play' ? 'is-game' : 'is-setup',
     compact ? 'is-compact' : '',
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <div
@@ -122,7 +122,9 @@ export function ModeToggle({ mode, onSwitch, compact = false }: ModeToggleProps)
         aria-pressed={mode === 'edit'}
         tabIndex={0}
         onClick={() => handleClick('edit')}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleClick('edit'); }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') handleClick('edit');
+        }}
       >
         SETUP
       </div>
@@ -134,7 +136,9 @@ export function ModeToggle({ mode, onSwitch, compact = false }: ModeToggleProps)
         aria-pressed={mode === 'play'}
         tabIndex={0}
         onClick={() => handleClick('play')}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleClick('play'); }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') handleClick('play');
+        }}
       >
         GAME
       </div>

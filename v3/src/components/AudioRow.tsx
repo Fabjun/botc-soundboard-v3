@@ -75,8 +75,14 @@ function RenameField({ name, onCommit }: RenameFieldProps) {
         onInput={(e) => setDraft((e.target as HTMLInputElement).value)}
         onBlur={commit}
         onKeyDown={(e) => {
-          if (e.key === 'Enter') { e.preventDefault(); commit(); }
-          if (e.key === 'Escape') { e.preventDefault(); cancel(); }
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            commit();
+          }
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            cancel();
+          }
         }}
       />
     );
@@ -85,7 +91,10 @@ function RenameField({ name, onCommit }: RenameFieldProps) {
   return (
     <span
       title="Click to rename"
-      onClick={(e) => { e.stopPropagation(); setEditing(true); }}
+      onClick={(e) => {
+        e.stopPropagation();
+        setEditing(true);
+      }}
       style={{
         fontFamily: 'var(--font-ui)',
         fontSize: '14px',
@@ -134,9 +143,7 @@ export function AudioRow({ meta, selected, onSelect, onDelete, onRename }: Audio
         padding: '8px 12px',
         minHeight: '44px',
         background: selected ? 'var(--top)' : 'var(--raised)',
-        borderLeft: selected
-          ? '2px solid var(--gold)'
-          : '2px solid transparent',
+        borderLeft: selected ? '2px solid var(--gold)' : '2px solid transparent',
         cursor: 'pointer',
         userSelect: 'none',
       }}
@@ -207,10 +214,7 @@ export function AudioRow({ meta, selected, onSelect, onDelete, onRename }: Audio
           justifyContent: 'center',
         }}
       >
-        <PixelIcon
-          name="skull"
-          size={12}
-        />
+        <PixelIcon name="skull" size={12} />
       </button>
     </div>
   );

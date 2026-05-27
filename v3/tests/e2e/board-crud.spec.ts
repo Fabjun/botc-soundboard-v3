@@ -20,9 +20,7 @@ test.beforeEach(async ({ page }) => {
 test('1 — create board → appears in list', async ({ page }) => {
   await goToBoardList(page);
   await page.getByTestId('new-board-button').click();
-  await expect(
-    page.locator('[data-testid^="board-row-"]').first(),
-  ).toBeVisible();
+  await expect(page.locator('[data-testid^="board-row-"]').first()).toBeVisible();
 });
 
 // ── Test 2: Rename board ──────────────────────────────────────────────────────
@@ -44,9 +42,9 @@ test('2 — rename board inline → title updates', async ({ page }) => {
   await input.press('Enter');
 
   // Title should update (DOM text is stored as-typed; CSS textTransform is visual-only)
-  await expect(
-    boardRow.locator('[data-testid^="board-row-title-"]'),
-  ).toHaveText('My Renamed Board');
+  await expect(boardRow.locator('[data-testid^="board-row-title-"]')).toHaveText(
+    'My Renamed Board',
+  );
 });
 
 // ── Test 3: Rename persists after reload ──────────────────────────────────────
@@ -76,9 +74,9 @@ test('3 — renamed board persists after page reload', async ({ page }) => {
   await page.getByTestId('new-board-button').waitFor();
 
   // Board should still exist with the renamed title
-  await expect(
-    page.locator('[data-testid^="board-row-title-"]').first(),
-  ).toHaveText('Persistent Board');
+  await expect(page.locator('[data-testid^="board-row-title-"]').first()).toHaveText(
+    'Persistent Board',
+  );
 });
 
 // ── Test 4: Delete — first tap shows confirm state ────────────────────────────

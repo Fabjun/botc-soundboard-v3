@@ -58,7 +58,9 @@ export function PadGridCell({
           }
         }}
       >
-        <span class="sb-pad-cell-add" aria-hidden="true">+</span>
+        <span class="sb-pad-cell-add" aria-hidden="true">
+          +
+        </span>
       </div>
     );
   }
@@ -75,24 +77,21 @@ export function PadGridCell({
       data-testid={`pad-cell-${pad.id}`}
     >
       <div
-        class={
-          'sb-pad is-deep' +
-          (isSetup ? ' is-setup' : '') +
-          (selected ? ' is-active' : '')
+        class={'sb-pad is-deep' + (isSetup ? ' is-setup' : '') + (selected ? ' is-active' : '')}
+        style={
+          {
+            '--pad-color': color,
+            '--pad-glow': `var(--pad-${pad.type}-glow)`,
+            '--pix-bg': 'var(--raised)',
+            height: '100%',
+            touchAction: 'none', // required for pointer capture on iOS
+          } as Record<string, string>
         }
-        style={{
-          '--pad-color': color,
-          '--pad-glow': `var(--pad-${pad.type}-glow)`,
-          '--pix-bg': 'var(--raised)',
-          height: '100%',
-          touchAction: 'none', // required for pointer capture on iOS
-        } as Record<string, string>}
         onClick={() => {
           if (isSetup) onPadSelect(pad);
         }}
-        onPointerDown={isSetup && onPadPointerDown
-          ? (e: PointerEvent) => onPadPointerDown(e, pad)
-          : undefined
+        onPointerDown={
+          isSetup && onPadPointerDown ? (e: PointerEvent) => onPadPointerDown(e, pad) : undefined
         }
         role="button"
         aria-label={pad.name}
@@ -128,9 +127,7 @@ export function PadGridCell({
         </div>
 
         {/* Hotkey badge */}
-        {pad.hotkey && (
-          <div class="sb-pad-key">{pad.hotkey}</div>
-        )}
+        {pad.hotkey && <div class="sb-pad-key">{pad.hotkey}</div>}
 
         {/* SETUP: drag handle indicator */}
         {isSetup && (

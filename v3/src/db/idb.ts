@@ -36,7 +36,9 @@ const DB_VERSION = 2;
 let _db: IDBPDatabase | null = null;
 
 /** @internal Test-only: resets the DB singleton so unit tests get a fresh IDBFactory. */
-export function _resetDB(): void { _db = null; }
+export function _resetDB(): void {
+  _db = null;
+}
 
 async function getDB(): Promise<IDBPDatabase> {
   if (_db) return _db;
@@ -88,7 +90,7 @@ export async function libGetAllMeta(): Promise<LibraryItemMeta[]> {
  */
 export async function libGet(id: string): Promise<LibraryItem | null> {
   const db = await getDB();
-  const entry = await db.get('library', id) as LibraryItem | undefined;
+  const entry = (await db.get('library', id)) as LibraryItem | undefined;
   return entry ?? null;
 }
 
@@ -144,7 +146,7 @@ export async function boardGetAll(): Promise<Board[]> {
  */
 export async function boardGet(id: string): Promise<Board | null> {
   const db = await getDB();
-  const entry = await db.get('boards', id) as Board | undefined;
+  const entry = (await db.get('boards', id)) as Board | undefined;
   return entry ?? null;
 }
 

@@ -51,10 +51,7 @@ describe('nextFreeSlot', () => {
 
   test('row-major scan: skips occupied slots, returns first free', () => {
     // Occupy (0,0) and (1,0), first free should be (2,0)
-    const pads = [
-      makePad('a', { col: 0, row: 0 }),
-      makePad('b', { col: 1, row: 0 }),
-    ];
+    const pads = [makePad('a', { col: 0, row: 0 }), makePad('b', { col: 1, row: 0 })];
     expect(nextFreeSlot(pads, 4, 4)).toEqual({ col: 2, row: 0 });
   });
 
@@ -234,40 +231,56 @@ describe('padMigrationMatrix — combo source always resets', () => {
 
 describe('applyTypeChange', () => {
   test('RESET case: clears libraryItemRef', () => {
-    const pad = makePad('p1', { col: 0, row: 0 }, {
-      type: 'single',
-      libraryItemRef: 'abc123',
-    });
+    const pad = makePad(
+      'p1',
+      { col: 0, row: 0 },
+      {
+        type: 'single',
+        libraryItemRef: 'abc123',
+      },
+    );
     const result = applyTypeChange(pad, 'combo'); // single→combo = reset
     expect(result.type).toBe('combo');
     expect(result.libraryItemRef).toBeUndefined();
   });
 
   test('non-RESET case (ADD): preserves libraryItemRef', () => {
-    const pad = makePad('p1', { col: 0, row: 0 }, {
-      type: 'single',
-      libraryItemRef: 'abc123',
-    });
+    const pad = makePad(
+      'p1',
+      { col: 0, row: 0 },
+      {
+        type: 'single',
+        libraryItemRef: 'abc123',
+      },
+    );
     const result = applyTypeChange(pad, 'loop'); // single→loop = add
     expect(result.type).toBe('loop');
     expect(result.libraryItemRef).toBe('abc123');
   });
 
   test('LOSSY case: preserves libraryItemRef (item 1 survives)', () => {
-    const pad = makePad('p1', { col: 0, row: 0 }, {
-      type: 'playlist',
-      libraryItemRef: 'xyz789',
-    });
+    const pad = makePad(
+      'p1',
+      { col: 0, row: 0 },
+      {
+        type: 'playlist',
+        libraryItemRef: 'xyz789',
+      },
+    );
     const result = applyTypeChange(pad, 'single'); // playlist→single = lossy
     expect(result.type).toBe('single');
     expect(result.libraryItemRef).toBe('xyz789');
   });
 
   test('immutable: original pad is unchanged', () => {
-    const pad = makePad('p1', { col: 0, row: 0 }, {
-      type: 'single',
-      libraryItemRef: 'abc123',
-    });
+    const pad = makePad(
+      'p1',
+      { col: 0, row: 0 },
+      {
+        type: 'single',
+        libraryItemRef: 'abc123',
+      },
+    );
     applyTypeChange(pad, 'combo');
     expect(pad.type).toBe('single');
     expect(pad.libraryItemRef).toBe('abc123');
@@ -277,10 +290,18 @@ describe('applyTypeChange', () => {
 // ── padTypeLabel / padTypeColor / padTypeGlow ─────────────────────────────────
 
 describe('padTypeLabel', () => {
-  test('single → SGL', () => { expect(padTypeLabel('single')).toBe('SGL'); });
-  test('loop → LOOP', () => { expect(padTypeLabel('loop')).toBe('LOOP'); });
-  test('playlist → LIST', () => { expect(padTypeLabel('playlist')).toBe('LIST'); });
-  test('combo → COMBO', () => { expect(padTypeLabel('combo')).toBe('COMBO'); });
+  test('single → SGL', () => {
+    expect(padTypeLabel('single')).toBe('SGL');
+  });
+  test('loop → LOOP', () => {
+    expect(padTypeLabel('loop')).toBe('LOOP');
+  });
+  test('playlist → LIST', () => {
+    expect(padTypeLabel('playlist')).toBe('LIST');
+  });
+  test('combo → COMBO', () => {
+    expect(padTypeLabel('combo')).toBe('COMBO');
+  });
 });
 
 describe('padTypeColor', () => {

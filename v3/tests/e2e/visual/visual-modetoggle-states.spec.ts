@@ -1,11 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { stableScreenshot } from './visual-setup';
-import {
-  goToBoardList,
-  createBoardAndNavigate,
-  enterSetupMode,
-  enterGameMode,
-} from '../helpers';
+import { goToBoardList, createBoardAndNavigate, enterSetupMode, enterGameMode } from '../helpers';
 
 test('ModeToggle — GAME state (default)', async ({ page }) => {
   await page.goto('/botc-soundboard-v3/');

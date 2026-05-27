@@ -40,9 +40,7 @@ async function setupTwoPads(page: Page): Promise<void> {
   await page.getByTestId('pad-cell-empty-1-0').click();
   const popover = page.getByTestId('pad-creation-popover');
   await popover.waitFor();
-  const sourceItem = page
-    .locator('[data-testid^="creation-source-item-"]')
-    .first();
+  const sourceItem = page.locator('[data-testid^="creation-source-item-"]').first();
   await sourceItem.waitFor({ timeout: 5_000 });
   await sourceItem.click();
   await page.getByTestId('creation-add-pad').click();
@@ -51,24 +49,22 @@ async function setupTwoPads(page: Page): Promise<void> {
 
 // ── Test 20: SWAP ─────────────────────────────────────────────────────────────
 
-test.skip(
-  '20 — SWAP: drag pad to another pad center → positions swap [SKIP: pointer-events drag flaky]',
-  async ({ page }) => {
-    await setupTwoPads(page);
-    // TODO (Phase 3): implement pointer-events drag for SWAP.
-    // Expected: pad from cell 0,0 moves to 1,0 and vice versa.
-    void page;
-  },
-);
+test.skip('20 — SWAP: drag pad to another pad center → positions swap [SKIP: pointer-events drag flaky]', async ({
+  page,
+}) => {
+  await setupTwoPads(page);
+  // TODO (Phase 3): implement pointer-events drag for SWAP.
+  // Expected: pad from cell 0,0 moves to 1,0 and vice versa.
+  void page;
+});
 
 // ── Test 21: INSERT ───────────────────────────────────────────────────────────
 
-test.skip(
-  '21 — INSERT: drag pad to cell edge → intermediate pads shift [SKIP: pointer-events drag flaky]',
-  async ({ page }) => {
-    await setupTwoPads(page);
-    // TODO (Phase 3): implement pointer-events drag for INSERT.
-    // Expected: pads shift to accommodate insert at target edge.
-    void page;
-  },
-);
+test.skip('21 — INSERT: drag pad to cell edge → intermediate pads shift [SKIP: pointer-events drag flaky]', async ({
+  page,
+}) => {
+  await setupTwoPads(page);
+  // TODO (Phase 3): implement pointer-events drag for INSERT.
+  // Expected: pads shift to accommodate insert at target edge.
+  void page;
+});

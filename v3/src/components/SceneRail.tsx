@@ -29,11 +29,7 @@ interface SceneRailProps {
   onSceneSelect: (sceneId: string) => void;
 }
 
-export function SceneRail({
-  board,
-  activeSceneId,
-  onSceneSelect,
-}: SceneRailProps): JSX.Element {
+export function SceneRail({ board, activeSceneId, onSceneSelect }: SceneRailProps): JSX.Element {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const [deletedScene, setDeletedScene] = useState<{
@@ -62,9 +58,7 @@ export function SceneRail({
     }
     const updatedBoard: Board = {
       ...board,
-      scenes: board.scenes.map(s =>
-        s.id === sceneId ? { ...s, name: newName } : s,
-      ),
+      scenes: board.scenes.map((s) => (s.id === sceneId ? { ...s, name: newName } : s)),
     };
     try {
       await boardPut(updatedBoard);
@@ -82,14 +76,14 @@ export function SceneRail({
   // ── Duplicate ─────────────────────────────────────────────────────────────
 
   async function duplicateScene(scene: Scene) {
-    const existing = board.scenes.filter(s => s.name.startsWith(scene.name));
+    const existing = board.scenes.filter((s) => s.name.startsWith(scene.name));
     const suffix = existing.length > 1 ? ` · ${existing.length}` : ' · 2';
     const newScene: Scene = {
       ...scene,
       id: nanoid(),
       name: scene.name + suffix,
-      order: Math.max(...board.scenes.map(s => s.order)) + 1,
-      pads: scene.pads.map(p => ({ ...p, id: nanoid() })),
+      order: Math.max(...board.scenes.map((s) => s.order)) + 1,
+      pads: scene.pads.map((p) => ({ ...p, id: nanoid() })),
     };
     const updatedBoard: Board = {
       ...board,
@@ -113,7 +107,7 @@ export function SceneRail({
       const boardSnapshot = { ...board };
       const updatedBoard: Board = {
         ...board,
-        scenes: board.scenes.filter(s => s.id !== scene.id),
+        scenes: board.scenes.filter((s) => s.id !== scene.id),
       };
       try {
         await boardPut(updatedBoard);
@@ -190,7 +184,7 @@ export function SceneRail({
           Add one below.
         </div>
       ) : (
-        scenes.map(scene => (
+        scenes.map((scene) => (
           <div
             key={scene.id}
             class={
@@ -227,13 +221,19 @@ export function SceneRail({
                 ref={inputRef}
                 data-testid="scene-name-input"
                 value={editValue}
-                onInput={e => setEditValue((e.target as HTMLInputElement).value)}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') { e.preventDefault(); commitRename(scene.id); }
-                  if (e.key === 'Escape') { e.preventDefault(); cancelRename(); }
+                onInput={(e) => setEditValue((e.target as HTMLInputElement).value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    commitRename(scene.id);
+                  }
+                  if (e.key === 'Escape') {
+                    e.preventDefault();
+                    cancelRename();
+                  }
                 }}
                 onBlur={() => commitRename(scene.id)}
-                onClick={e => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()}
                 style={{
                   flex: 1,
                   minWidth: 0,
@@ -285,7 +285,10 @@ export function SceneRail({
                   data-testid={`scene-rename-${scene.id}`}
                   style={{ minWidth: 28, minHeight: 28, padding: '0 4px' }}
                   title="Rename scene"
-                  onClick={e => { e.stopPropagation(); startRename(scene); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    startRename(scene);
+                  }}
                 >
                   <PixelIcon name="edit" size={11} />
                 </button>
@@ -294,7 +297,10 @@ export function SceneRail({
                   data-testid={`scene-copy-${scene.id}`}
                   style={{ minWidth: 28, minHeight: 28, padding: '0 4px' }}
                   title="Duplicate scene"
-                  onClick={e => { e.stopPropagation(); duplicateScene(scene); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    duplicateScene(scene);
+                  }}
                 >
                   <PixelIcon name="save" size={11} />
                 </button>
@@ -302,8 +308,13 @@ export function SceneRail({
                   class={`sb-btn sb-btn-sm ${pendingDeleteId === scene.id ? 'sb-btn-danger' : 'sb-btn-ghost'}`}
                   data-testid={`scene-delete-${scene.id}`}
                   style={{ minWidth: 28, minHeight: 28, padding: '0 4px' }}
-                  title={pendingDeleteId === scene.id ? 'Click again to confirm delete' : 'Delete scene'}
-                  onClick={e => { e.stopPropagation(); requestDelete(scene); }}
+                  title={
+                    pendingDeleteId === scene.id ? 'Click again to confirm delete' : 'Delete scene'
+                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    requestDelete(scene);
+                  }}
                 >
                   {pendingDeleteId === scene.id ? '!!' : '×'}
                 </button>
@@ -326,8 +337,7 @@ export function SceneRail({
         }}
         onClick={addScene}
       >
-        <PixelIcon name="sparkle" size={12} />
-        + NEW SCENE
+        <PixelIcon name="sparkle" size={12} />+ NEW SCENE
       </button>
 
       {/* Undo toast */}

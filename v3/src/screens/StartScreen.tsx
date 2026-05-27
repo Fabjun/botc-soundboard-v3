@@ -42,9 +42,12 @@ function FlameLogo({ size = 80 }: FlameLogoProps): JSX.Element {
 /** Returns a short human-readable label for the current AudioContext state. */
 function describeAudioState(): string {
   switch (audioContextState.value) {
-    case 'locked':    return 'audio context idle · tap to activate';
-    case 'running':   return 'audio context running · ready';
-    case 'suspended': return 'audio context suspended';
+    case 'locked':
+      return 'audio context idle · tap to activate';
+    case 'running':
+      return 'audio context running · ready';
+    case 'suspended':
+      return 'audio context suspended';
   }
 }
 
@@ -53,7 +56,10 @@ async function handleUnlock(): Promise<void> {
   // TODO Slice 4: integrate with real audio engine (src/audio/);
   //               handle iOS AudioContext suspend/resume lifecycle properly.
   try {
-    const ctx = new (window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const ctx = new (
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+    )();
     if (ctx.state === 'suspended') {
       await ctx.resume();
     }
@@ -107,8 +113,7 @@ export function StartScreen(): JSX.Element {
             width: 220,
             height: 220,
             borderRadius: '50%',
-            background:
-              'radial-gradient(circle, var(--flame-aura) 0%, transparent 60%)',
+            background: 'radial-gradient(circle, var(--flame-aura) 0%, transparent 60%)',
             animation: 'sb-flicker 1.6s ease-in-out infinite',
           }}
         />
@@ -116,10 +121,7 @@ export function StartScreen(): JSX.Element {
       </div>
 
       {/* ── App title ── */}
-      <div
-        class="sb-display"
-        style={{ fontSize: 22, textAlign: 'center', marginBottom: 18 }}
-      >
+      <div class="sb-display" style={{ fontSize: 22, textAlign: 'center', marginBottom: 18 }}>
         SOUNDBOARD
         <br />
         OF STORYTELLING
@@ -168,14 +170,18 @@ export function StartScreen(): JSX.Element {
       >
         <button
           class="sb-btn sb-btn-sm sb-btn-ghost"
-          onClick={() => { currentScreen.value = 'board-list'; }}
+          onClick={() => {
+            currentScreen.value = 'board-list';
+          }}
         >
           <PixelIcon name="scroll" size={12} />
           BOARD
         </button>
         <button
           class="sb-btn sb-btn-sm sb-btn-ghost"
-          onClick={() => { currentScreen.value = 'library'; }}
+          onClick={() => {
+            currentScreen.value = 'library';
+          }}
         >
           <PixelIcon name="book" size={12} />
           LIBRARY

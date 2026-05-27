@@ -103,7 +103,7 @@ describe('boardGetAll', () => {
     await boardPut(makeBoard('b3'));
     const all = await boardGetAll();
     expect(all).toHaveLength(3);
-    const ids = all.map(b => b.id).sort();
+    const ids = all.map((b) => b.id).sort();
     expect(ids).toEqual(['b1', 'b2', 'b3']);
   });
 });
@@ -153,7 +153,7 @@ describe('libGetAllMeta', () => {
     await libPut(makeLibraryItem('hash-2', 'b.mp3'));
     const metas = await libGetAllMeta();
     expect(metas).toHaveLength(2);
-    const ids = metas.map(m => m.id).sort();
+    const ids = metas.map((m) => m.id).sort();
     expect(ids).toEqual(['hash-1', 'hash-2']);
   });
 

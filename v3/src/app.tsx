@@ -21,18 +21,22 @@ export function App(): JSX.Element {
   // boardGetAll() loads plain JSON documents — no blobs, no cursor trick needed.
   useEffect(() => {
     libGetAllMeta()
-      .then(items => { libraryItems.value = items; })
-      .catch(err => console.error('Library bootstrap failed:', err));
+      .then((items) => {
+        libraryItems.value = items;
+      })
+      .catch((err) => console.error('Library bootstrap failed:', err));
 
     boardGetAll()
-      .then(all => { boards.value = all; })
-      .catch(err => console.error('Board bootstrap failed:', err));
+      .then((all) => {
+        boards.value = all;
+      })
+      .catch((err) => console.error('Board bootstrap failed:', err));
   }, []);
 
   const screen = currentScreen.value;
 
-  if (screen === 'library')    return <LibraryScreen />;
+  if (screen === 'library') return <LibraryScreen />;
   if (screen === 'board-list') return <BoardListScreen />;
-  if (screen === 'board')      return <BoardScreen />;
+  if (screen === 'board') return <BoardScreen />;
   return <StartScreen />;
 }

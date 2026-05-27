@@ -85,16 +85,8 @@ export function TopBarV2({
           onClick={onModeSwap}
           style={{ flexShrink: 0, cursor: onModeSwap ? 'pointer' : 'default' }}
         >
-          <span
-            class={
-              'sb-mode-badge ' + (mode === 'play' ? 'is-game' : 'is-setup')
-            }
-          >
-            <PixelIcon
-              name={mode === 'play' ? 'play' : 'edit'}
-              size={11}
-              color="currentColor"
-            />
+          <span class={'sb-mode-badge ' + (mode === 'play' ? 'is-game' : 'is-setup')}>
+            <PixelIcon name={mode === 'play' ? 'play' : 'edit'} size={11} color="currentColor" />
             {mode === 'play' ? 'GAME' : 'SETUP'}
           </span>
         </div>

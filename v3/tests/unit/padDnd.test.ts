@@ -38,27 +38,21 @@ function makeGrid(): Pad[] {
 
 /** Get the pad at a given position from a pads array. */
 function padAt(pads: Pad[], col: number, row: number): Pad | undefined {
-  return pads.find(p => p.position?.col === col && p.position?.row === row);
+  return pads.find((p) => p.position?.col === col && p.position?.row === row);
 }
 
 // ── applySwap ────────────────────────────────────────────────────────────────
 
 describe('applySwap', () => {
   test('both slots occupied → swaps positions', () => {
-    const pads = [
-      makePad('a', { col: 0, row: 0 }),
-      makePad('b', { col: 1, row: 0 }),
-    ];
+    const pads = [makePad('a', { col: 0, row: 0 }), makePad('b', { col: 1, row: 0 })];
     const result = applySwap(pads, 'a', { col: 1, row: 0 });
     expect(padAt(result, 0, 0)?.id).toBe('b');
     expect(padAt(result, 1, 0)?.id).toBe('a');
   });
 
   test('target slot empty → source moves, no other pad affected', () => {
-    const pads = [
-      makePad('a', { col: 0, row: 0 }),
-      makePad('b', { col: 2, row: 0 }),
-    ];
+    const pads = [makePad('a', { col: 0, row: 0 }), makePad('b', { col: 2, row: 0 })];
     const result = applySwap(pads, 'a', { col: 3, row: 0 });
     // 'a' moved to (3,0)
     expect(padAt(result, 3, 0)?.id).toBe('a');
@@ -78,24 +72,18 @@ describe('applySwap', () => {
     const pads = makeGrid();
     const result = applySwap(pads, '0-0', { col: 3, row: 3 });
     // Only (0,0) and (3,3) are affected
-    const unchanged = result.filter(p =>
-      !(p.position?.col === 0 && p.position?.row === 0) &&
-      !(p.position?.col === 3 && p.position?.row === 3)
+    const unchanged = result.filter(
+      (p) =>
+        !(p.position?.col === 0 && p.position?.row === 0) &&
+        !(p.position?.col === 3 && p.position?.row === 3),
     );
-    const originalUnchanged = pads.filter(p =>
-      !(p.id === '0-0') && !(p.id === '3-3')
-    );
-    expect(unchanged.map(p => p.id).sort()).toEqual(
-      originalUnchanged.map(p => p.id).sort()
-    );
+    const originalUnchanged = pads.filter((p) => !(p.id === '0-0') && !(p.id === '3-3'));
+    expect(unchanged.map((p) => p.id).sort()).toEqual(originalUnchanged.map((p) => p.id).sort());
   });
 
   test('immutable: original array is not mutated', () => {
-    const pads = [
-      makePad('a', { col: 0, row: 0 }),
-      makePad('b', { col: 1, row: 0 }),
-    ];
-    const originalPositions = pads.map(p => ({ ...p.position }));
+    const pads = [makePad('a', { col: 0, row: 0 }), makePad('b', { col: 1, row: 0 })];
+    const originalPositions = pads.map((p) => ({ ...p.position }));
     applySwap(pads, 'a', { col: 1, row: 0 });
     pads.forEach((p, i) => {
       expect(p.position).toEqual(originalPositions[i]);
@@ -150,10 +138,7 @@ describe('applyInsert', () => {
   });
 
   test('toIndex clamped to total-1 when out of range', () => {
-    const pads = [
-      makePad('a', { col: 0, row: 0 }),
-      makePad('b', { col: 1, row: 0 }),
-    ];
+    const pads = [makePad('a', { col: 0, row: 0 }), makePad('b', { col: 1, row: 0 })];
     // toIndex=99, grid is 4×4=16, clamps to 15, then normalises
     // Should not throw
     expect(() => applyInsert(pads, 'a', 99, 4, 4)).not.toThrow();
@@ -178,7 +163,7 @@ describe('applyInsert', () => {
       makePad('b', { col: 1, row: 0 }),
       makePad('c', { col: 2, row: 0 }),
     ];
-    const snapshotPositions = pads.map(p => ({ ...p.position }));
+    const snapshotPositions = pads.map((p) => ({ ...p.position }));
     applyInsert(pads, 'a', 2, 4, 4);
     pads.forEach((p, i) => {
       expect(p.position).toEqual(snapshotPositions[i]);

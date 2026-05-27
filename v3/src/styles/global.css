@@ -2,14 +2,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono:ital@0;1&display=swap');
 
 /* ─── Reset ──────────────────────────────────────────────────── */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 /* ─── Root ───────────────────────────────────────────────────── */
-html, body {
+html,
+body {
   height: 100%;
   /* iOS rubber-band / over-scroll suppression */
   overscroll-behavior: none;
@@ -42,7 +45,7 @@ body.sb {
 /* ─── Touch targets ──────────────────────────────────────────── */
 /* Only applied to actual interactive elements */
 button,
-[role="button"] {
+[role='button'] {
   min-height: 44px;
   min-width: 44px;
   cursor: pointer;
@@ -57,8 +60,15 @@ button,
 /* ─── sb-flicker (flame animation for StartScreen) ───────────── */
 /* Sourced from SoS_DESIGN_25052026/v2-screens.jsx — not in tokens.css */
 @keyframes sb-flicker {
-  0%,  100% { transform: scale(1);    opacity: 0.85; }
-  50%        { transform: scale(1.05); opacity: 1;    }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
 }
 
 /* ─── Pixel rendering for icons ──────────────────────────────── */

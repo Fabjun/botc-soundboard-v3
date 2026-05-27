@@ -44,17 +44,13 @@ test('12 — tap empty cell → PadCreationPopover opens', async ({ page }) => {
 
 // ── Test 13: Path A — select RECENT → ADD PAD ────────────────────────────────
 
-test('13 — Path A: select from RECENT tab → ADD PAD → pad appears in cell', async ({
-  page,
-}) => {
+test('13 — Path A: select from RECENT tab → ADD PAD → pad appears in cell', async ({ page }) => {
   await page.getByTestId('pad-cell-empty-0-0').click();
   const popover = page.getByTestId('pad-creation-popover');
   await popover.waitFor();
 
   // RECENT tab is default; source item should be visible
-  const sourceItem = page
-    .locator('[data-testid^="creation-source-item-"]')
-    .first();
+  const sourceItem = page.locator('[data-testid^="creation-source-item-"]').first();
   await sourceItem.waitFor({ timeout: 5_000 });
   await sourceItem.click();
 
@@ -76,22 +72,19 @@ test('13 — Path A: select from RECENT tab → ADD PAD → pad appears in cell'
 
 // ── Test 14: Path B — library drag → pad created ─────────────────────────────
 
-test.skip(
-  '14 — Path B: library drag to empty cell → pad created [SKIP: pointer-events drag flaky in Playwright]',
-  async ({ page }) => {
-    // TODO (Phase 3): implement pointer-event drag from LibraryPanel to PadGrid.
-    // Path B uses libDnd.ts (Pointer Events API, not HTML5 DnD).
-    // Use page.mouse.move/down/up sequence with precise coordinates.
-    // Mark stable once verified locally.
-    void page;
-  },
-);
+test.skip('14 — Path B: library drag to empty cell → pad created [SKIP: pointer-events drag flaky in Playwright]', async ({
+  page,
+}) => {
+  // TODO (Phase 3): implement pointer-event drag from LibraryPanel to PadGrid.
+  // Path B uses libDnd.ts (Pointer Events API, not HTML5 DnD).
+  // Use page.mouse.move/down/up sequence with precise coordinates.
+  // Mark stable once verified locally.
+  void page;
+});
 
 // ── Test 15: Path A via BROWSE tab ────────────────────────────────────────────
 
-test('15 — Path A: BROWSE tab → search → select → ADD PAD', async ({
-  page,
-}) => {
+test('15 — Path A: BROWSE tab → search → select → ADD PAD', async ({ page }) => {
   await page.getByTestId('pad-cell-empty-0-0').click();
   const popover = page.getByTestId('pad-creation-popover');
   await popover.waitFor();
@@ -100,9 +93,7 @@ test('15 — Path A: BROWSE tab → search → select → ADD PAD', async ({
   await page.getByTestId('creation-tab-browse').click();
 
   // Source items should appear in BROWSE tab
-  const sourceItem = page
-    .locator('[data-testid^="creation-source-item-"]')
-    .first();
+  const sourceItem = page.locator('[data-testid^="creation-source-item-"]').first();
   await sourceItem.waitFor({ timeout: 5_000 });
   await sourceItem.click();
 

@@ -101,7 +101,7 @@ export async function processFilesSerial(files: File[]): Promise<void> {
     const id = computeHash(buf);
 
     // Step 3 — duplicate check
-    if (libraryItems.value.some(m => m.id === id)) {
+    if (libraryItems.value.some((m) => m.id === id)) {
       result.skipped++;
       continue;
     }

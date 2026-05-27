@@ -17,7 +17,13 @@ import { TopBarV2 } from '../chrome/TopBarV2';
 import { StatusBarV2 } from '../chrome/StatusBarV2';
 import { PixelIcon } from '../components/PixelIcon';
 import { AudioRow } from '../components/AudioRow';
-import { currentScreen, libraryItems, uploadStatus, removeLibraryItemMeta, renameLibraryItemMeta } from '../state/store';
+import {
+  currentScreen,
+  libraryItems,
+  uploadStatus,
+  removeLibraryItemMeta,
+  renameLibraryItemMeta,
+} from '../state/store';
 import { processFilesSerial, formatBytes, totalLibraryBytes } from '../lib/upload';
 import { libDelete, libRename } from '../db/idb';
 
@@ -83,10 +89,7 @@ function UploadStatusBar(): JSX.Element | null {
         flexShrink: 0,
       }}
     >
-      <PixelIcon
-        name={status.errors.length > 0 ? 'skull' : 'save'}
-        size={11}
-      />
+      <PixelIcon name={status.errors.length > 0 ? 'skull' : 'save'} size={11} />
       {parts.join(' · ')}
       {status.errors.length > 0 && (
         <span
@@ -114,17 +117,16 @@ export function LibraryScreen(): JSX.Element {
   // Derived: filtered list for current search
   const items = libraryItems.value;
   const filtered = search.trim()
-    ? items.filter(m =>
-        m.name.toLowerCase().includes(search.toLowerCase())
-      )
+    ? items.filter((m) => m.name.toLowerCase().includes(search.toLowerCase()))
     : items;
 
   const totalSize = totalLibraryBytes(items);
 
   // Breadcrumb: "124 audio files · 38.2 MB"
-  const breadcrumb = items.length === 0
-    ? 'Library'
-    : `${items.length} audio file${items.length !== 1 ? 's' : ''} · ${formatBytes(totalSize)}`;
+  const breadcrumb =
+    items.length === 0
+      ? 'Library'
+      : `${items.length} audio file${items.length !== 1 ? 's' : ''} · ${formatBytes(totalSize)}`;
 
   // ── Upload handlers ────────────────────────────────────────────────────────
 
@@ -146,7 +148,7 @@ export function LibraryScreen(): JSX.Element {
     e.stopPropagation();
     // Only clear if leaving the entire screen (not a child element)
     const target = e.relatedTarget as Node | null;
-    const container = (e.currentTarget as HTMLElement);
+    const container = e.currentTarget as HTMLElement;
     if (!container.contains(target)) {
       setIsDragOver(false);
     }
@@ -158,7 +160,7 @@ export function LibraryScreen(): JSX.Element {
     setIsDragOver(false);
     const files = e.dataTransfer?.files;
     if (files && files.length > 0) {
-      const audioFiles = Array.from(files).filter(f => f.type.startsWith('audio/'));
+      const audioFiles = Array.from(files).filter((f) => f.type.startsWith('audio/'));
       if (audioFiles.length > 0) {
         processFilesSerial(audioFiles).catch(console.error);
       }
@@ -229,7 +231,9 @@ export function LibraryScreen(): JSX.Element {
             </button>
             <button
               class="sb-btn sb-btn-sm sb-btn-ghost"
-              onClick={() => { currentScreen.value = 'start'; }}
+              onClick={() => {
+                currentScreen.value = 'start';
+              }}
             >
               <PixelIcon name="play" size={11} />
               BACK
@@ -248,7 +252,7 @@ export function LibraryScreen(): JSX.Element {
         }}
       >
         <div class="sb-tabs">
-          {TABS.map(tab => (
+          {TABS.map((tab) => (
             <button
               key={tab}
               class={'sb-tab' + (activeTab === tab ? ' is-active' : '')}
@@ -348,7 +352,7 @@ export function LibraryScreen(): JSX.Element {
             </div>
 
             {/* Tags — read-only, shown if any item has tags */}
-            {items.some(m => m.tags.length > 0) && (
+            {items.some((m) => m.tags.length > 0) && (
               <div style={{ padding: '10px 8px' }}>
                 <div
                   style={{
@@ -369,7 +373,7 @@ export function LibraryScreen(): JSX.Element {
                     gap: '4px',
                   }}
                 >
-                  {[...new globalThis.Set(items.flatMap(m => m.tags))].map(tag => (
+                  {[...new globalThis.Set(items.flatMap((m) => m.tags))].map((tag) => (
                     <span key={tag} class="sb-pill">
                       {tag}
                     </span>
@@ -475,16 +479,18 @@ export function LibraryScreen(): JSX.Element {
             >
               {filtered.length === 0 ? (
                 items.length === 0 ? (
-                  <EmptyState label={
-                    isDragOver
-                      ? 'Drop files to import'
-                      : 'No audio files yet.\nDrop files anywhere or click IMPORT.'
-                  } />
+                  <EmptyState
+                    label={
+                      isDragOver
+                        ? 'Drop files to import'
+                        : 'No audio files yet.\nDrop files anywhere or click IMPORT.'
+                    }
+                  />
                 ) : (
                   <EmptyState label={`No files matching "${search}"`} />
                 )
               ) : (
-                filtered.map(meta => (
+                filtered.map((meta) => (
                   <AudioRow
                     key={meta.id}
                     meta={meta}
@@ -510,8 +516,8 @@ export function LibraryScreen(): JSX.Element {
         infoText={
           items.length === 0
             ? 'No files'
-            : `${items.length} file${items.length !== 1 ? 's' : ''} · ${formatBytes(totalSize)}`
-            + (selectedId ? ' · 1 selected' : '')
+            : `${items.length} file${items.length !== 1 ? 's' : ''} · ${formatBytes(totalSize)}` +
+              (selectedId ? ' · 1 selected' : '')
         }
       />
     </div>

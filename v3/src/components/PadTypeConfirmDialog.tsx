@@ -24,26 +24,26 @@ interface PadTypeConfirmDialogProps {
 }
 
 const VERDICT_LABELS: Record<MigrationVerdict, string> = {
-  add:     'ADDS',
+  add: 'ADDS',
   migrate: 'MIGRATES',
-  drop:    'DROPS',
-  lossy:   'LOSSY',
-  reset:   'RESET',
+  drop: 'DROPS',
+  lossy: 'LOSSY',
+  reset: 'RESET',
 };
 
 const VERDICT_COLORS: Record<MigrationVerdict, string> = {
-  add:     'var(--mode-setup)',
+  add: 'var(--mode-setup)',
   migrate: 'var(--gold)',
-  drop:    'var(--warning)',
-  lossy:   'var(--blood-bright)',
-  reset:   'var(--blood-bright)',
+  drop: 'var(--warning)',
+  lossy: 'var(--blood-bright)',
+  reset: 'var(--blood-bright)',
 };
 
 const TYPE_LABELS: Record<PadType, string> = {
-  single:   'SINGLE',
-  loop:     'LOOP',
+  single: 'SINGLE',
+  loop: 'LOOP',
   playlist: 'PLAYLIST',
-  combo:    'COMBO',
+  combo: 'COMBO',
 };
 
 export function PadTypeConfirmDialog({
@@ -58,7 +58,10 @@ export function PadTypeConfirmDialog({
   // Close on Escape
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') { e.preventDefault(); onCancel(); }
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onCancel();
+      }
     }
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
@@ -70,11 +73,15 @@ export function PadTypeConfirmDialog({
     <div
       class={isMobile ? 'sb-creation-sheet' : 'sb-type-confirm'}
       data-testid="type-confirm-dialog"
-      style={isMobile ? {} : {
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-      }}
+      style={
+        isMobile
+          ? {}
+          : {
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+            }
+      }
     >
       {/* Header */}
       <div
@@ -125,27 +132,9 @@ export function PadTypeConfirmDialog({
       </div>
 
       {/* Field lists */}
-      {keeps.length > 0 && (
-        <FieldList
-          label="KEEPS"
-          items={keeps}
-          color="var(--mode-setup)"
-        />
-      )}
-      {migrates.length > 0 && (
-        <FieldList
-          label="MIGRATES"
-          items={migrates}
-          color="var(--gold)"
-        />
-      )}
-      {drops.length > 0 && (
-        <FieldList
-          label="DROPS"
-          items={drops}
-          color="var(--blood-bright)"
-        />
-      )}
+      {keeps.length > 0 && <FieldList label="KEEPS" items={keeps} color="var(--mode-setup)" />}
+      {migrates.length > 0 && <FieldList label="MIGRATES" items={migrates} color="var(--gold)" />}
+      {drops.length > 0 && <FieldList label="DROPS" items={drops} color="var(--blood-bright)" />}
 
       {/* Reset warning */}
       {verdict === 'reset' && (
@@ -242,7 +231,7 @@ function FieldList({
           gap: 'var(--space-1)',
         }}
       >
-        {items.map(item => (
+        {items.map((item) => (
           <span
             key={item}
             style={{

@@ -23,16 +23,12 @@ test.beforeEach(async ({ page }) => {
 
 test('6 — create scene → tab appears in SceneRail', async ({ page }) => {
   await page.getByTestId('new-scene-button').click();
-  await expect(
-    page.locator('[data-testid^="scene-tab-"]').first(),
-  ).toBeVisible();
+  await expect(page.locator('[data-testid^="scene-tab-"]').first()).toBeVisible();
 });
 
 // ── Test 7: Rename via double-click ───────────────────────────────────────────
 
-test('7 — scene rename via double-click → tab label updates', async ({
-  page,
-}) => {
+test('7 — scene rename via double-click → tab label updates', async ({ page }) => {
   // Create a scene first
   await page.getByTestId('new-scene-button').click();
   const sceneTab = page.locator('[data-testid^="scene-tab-"]').first();
@@ -133,11 +129,6 @@ test('11 — undo scene delete → tab restored', async ({ page }) => {
     timeout: 3000,
   });
   // Original name preserved
-  const restoredText = await page
-    .locator('[data-testid^="scene-tab-"]')
-    .first()
-    .textContent();
-  expect(restoredText).toContain(
-    (sceneText ?? '').replace(/\s+/g, ' ').trim().split(' ')[1] ?? '',
-  );
+  const restoredText = await page.locator('[data-testid^="scene-tab-"]').first().textContent();
+  expect(restoredText).toContain((sceneText ?? '').replace(/\s+/g, ' ').trim().split(' ')[1] ?? '');
 });

@@ -1,11 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { stableScreenshot } from './visual-setup';
-import {
-  goToBoardList,
-  createBoardAndNavigate,
-  createScene,
-  enterSetupMode,
-} from '../helpers';
+import { goToBoardList, createBoardAndNavigate, createScene, enterSetupMode } from '../helpers';
 
 test('SceneRail — two scenes, first active', async ({ page }) => {
   await page.goto('/botc-soundboard-v3/');

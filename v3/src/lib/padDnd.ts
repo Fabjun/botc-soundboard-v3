@@ -232,7 +232,7 @@ function _moveGhost(x: number, y: number): void {
   const w = parseFloat(ghost.style.width);
   const h = parseFloat(ghost.style.height);
   ghost.style.left = `${x - w / 2}px`;
-  ghost.style.top  = `${y - h / 2}px`;
+  ghost.style.top = `${y - h / 2}px`;
 }
 
 function _destroyGhost(): void {
@@ -243,7 +243,7 @@ function _destroyGhost(): void {
 // ── Indicator management ──────────────────────────────────────────────────────
 
 function _clearDropIndicators(): void {
-  _state.cellRefs.forEach(el => {
+  _state.cellRefs.forEach((el) => {
     el.classList.remove('is-insert-before', 'is-insert-after', 'is-drag-swap');
   });
 }
@@ -264,11 +264,15 @@ function _applySourceClass(on: boolean): void {
 
 /** The global pad array is injected per-move via _currentPads(). We read it from a closure. */
 let _padsRef: Pad[] = [];
-export function setPadsRef(pads: Pad[]): void { _padsRef = pads; }
-function _currentPads(): Pad[] { return _padsRef; }
+export function setPadsRef(pads: Pad[]): void {
+  _padsRef = pads;
+}
+function _currentPads(): Pad[] {
+  return _padsRef;
+}
 
 function _srcCellKey(srcId: string, pads: Pad[]): string | null {
-  const pad = pads.find(p => p.id === srcId);
+  const pad = pads.find((p) => p.id === srcId);
   if (!pad?.position) return null;
   return `${pad.position.col},${pad.position.row}`;
 }
@@ -296,19 +300,15 @@ function _reset(): void {
  * Apply a SWAP: exchange the positions of two pads.
  * Returns a new pads array (immutable).
  */
-export function applySwap(
-  pads: Pad[],
-  srcId: string,
-  tgtPos: PadPosition,
-): Pad[] {
-  const srcIdx = pads.findIndex(p => p.id === srcId);
+export function applySwap(pads: Pad[], srcId: string, tgtPos: PadPosition): Pad[] {
+  const srcIdx = pads.findIndex((p) => p.id === srcId);
   if (srcIdx < 0) return pads;
 
   const tgtIdx = pads.findIndex(
-    p => p.position?.col === tgtPos.col && p.position?.row === tgtPos.row,
+    (p) => p.position?.col === tgtPos.col && p.position?.row === tgtPos.row,
   );
 
-  const next = pads.map(p => ({ ...p }));
+  const next = pads.map((p) => ({ ...p }));
   const srcPos = next[srcIdx].position;
 
   if (tgtIdx >= 0) {
@@ -344,7 +344,7 @@ export function applyInsert(
   const total = cols * rows;
   const clampedTo = Math.max(0, Math.min(toIndex, total - 1));
 
-  const srcPad = pads.find(p => p.id === srcId);
+  const srcPad = pads.find((p) => p.id === srcId);
   if (!srcPad?.position) return pads;
 
   const fromIndex = posToIndex(srcPad.position, cols);
@@ -355,7 +355,7 @@ export function applyInsert(
   if (insertIdx === fromIndex) return pads;
 
   // Build a mutable copy
-  const next = pads.map(p => ({ ...p }));
+  const next = pads.map((p) => ({ ...p }));
 
   // Reassign row-major indices for the shifted range
   if (fromIndex < insertIdx) {
@@ -379,7 +379,7 @@ export function applyInsert(
   }
 
   // Move source to target
-  const srcInNext = next.find(p => p.id === srcId);
+  const srcInNext = next.find((p) => p.id === srcId);
   if (srcInNext) {
     srcInNext.position = indexToPos(insertIdx, cols);
   }

@@ -14,15 +14,9 @@ import type { Pad, PadPosition, PadType } from '../types';
  * Rationale: predictable beats smart; one-in-twenty workflows break
  * with near-focused heuristics.
  */
-export function nextFreeSlot(
-  pads: Pad[],
-  cols: number,
-  rows: number,
-): PadPosition | null {
+export function nextFreeSlot(pads: Pad[], cols: number, rows: number): PadPosition | null {
   const occupied = new globalThis.Set(
-    pads
-      .filter(p => p.position !== null)
-      .map(p => `${p.position!.col},${p.position!.row}`),
+    pads.filter((p) => p.position !== null).map((p) => `${p.position!.col},${p.position!.row}`),
   );
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
@@ -59,10 +53,7 @@ export function indexToPos(index: number, cols: number): PadPosition {
  *   ≥ 10 s    → LOOP   (sustained ambient)
  *   fileCount > 1 → PLAYLIST (always, regardless of duration)
  */
-export function typeInference(
-  durationSeconds: number,
-  fileCount: number,
-): PadType {
+export function typeInference(durationSeconds: number, fileCount: number): PadType {
   if (fileCount > 1) return 'playlist';
   if (durationSeconds >= 10) return 'loop';
   return 'single';
@@ -107,10 +98,7 @@ export interface MigrationResult {
  * For brand-new pads (no data yet): call with an empty/default pad → verdict will
  * be ADD or trivial → caller should skip dialog.
  */
-export function padMigrationMatrix(
-  from: PadType,
-  to: PadType,
-): MigrationResult {
+export function padMigrationMatrix(from: PadType, to: PadType): MigrationResult {
   if (from === to) {
     return { verdict: 'add', keeps: universalFields(), migrates: [], drops: [] };
   }
@@ -214,29 +202,41 @@ export function applyTypeChange(pad: Pad, newType: PadType): Pad {
 /** CSS custom-property value (e.g. `var(--pad-loop)`) for a pad type. */
 export function padTypeColor(type: PadType): string {
   switch (type) {
-    case 'single':   return 'var(--pad-single)';
-    case 'loop':     return 'var(--pad-loop)';
-    case 'playlist': return 'var(--pad-playlist)';
-    case 'combo':    return 'var(--pad-combo)';
+    case 'single':
+      return 'var(--pad-single)';
+    case 'loop':
+      return 'var(--pad-loop)';
+    case 'playlist':
+      return 'var(--pad-playlist)';
+    case 'combo':
+      return 'var(--pad-combo)';
   }
 }
 
 /** CSS glow token for a pad type. */
 export function padTypeGlow(type: PadType): string {
   switch (type) {
-    case 'single':   return 'var(--pad-single-glow)';
-    case 'loop':     return 'var(--pad-loop-glow)';
-    case 'playlist': return 'var(--pad-playlist-glow)';
-    case 'combo':    return 'var(--pad-combo-glow)';
+    case 'single':
+      return 'var(--pad-single-glow)';
+    case 'loop':
+      return 'var(--pad-loop-glow)';
+    case 'playlist':
+      return 'var(--pad-playlist-glow)';
+    case 'combo':
+      return 'var(--pad-combo-glow)';
   }
 }
 
 /** Short label for a pad type (used in badges, indicators). */
 export function padTypeLabel(type: PadType): string {
   switch (type) {
-    case 'single':   return 'SGL';
-    case 'loop':     return 'LOOP';
-    case 'playlist': return 'LIST';
-    case 'combo':    return 'COMBO';
+    case 'single':
+      return 'SGL';
+    case 'loop':
+      return 'LOOP';
+    case 'playlist':
+      return 'LIST';
+    case 'combo':
+      return 'COMBO';
   }
 }
