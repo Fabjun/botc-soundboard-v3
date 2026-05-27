@@ -1,0 +1,9 @@
+#!/bin/sh
+echo "🔨 Pre-commit: running build check in v3/..."
+cd "$(git rev-parse --show-toplevel)/v3" || exit 1
+npm run build || {
+  printf '\n❌ Build failed — Commit abgebrochen.\n'
+  printf '   Fehler beheben und dann erneut git commit ausführen.\n\n'
+  exit 1
+}
+echo "✅ Build passed — Commit wird fortgesetzt."

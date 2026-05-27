@@ -205,6 +205,13 @@ fonts, or spacing.
 Applies to slices, refactors, audit passes, bugfixes — every commit
 without exception:
 
+> **Automatisch erzwungen**: Ein Husky-Pre-Commit-Hook führt
+> `npm run build` vor jedem Commit aus und blockt bei Fehler.
+> Das manuelle Vorgehen unten bleibt als Baseline dokumentiert —
+> der Hook ist die Enforcement-Schicht.
+> Nach `git clone`: `cd v3 && npm install` aktiviert den Hook via
+> `prepare`-Script automatisch.
+
 1. `cd v3 && npm run build` — must exit 0 with zero TypeScript errors
 2. `cd v3 && npm run dev` — must start without errors (verify briefly,
    then stop with `pkill -f vite` before committing)
