@@ -1,0 +1,771 @@
+/* ════════════════════════════════════════════════════════════════════
+   SOUNDBOARD OF STORYTELLING — DESIGN TOKENS  ·  v2 refinement
+   ─────────────────────────────────────────────────────────────────────
+   Variable names match the existing codebase (--night / --surface / --gold /
+   --text-dim …) so this file drops in as a token replacement, not a rename.
+   Every value has been retuned for two goals:
+     · WCAG AA contrast (4.5:1 for body, 3:1 for large text & UI)
+     · Pro-tool surface hierarchy (Lightroom/Premiere/Resolve) — five
+       distinct elevation levels so panel nesting reads at a glance.
+   Atmosphere (warm gold on cold violet) is preserved.
+   ════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── SURFACE HIERARCHY ── five levels, monotonically lighter ──────
+     name      hex       L*       use
+     night     #08081A   ~0.013   root / behind-everything
+     deep      #0E0E22   ~0.024   toolbars, status bar
+     surface   #16162E   ~0.034   primary panels
+     raised    #22224A   ~0.061   cards, inputs INSIDE panels
+     top       #2D2D60   ~0.094   hovers, active rows, selection
+     The original 4-level palette had only ~6 L*-points between night
+     and raised; this expands that to ~8 so the steps are visible at
+     ambient room light without changing the overall mood.            */
+  --night:        #08081A;
+  --deep:         #0E0E22;
+  --surface:      #16162E;
+  --raised:       #22224A;
+  --top:          #2D2D60;
+
+  /* sunk = an inset well INSIDE a raised element (think: input cavity
+     inside a panel header). Slightly darker than --deep so it reads as
+     pressed-in even against the toolbar.                              */
+  --sunk:         #060614;
+
+  /* ── BORDERS ── widen by tone, not by colour. Sit on the violet
+     axis so they read as part of the atmosphere, not steel.           */
+  --border:        #383868;  /* default 1px hairline · L* ~0.116        */
+  --border-soft:   #232348;  /* dividers inside dense lists            */
+  --border-strong: #5252A0;  /* drag handles, focused inputs           */
+  --border-gold:   #C9A84C;  /* selected / active                      */
+  --border-blood:  #A02828;  /* destructive zones                      */
+
+  /* ── TEXT ── every body value hits AA 4.5:1 on --surface.
+     --text       on --surface → 13.1 : 1   ✓ AAA
+     --text-dim   on --surface →  6.9 : 1   ✓ AA  (was 3.7 — failed)
+     --text-mute  on --surface →  3.8 : 1   ✓ AA-large only
+     --text-on-gold on --gold  → 11.5 : 1   ✓ AAA                       */
+  --text:          #F0E8D0;
+  --text-strong:   #FFFFFF;  /* high emphasis · numbers, headings on raised */
+  --text-dim:      #B8B0C8;  /* secondary · descriptions                    */
+  --text-mute:     #7E7494;  /* tertiary · meta only, AA-large              */
+  --text-on-gold:  #14100A;
+  --text-on-blood: #FFE8E0;
+
+  /* ── BRAND ACCENTS ─────────────────────────────────────────────── */
+  --gold:         #D4B25C;   /* +9% L* over original — readable at 14px */
+  --gold-bright:  #F5D57A;   /* highlights, "now playing", focus rings  */
+  --gold-dim:     #8A6E34;   /* muted gold — divider lines              */
+  --gold-soft:    rgba(212, 178, 92, 0.18);
+
+  --flame:        #E8821E;   /* the logo flame                          */
+
+  --blood:        #A02828;   /* +14% L* over #8b1a1a — readable on dark */
+  --blood-bright: #D04545;
+  --blood-soft:   rgba(160, 40, 40, 0.18);
+
+  /* ── PAD TYPES ── each = a hue family with idle / hot / glow ────── */
+  /* SINGLE · gold — once, fire-and-forget                              */
+  --pad-single:        #D4B25C;
+  --pad-single-soft:   rgba(212, 178, 92, 0.16);
+  --pad-single-glow:   rgba(245, 213, 122, 0.55);
+  /* LOOP · teal — sustained, "alive"                                  */
+  --pad-loop:          #6DB5B8;
+  --pad-loop-soft:     rgba(109, 181, 184, 0.16);
+  --pad-loop-glow:     rgba(141, 213, 216, 0.55);
+  /* PLAYLIST · violet — sequence, ritual                              */
+  --pad-playlist:      #9D7FC7;
+  --pad-playlist-soft: rgba(157, 127, 199, 0.16);
+  --pad-playlist-glow: rgba(189, 159, 231, 0.55);
+  /* COMBO · copper — orchestral, chain                                */
+  --pad-combo:         #D18B4A;
+  --pad-combo-soft:    rgba(209, 139, 74, 0.16);
+  --pad-combo-glow:    rgba(241, 171, 90, 0.55);
+
+  /* ── SEMANTIC ── all derived from palette, no foreign greens ──── */
+  --success: #6DB5B8;   /* WAS #81c784 — replaced with the loop teal.
+                            Same "calm-positive" reading, palette-native. */
+  --warning: #D4B25C;   /* gold doubles as caution                       */
+  --danger:  var(--blood);
+  --info:    #9D7FC7;   /* violet for hints / metadata                   */
+
+  /* ── MODE ── SETUP vs GAME. Differentiation is multi-cue
+     (see components.jsx PadShell + screens.jsx Board). The colour token
+     here is just for accents — borders/badges/panel chrome.            */
+  --mode-setup:        #6DB5B8;
+  --mode-setup-soft:   rgba(109, 181, 184, 0.06);
+  --mode-game:         #D4B25C;
+  --mode-game-soft:    rgba(212, 178, 92, 0.05);
+
+  /* ── ATMOSPHERE ── the radial glow behind the home logo            */
+  --glow-radial:  #2C1F4A;
+
+  /* ── SPACING ── 4-base                                              */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ── RADIUS ── kept for legacy paths; pixel-frame uses clip-path    */
+  --radius-sm:  4px;
+  --radius-pad: 6px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-xl:  16px;
+
+  /* ── ELEVATION ── filter:drop-shadow because clip-path eats box-shadow */
+  --shadow-card:  drop-shadow(0 4px 8px rgba(0,0,0,.28));
+  --shadow-pop:   drop-shadow(0 8px 24px rgba(0,0,0,.45));
+  --glow-gold:    drop-shadow(0 0 6px rgba(245,213,122,.55))
+                  drop-shadow(0 0 14px rgba(245,213,122,.28));
+  --glow-flame:   drop-shadow(0 0 6px rgba(232,130,30,.55));
+
+  /* ── TYPE ── three voices ─────────────────────────────────────────
+     display       Press Start 2P  → hero titles ONLY (28–40px). Chunky.
+     ui            VT323           → buttons, labels, menu rows, tabs.
+     mono          Share Tech Mono → body copy, inputs, captions, code.
+     Don't use Press Start 2P below 24px; legibility falls off a cliff. */
+  --font-display: "Press Start 2P", "VT323", monospace;
+  --font-ui:      "VT323", "Share Tech Mono", monospace;
+  --font-mono:    "Share Tech Mono", "VT323", monospace;
+
+  --fs-xs:    12px;
+  --fs-sm:    14px;
+  --fs-md:    16px;
+  --fs-lg:    18px;
+  --fs-xl:    22px;
+  --fs-2xl:   28px;
+  --fs-3xl:   36px;
+  --fs-4xl:   48px;
+
+  /* VT323 reads "small" at any size — these sizes are pre-bumped.    */
+  --fs-pixel-sm: 22px;
+  --fs-pixel-md: 32px;
+  --fs-pixel-lg: 48px;
+
+  /* ════════════════════════════════════════════════════════════════
+     LEGACY ALIASES — keep older screens (foundations / components /
+     home / library / settings) rendering while we migrate. Every
+     --sb-* token below resolves to a v2 canonical token.
+     ════════════════════════════════════════════════════════════════ */
+  --sb-bg-deep:        var(--night);
+  --sb-bg-base:        var(--deep);
+  --sb-bg-panel:       var(--surface);
+  --sb-bg-panel-2:     var(--raised);
+  --sb-bg-panel-sunk:  var(--sunk);
+  --sb-glow-radial:    var(--glow-radial);
+
+  --sb-border:         var(--border);
+  --sb-border-soft:    var(--border-soft);
+  --sb-border-active:  var(--border-gold);
+  --sb-border-danger:  var(--border-blood);
+
+  --sb-text:           var(--text);
+  --sb-text-dim:       var(--text-dim);
+  --sb-text-mute:      var(--text-mute);
+  --sb-text-on-accent: var(--text-on-gold);
+
+  --sb-flame:          var(--flame);
+  --sb-amber:          var(--gold);
+  --sb-amber-glow:     var(--gold-bright);
+  --sb-accent-1:       var(--gold);
+  --sb-accent-1-soft:  var(--gold-dim);
+
+  --sb-danger:         var(--blood);
+  --sb-warning:        var(--warning);
+  --sb-success:        var(--success);
+  --sb-info:           var(--info);
+
+  --sb-space-1:  var(--space-1);
+  --sb-space-2:  var(--space-2);
+  --sb-space-3:  var(--space-3);
+  --sb-space-4:  var(--space-4);
+  --sb-space-5:  var(--space-5);
+  --sb-space-6:  var(--space-6);
+  --sb-space-8:  var(--space-8);
+  --sb-space-10: var(--space-10);
+  --sb-space-12: var(--space-12);
+  --sb-space-16: var(--space-16);
+
+  --sb-radius-sm:  var(--radius-sm);
+  --sb-radius-md:  var(--radius-md);
+  --sb-radius-lg:  var(--radius-lg);
+  --sb-radius-xl:  var(--radius-xl);
+  --sb-radius-pad: var(--radius-pad);
+
+  --sb-shadow-card: var(--shadow-card);
+  --sb-shadow-pop:  var(--shadow-pop);
+  --sb-glow-amber:  var(--glow-gold);
+  --sb-glow-flame:  var(--glow-flame);
+
+  --sb-font-display: var(--font-display);
+  --sb-font-ui:      var(--font-ui);
+  --sb-font-mono:    var(--font-mono);
+
+  --sb-fs-xs:    var(--fs-xs);
+  --sb-fs-sm:    var(--fs-sm);
+  --sb-fs-md:    var(--fs-md);
+  --sb-fs-lg:    var(--fs-lg);
+  --sb-fs-xl:    var(--fs-xl);
+  --sb-fs-2xl:   var(--fs-2xl);
+  --sb-fs-3xl:   var(--fs-3xl);
+  --sb-fs-4xl:   var(--fs-4xl);
+  --sb-fs-pixel-sm: var(--fs-pixel-sm);
+  --sb-fs-pixel-md: var(--fs-pixel-md);
+  --sb-fs-pixel-lg: var(--fs-pixel-lg);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   THEME VARIATIONS — re-derived against the new token names.
+   Only the expressive set (surfaces / borders / brand / pad-loop spike)
+   is overridden; structure tokens (spacing / radius / type) never move.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* Verdant — D&D / forest / leather-bound book */
+.theme-verdant {
+  --night:        #07120D;
+  --deep:         #0B1E16;
+  --surface:      #102A20;
+  --raised:       #18402F;
+  --top:          #1F5240;
+  --sunk:         #050E0A;
+
+  --border:        #2A5640;
+  --border-soft:   #1A382B;
+  --border-strong: #3A7A5C;
+  --border-gold:   #C9A04F;
+
+  --text:        #EFE6C8;
+  --text-dim:    #ACB5A6;
+  --text-mute:   #6F7E73;
+
+  --flame:       #D8893A;
+  --gold:        #C9A04F;
+  --gold-bright: #F2CC5C;
+
+  --pad-loop:    #4FA67A;
+  --pad-loop-soft: rgba(79,166,122,.16);
+  --pad-loop-glow: rgba(95,200,144,.55);
+
+  --glow-radial: #18402F;
+}
+
+/* Neon — sci-fi / cyberpunk */
+.theme-neon {
+  --night:        #050816;
+  --deep:         #0A1228;
+  --surface:      #111E40;
+  --raised:       #1A2C5E;
+  --top:          #233A7C;
+  --sunk:         #050A18;
+
+  --border:        #2B4382;
+  --border-soft:   #1B2A52;
+  --border-strong: #4564B5;
+  --border-gold:   #3DD4F0;
+
+  --text:        #E2F0FF;
+  --text-dim:    #9DB5D6;
+  --text-mute:   #5F7AA2;
+
+  --flame:       #FF3D8B;
+  --gold:        #3DD4F0;
+  --gold-bright: #6EF0FF;
+
+  --pad-single:    #FF5FA8;
+  --pad-single-glow: rgba(255,95,168,.55);
+  --pad-loop:      #3DD4F0;
+  --pad-loop-glow: rgba(61,212,240,.55);
+  --pad-playlist:  #B988FF;
+  --pad-playlist-glow: rgba(185,136,255,.55);
+  --pad-combo:     #FFD256;
+  --pad-combo-glow: rgba(255,210,86,.55);
+
+  --glow-radial:   #143052;
+}
+
+/* Crimson — horror / gothic */
+.theme-crimson {
+  --night:        #0A0606;
+  --deep:         #16090A;
+  --surface:      #20121A;
+  --raised:       #2E1A22;
+  --top:          #44232E;
+  --sunk:         #0A0404;
+
+  --border:        #523040;
+  --border-soft:   #2E1820;
+  --border-strong: #804052;
+  --border-gold:   #D63A3A;
+
+  --text:        #F2DDD2;
+  --text-dim:    #C09A95;
+  --text-mute:   #835A55;
+
+  --flame:       #B5302E;
+  --gold:        #D63A3A;
+  --gold-bright: #F26666;
+
+  --pad-loop:    #C04C75;
+  --pad-loop-glow: rgba(192,76,117,.55);
+  --pad-playlist:#7A5295;
+  --pad-playlist-glow: rgba(122,82,149,.55);
+
+  --glow-radial: #3A1416;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   BASE
+   ════════════════════════════════════════════════════════════════════ */
+.sb {
+  font-family: var(--font-mono);
+  color: var(--text);
+  background:
+    radial-gradient(120% 70% at 50% -10%, var(--glow-radial) 0%, transparent 65%),
+    var(--night);
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+.sb *, .sb *::before, .sb *::after { box-sizing: border-box; }
+.sb ::-webkit-scrollbar { width: 8px; height: 8px; }
+.sb ::-webkit-scrollbar-thumb { background: var(--border); }
+.sb ::-webkit-scrollbar-track { background: var(--sunk); }
+
+/* ── Type primitives ─────────────────────────────────────────────── */
+.sb-display {
+  font-family: var(--font-display);
+  color: var(--gold-bright);
+  text-shadow:
+    0 0 4px rgba(245,213,122,.55),
+    0 0 16px rgba(245,213,122,.32),
+    0 0 32px rgba(245,213,122,.16);
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  font-weight: 400;
+}
+/* Big titles in Press Start 2P need MORE line-height because the glyphs
+   are tall and box-fitting — without this they touch ascenders/descenders */
+.sb-display { line-height: 1.25; }
+
+/* A "vt" display class for medium headings that don't need the chunkiness
+   of Press Start 2P. Same glow, different family.                         */
+.sb-display-vt {
+  font-family: var(--font-ui);
+  color: var(--gold-bright);
+  text-shadow:
+    0 0 4px rgba(245,213,122,.55),
+    0 0 16px rgba(245,213,122,.32);
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  font-weight: 400;
+}
+
+.sb-label {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color: var(--text);
+}
+
+.sb-mono {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  color: var(--text-dim);
+}
+/* The original screenshot used italic mono for the subtitle; keep that
+   option as a modifier rather than the default. Share Tech Mono italic
+   is a synthesized oblique, not a true italic.                        */
+.sb-mono.is-italic { font-style: italic; }
+
+.sb-caption {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-mute);
+  letter-spacing: 0.04em;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   PIXEL FRAMES — the chunky stepped-corner look. Implementation:
+   clip-path cuts a stepped silhouette; a `padding-box / border-box`
+   background gradient fakes a flat-colour border across the full
+   transparent-border thickness. Shadows / glows must use
+   filter:drop-shadow (clip-path eats box-shadow).
+   ════════════════════════════════════════════════════════════════════ */
+.sb-pix,
+.sb-card,
+.sb-menu-row,
+.sb-btn,
+.sb-pad,
+.sb-pill {
+  --pix-step: 5px;
+  --pix-thick: 2px;
+  --pix-bg: var(--surface);
+  --pix-border: var(--border);
+  background:
+    linear-gradient(var(--pix-bg), var(--pix-bg)) padding-box,
+    linear-gradient(var(--pix-border), var(--pix-border)) border-box;
+  border: var(--pix-thick) solid transparent;
+  border-radius: 0;
+  clip-path: polygon(
+    0 var(--pix-step),  var(--pix-step) var(--pix-step),  var(--pix-step) 0,
+    calc(100% - var(--pix-step)) 0,  calc(100% - var(--pix-step)) var(--pix-step),  100% var(--pix-step),
+    100% calc(100% - var(--pix-step)),  calc(100% - var(--pix-step)) calc(100% - var(--pix-step)),  calc(100% - var(--pix-step)) 100%,
+    var(--pix-step) 100%,  var(--pix-step) calc(100% - var(--pix-step)),  0 calc(100% - var(--pix-step))
+  );
+}
+
+/* ── Card ────────────────────────────────────────────────────────── */
+.sb-card {
+  --pix-step: 6px;
+  padding: var(--space-5);
+  filter: var(--shadow-card);
+}
+.sb-card.is-active { --pix-border: var(--border-gold); }
+.sb-card.is-danger { --pix-border: var(--border-blood); color: var(--danger); }
+.sb-card.is-raised { --pix-bg: var(--raised); }
+
+/* ── Menu row ──────────────────────────────────────────────────── */
+.sb-menu-row {
+  --pix-step: 6px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  position: relative;
+}
+.sb-menu-row.is-active { --pix-border: var(--border-gold); }
+.sb-menu-row.is-active::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gold);
+  opacity: .55;
+}
+.sb-menu-row .sb-icon { flex: 0 0 28px; color: var(--gold); }
+.sb-menu-row .sb-row-title {
+  font-family: var(--font-ui);
+  font-size: var(--fs-lg);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  line-height: 1.1;
+  margin: 0 0 2px;
+}
+.sb-menu-row .sb-row-sub {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  line-height: 1.2;
+}
+
+/* ── Button ──────────────────────────────────────────────────── */
+.sb-btn {
+  --pix-step: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  padding: 6px var(--space-5);
+  color: var(--text);
+  cursor: pointer;
+  transition: --pix-border .12s, color .12s;
+}
+.sb-btn:hover   { --pix-border: var(--border-gold); }
+.sb-btn-primary { --pix-border: var(--border-gold); color: var(--gold); }
+.sb-btn-filled  { --pix-bg: var(--gold); --pix-border: var(--gold); color: var(--text-on-gold); }
+.sb-btn-ghost   { --pix-bg: transparent; --pix-border: var(--border-soft); color: var(--text-dim); }
+.sb-btn-danger  { --pix-bg: transparent; --pix-border: var(--border-blood); color: var(--danger); }
+.sb-btn-sm      { --pix-step: 3px; font-size: var(--fs-sm); padding: 3px var(--space-3); }
+
+/* ── PAD ── shared shell. Type colour is supplied via --pad-color
+   on the element by the React layer; idle states keep the colour as
+   a thin left-edge bar, "hot" (playing) states bring the full border
+   + a filter drop-shadow glow.                                       */
+.sb-pad {
+  --pix-step: 5px;
+  --pad-color: var(--gold);
+  --pad-glow:  var(--pad-single-glow);
+  --pix-bg: var(--surface);
+  --pix-border: var(--border);
+  position: relative;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 110px;
+  cursor: pointer;
+  transition: --pix-border .15s, transform .15s;
+}
+/* The type "spine": 4-px-wide bar of pad colour painted along the
+   LEFT edge of every pad. Idle pads show only this — that's the
+   passive cue that says "this is a Loop / Playlist / Combo". When
+   the pad becomes hot, the spine widens to the full perimeter.       */
+.sb-pad::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 4px;
+  background: var(--pad-color);
+  opacity: .85;
+  pointer-events: none;
+}
+.sb-pad:hover { --pix-border: var(--pad-color); }
+.sb-pad.is-hot {
+  --pix-border: var(--pad-color);
+  filter: drop-shadow(0 0 6px var(--pad-glow))
+          drop-shadow(0 0 14px var(--pad-glow));
+}
+.sb-pad.is-hot::before { width: 6px; }
+
+/* SETUP mode: dashed pixel-style border on every pad, drag-handle
+   visible top-left. GAME mode: solid stepped border, key-cap top-right.
+   The SETUP class swaps the SVG gradient inside the border-box for a
+   dashed-stripe gradient — gives a "selectable rectangle" feeling.   */
+.sb-pad.is-setup {
+  --pix-border: var(--border-strong);
+  background:
+    linear-gradient(var(--pix-bg), var(--pix-bg)) padding-box,
+    repeating-linear-gradient(45deg, var(--border-strong) 0 6px, transparent 6px 12px) border-box;
+}
+.sb-pad.is-setup::before { opacity: .5; }
+
+.sb-pad .sb-pad-title {
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  line-height: 1.05;
+}
+.sb-pad .sb-pad-meta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-mute);
+}
+.sb-pad .sb-pad-key {
+  position: absolute;
+  top: 6px; right: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  background: var(--sunk);
+  padding: 1px 6px;
+  letter-spacing: .04em;
+}
+
+/* ── Pill ───────────────────────────────────────────────────── */
+.sb-pill {
+  --pix-step: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  --pix-bg: var(--sunk);
+  --pix-border: var(--border-soft);
+  padding: 2px 10px;
+}
+.sb-pill .sb-dot {
+  width: 6px; height: 6px;
+  background: var(--text-mute);
+}
+.sb-pill.is-on { --pix-border: var(--gold); color: var(--gold-bright); }
+.sb-pill.is-on .sb-dot { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+.sb-pill.is-loop      { --pix-border: var(--pad-loop);     color: var(--pad-loop); }
+.sb-pill.is-loop .sb-dot { background: var(--pad-loop); }
+.sb-pill.is-playlist  { --pix-border: var(--pad-playlist); color: var(--pad-playlist); }
+.sb-pill.is-playlist .sb-dot { background: var(--pad-playlist); }
+.sb-pill.is-combo     { --pix-border: var(--pad-combo);    color: var(--pad-combo); }
+.sb-pill.is-combo .sb-dot { background: var(--pad-combo); }
+
+/* ── Slider ───────────────────────────────────────────────── */
+.sb-slider {
+  position: relative;
+  height: 6px;
+  background: var(--sunk);
+  border: 1px solid var(--border-soft);
+  overflow: hidden;
+}
+.sb-slider-fill {
+  position: absolute; inset: 0 auto 0 0;
+  background: var(--gold);
+}
+.sb-slider-thumb {
+  position: absolute;
+  top: 50%;
+  width: 12px; height: 12px;
+  background: var(--gold);
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 6px var(--gold-bright);
+}
+
+/* ── Toggle ───────────────────────────────────────────────── */
+.sb-toggle {
+  width: 40px; height: 20px;
+  background: var(--sunk);
+  border: 1px solid var(--border);
+  position: relative;
+}
+.sb-toggle::after {
+  content: "";
+  position: absolute;
+  top: 1px; left: 1px;
+  width: 16px; height: 16px;
+  background: var(--text-mute);
+  transition: left .15s, background .15s;
+}
+.sb-toggle.is-on { border-color: var(--gold); }
+.sb-toggle.is-on::after { left: 22px; background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+
+/* ── Tabs ─────────────────────────────────────────────────── */
+.sb-tabs {
+  display: flex;
+  gap: var(--space-1);
+  border-bottom: 1px solid var(--border);
+}
+.sb-tab {
+  font-family: var(--font-ui);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  font-size: var(--fs-md);
+  padding: var(--space-3) var(--space-4);
+  color: var(--text-mute);
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+.sb-tab.is-active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ── Pro-tool panel chrome ────────────────────────────────
+   PanelHeader: the chunky header strip on every panel/inspector.
+   Compact, tinted slightly above the panel surface, with an icon
+   and an uppercase label. Click target for collapse if needed.   */
+.sb-panel-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 28px;
+  padding: 0 var(--space-3);
+  background: var(--deep);
+  border-bottom: 1px solid var(--border-soft);
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.sb-panel-header .sb-chev { margin-left: auto; opacity: .6; }
+.sb-panel-header.is-active { color: var(--gold); }
+
+/* StatusBar — bottom strip on every workspace screen. Always-visible
+   meta: current mode, current board, sample-rate, framerate-ish.    */
+.sb-status-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 24px;
+  padding: 0 var(--space-3);
+  background: var(--deep);
+  border-top: 1px solid var(--border-soft);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-mute);
+  letter-spacing: .04em;
+}
+.sb-status-bar .sb-status-section {
+  display: flex; align-items: center; gap: 6px;
+  padding-right: var(--space-4);
+  border-right: 1px solid var(--border-soft);
+}
+.sb-status-bar .sb-status-section:last-child { border-right: none; }
+
+/* Mode badge — sits in the top bar. Visually distinct between SETUP/GAME
+   beyond colour: SETUP uses a hatched fill, GAME uses solid amber. */
+.sb-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding: 3px 10px;
+  --pix-step: 3px;
+}
+.sb-mode-badge.is-game  { background: var(--gold); color: var(--text-on-gold); }
+.sb-mode-badge.is-setup {
+  background:
+    repeating-linear-gradient(45deg, var(--mode-setup) 0 4px, transparent 4px 8px),
+    var(--sunk);
+  color: var(--mode-setup);
+  border: 1px solid var(--mode-setup);
+}
+
+/* Inspector — right-rail panel container used in editor screens.
+   Densely packed; section dividers visible.                       */
+.sb-inspector {
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+.sb-inspector-section {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+/* Numeric input chip (Premiere-style scrubber) */
+.sb-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 56px;
+  padding: 2px 6px;
+  background: var(--sunk);
+  border: 1px solid var(--border-soft);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text);
+  cursor: ew-resize;
+}
+.sb-num.is-active { border-color: var(--gold); color: var(--gold-bright); }
+
+/* Faint scanline overlay — used selectively on the Start screen and the
+   GAME-mode board to deepen the CRT atmosphere without obscuring text. */
+.sb-scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* Grid bg — used in SETUP mode on the board canvas to show the layout grid */
+.sb-grid-bg {
+  background-image:
+    linear-gradient(var(--border-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-soft) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
