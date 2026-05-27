@@ -200,16 +200,23 @@ fonts, or spacing.
 8. **Update `update_log.md`** after every commit (if the file exists;
    create on first commit).
 
-### Slice completion checklist (mandatory, in order)
+### Pre-commit checklist (mandatory before ANY commit)
 
-Before committing any slice:
+Applies to slices, refactors, audit passes, bugfixes — every commit
+without exception:
 
 1. `cd v3 && npm run build` — must exit 0 with zero TypeScript errors
-2. `cd v3 && npm run dev` — must start without errors (verify briefly)
-3. Update CLAUDE.md "Slice progress" table with completion date
-4. Only then: `git add . && git commit -m "..." && git push`
+2. `cd v3 && npm run dev` — must start without errors (verify briefly,
+   then stop with `pkill -f vite` before committing)
+3. Only then: `git add . && git commit -m "..." && git push`
 
 If any check fails: **do not commit**. Report the failure, ask for direction.
+
+### Slice completion checklist (additional, on top of pre-commit)
+
+Before committing a slice, also:
+
+1. Update CLAUDE.md "Slice progress" table with completion date
 
 ---
 
