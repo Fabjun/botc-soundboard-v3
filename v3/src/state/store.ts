@@ -6,8 +6,8 @@
 // setter signals — never mutate store internals directly.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { signal } from '@preact/signals';
-import type { AppMode, AudioContextState, LibraryItemMeta, UploadResult } from '../types';
+import { signal, computed } from '@preact/signals';
+import type { AppMode, AudioContextState, Board, LibraryItemMeta, Scene, UploadResult } from '../types';
 
 // ---------------------------------------------------------------------------
 // Audio context
@@ -20,9 +20,9 @@ export const audioContextState = signal<AudioContextState>('locked');
 // Navigation / routing
 // ---------------------------------------------------------------------------
 
-export type AppScreen = 'start' | 'library';
+export type AppScreen = 'start' | 'library' | 'board-list' | 'board';
 
-/** Top-level screen routing. Expanded with board/scene navigation in later slices. */
+/** Top-level screen routing. */
 export const currentScreen = signal<AppScreen>('start');
 
 export const currentBoardId = signal<string | null>(null);
@@ -131,4 +131,48 @@ export function renameLibraryItemMeta(id: string, newName: string): void {
   libraryItems.value = libraryItems.value.map(m =>
     m.id === id ? { ...m, name: newName } : m
   );
+}
+
+// ---------------------------------------------------------------------------
+// Boards
+//
+// boards[] is the source of truth for all Board, Scene, and Pad data in RAM.
+// IDB is the persistence layer — always call boardPut() after mutating boards.
+// currentBoard and currentScene are derived signals (no extra state needed).
+// ---------------------------------------------------------------------------
+
+/** All boards, loaded from IDB at app boot. */
+export const boards = signal<Board[]>([]);
+
+/**
+ * The currently open board (derived from currentBoardId).
+ * Null when on start/library screen or no board selected.
+ */
+export const currentBoard = computed<Board | null>(
+  () => boards.value.find(b => b.id === currentBoardId.value) ?? null
+);
+
+/**
+ * The currently active scene (derived from currentSceneId within currentBoard).
+ * Null when no scene is selected or no board is open.
+ */
+export const currentScene = computed<Scene | null>(
+  () => currentBoard.value?.scenes.find(s => s.id === currentSceneId.value) ?? null
+);
+
+/** Replace or insert a board in the signal (after IDB boardPut). */
+export function upsertBoard(board: Board): void {
+  const existing = boards.value.findIndex(b => b.id === board.id);
+  if (existing >= 0) {
+    const next = [...boards.value];
+    next[existing] = board;
+    boards.value = next;
+  } else {
+    boards.value = [...boards.value, board];
+  }
+}
+
+/** Remove a board from the signal (after IDB boardDelete). */
+export function removeBoardFromStore(id: string): void {
+  boards.value = boards.value.filter(b => b.id !== id);
 }

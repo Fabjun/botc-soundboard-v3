@@ -59,6 +59,98 @@ function App() {
       </DCSection>
 
       {/* ═══════════════════════════════════════════════════════════
+         v26 — PAD SHAPE · square (default) vs rectangular option
+         ═══════════════════════════════════════════════════════════ */}
+
+      <DCSection id="v26-pad-shape" title="v26 · Pad shape — square (default) · rectangular option" subtitle="Pads default to 1:1 squares; a Settings → Display → Pad appearance control switches the whole board to the current V3 rectangular (grid-stretched, 110px tall) treatment. Implementation: --pad-aspect custom property on a .sb-pad-canvas wrapper. No per-pad markup change.">
+        <DCArtboard id="pad-shape-compare"  label="Compare · square vs rectangular · both modes · density" width={1400} height={1500}><PadShapeCompareArtboard /></DCArtboard>
+        <DCArtboard id="pad-shape-settings" label="Settings · Display · Pad appearance · shape control"  width={1400} height={900}><PadShapeSettingsArtboard /></DCArtboard>
+      </DCSection>
+
+      {/* ═══════════════════════════════════════════════════════════
+         v24 — MODE TOGGLE as interactive screen header (Board only)
+         ═══════════════════════════════════════════════════════════ */}
+
+      <DCSection id="v24-mode-toggle" title="v24 · Mode Toggle — interactive screen header" subtitle="The Board's title-slot is a SETUP⇄GAME toggle, not a static headline. Direction- and color-sensitive pixel-spark animation tells the state transition.">
+        <DCArtboard id="mode-toggle-idle"      label="Idle states · desktop + mobile · both modes" width={1280} height={1080}><ModeToggleIdleArtboard /></DCArtboard>
+        <DCArtboard id="mode-toggle-flight"    label="Animation mid-flight · both directions · frame sequence" width={1280} height={1100}><ModeToggleFlightArtboard /></DCArtboard>
+        <DCArtboard id="mode-toggle-reduced"   label="Reduced-motion · flash variant" width={1280} height={820}><ModeToggleReducedArtboard /></DCArtboard>
+        <DCArtboard id="mode-toggle-live"      label="Live playground · click to flip · variant toggles" width={1280} height={900}><ModeTogglePlaygroundArtboard /></DCArtboard>
+        <DCArtboard id="mode-toggle-notes"     label="§6 row · class inventory · token rationale" width={760} height={1280}><ModeToggleNotesArtboard /></DCArtboard>
+      </DCSection>
+
+      {/* ═══════════════════════════════════════════════════════════
+         v23 — PAD TYPE CHANGE CONFIRM (A5 · field-by-field policy)
+         ═══════════════════════════════════════════════════════════ */}
+
+      <DCSection id="v23-pad-type-change" title="v23 · PAD type change — explicit confirm · field-by-field" subtitle="A5 from the Slice-3 plan. Option C (per-field policy) recommended. 4×4 cross-type transition matrix, five canonical confirm-dialog cases (one per verdict), mobile bottom-sheet, implementation rules, open questions for the Slice-3 ticket.">
+        <DCArtboard id="pad-type-change" label="Matrix · 5 dialogs · mobile · rules" width={1280} height={3000}><PadTypeChangeArtboard /></DCArtboard>
+      </DCSection>
+
+      {/* ═══════════════════════════════════════════════════════════
+         v22 — gridConfig POPOVER (A4 · design only · ships in Slice 8)
+         ═══════════════════════════════════════════════════════════ */}
+
+      <DCSection id="v22-grid-config" title="v22 · gridConfig popover — design only · ships in Slice 8" subtitle="A4 from the Slice-3 plan. Slice 3 ships with a fixed 4×4 default. This popover (+ mobile bottom-sheet) lands in Slice 8. Designed now to reserve SETUP-toolbar real estate, lock the data model (position can be null = unplaced), and document the UNPLACED-pads vocabulary that protects user data when shrinking.">
+        <DCArtboard id="grid-config" label="Popover · 3 states · mobile sheet · UNPLACED · Slice-3→8 handoff" width={1200} height={2800}><GridConfigArtboard /></DCArtboard>
+      </DCSection>
+
+      {/* ═══════════════════════════════════════════════════════════
+         v25 — MODE AWARENESS · design only · ships in Slice 8
+         The v24 mode-toggle is enough for Slice 3 on its own. These
+         four cues are exploratory candidates for ONE extra ambient
+         mode-cue to be picked at Slice-8 build time — not a quartet
+         to ship together.
+         ═══════════════════════════════════════════════════════════ */}
+
+      <DCSection id="v25-mode-awareness" title="v25 · Mode awareness — design only · ships in Slice 8 · final selection at build time" subtitle="The v24 toggle is enough for Slice 3 on its own (prominent interactive headline + frame colour + hammer-strike animation + existing is-setup pad treatment + EDIT/LIVE status text). These four cues — edge tint · status chip · atmosphere · spine saturation — are exploratory candidates for ONE extra ambient mode-cue, to be picked at Slice-8 build time. Not a quartet to ship together. Recommended evaluation order in DESIGN_NOTES.md.">
+        <DCArtboard id="mode-awareness-compare"  label="Compare · 4 cues isolated · baseline reference" width={1400} height={1480}><ModeAwarenessCompareArtboard /></DCArtboard>
+        <DCArtboard id="mode-awareness-settings" label="Settings · Display · Mode awareness section (integration mock)" width={1400} height={900}><ModeAwarenessSettingsArtboard /></DCArtboard>
+      </DCSection>
+
+      {/* ═══════════════════════════════════════════════════════════
+         v21 — SCENE CRUD UI (A3 · rename · duplicate · reorder · delete)
+         ═══════════════════════════════════════════════════════════ */}
+
+      <DCSection id="v21-scene-crud" title="v21 · Scene CRUD — rename · duplicate · reorder · delete" subtitle="A3 from the Slice-3 plan. Desktop: hover-revealed inline action chips + right-click context menu. Mobile: long-press scene tab → bottom-sheet action menu. Destructive ops use inline confirms so surrounding scenes stay visible.">
+        <DCArtboard id="scene-crud" label="4 operations · desktop · mobile · open questions" width={1320} height={2600}><SceneCrudArtboard /></DCArtboard>
+      </DCSection>
+
+      {/* ═══════════════════════════════════════════════════════════
+         v20 — PAD CREATION FLOW (A2 · three paths) — Slice 3
+         ═══════════════════════════════════════════════════════════ */}
+
+      <DCSection id="v20-pad-creation-flow" title="v20 · PAD creation flow — three paths" subtitle="A2 from the Slice-3 plan. Tap-slot · drag-from-library · + ADD PAD toolbar — side by side, with mobile variant per path, recommendation, and a scenario-to-path table. All three ship; the call here is about visual prominence for first-time use.">
+        <DCArtboard id="pad-creation-flow" label="3 paths · desktop + mobile · recommendation" width={1700} height={2400}><PadCreationFlowArtboard /></DCArtboard>
+      </DCSection>
+
+      {/* ═══════════════════════════════════════════════════════════
+         v19 — EMPTY STATES (A1 · Board · Scene · Library) — Slice 3
+         ═══════════════════════════════════════════════════════════ */}
+
+      <DCSection id="v19-empty-states" title="v19 · Empty states — Board · Scene · Library" subtitle="A1 from the Slice-3 plan. The three cold-start surfaces the design pack didn't cover yet. Desktop + Mobile side-by-side per artboard. Same component, two variants — not a parallel design.">
+        <DCArtboard id="empty-board"   label="Empty Board · no scenes"   width={1580} height={1000}><EmptyBoardArtboard /></DCArtboard>
+        <DCArtboard id="empty-scene"   label="Empty Scene · no pads"     width={1580} height={1080}><EmptySceneArtboard /></DCArtboard>
+        <DCArtboard id="empty-library" label="Empty Library · no items"  width={1580} height={1000}><EmptyLibraryArtboard /></DCArtboard>
+      </DCSection>
+
+      {/* ═══════════════════════════════════════════════════════════
+         v18 — PAD DEPTH · migration to sb-pad (B1 · system stress-test)
+         ═══════════════════════════════════════════════════════════ */}
+
+      <DCSection id="v18-depth-migration" title="v18 · PAD depth — migration to sb-pad · RESOLVED" subtitle="B1 from the Slice-3 plan. All four proposals from the stress-test landed in tokens.css and DESIGN_SYSTEM.md. Every v15 treatment now expresses through the contract; the recommended full stack collapses to className=&quot;sb-pad is-deep&quot;.">
+        <DCArtboard id="depth-migration" label="Six treatments · BEFORE vs AFTER · what landed" width={1280} height={2400}><PadDepthMigrationArtboard /></DCArtboard>
+      </DCSection>
+
+      {/* ═══════════════════════════════════════════════════════════
+         v17 — PAD APPEARANCE · Settings page with live preview
+         ═══════════════════════════════════════════════════════════ */}
+
+      <DCSection id="v17-pad-appearance" title="v17 · Pad Appearance · Settings + live preview" subtitle="Moves the v15 depth treatments and v15 glow tuning into Settings → Display. Sticky preview pad on the right updates as each control is touched. Interactive — try the segmented controls and sliders.">
+        <DCArtboard id="pad-appearance" label="Settings · Display · Pad Appearance · live" width={1280} height={900}><PadAppearanceSettings /></DCArtboard>
+      </DCSection>
+
+      {/* ═══════════════════════════════════════════════════════════
          v16 — MUSHROOM CLOCK · verdant-themed timepiece
          ═══════════════════════════════════════════════════════════ */}
 

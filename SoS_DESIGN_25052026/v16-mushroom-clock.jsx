@@ -29,9 +29,11 @@ function MushroomClock({ mode = 'live', remaining = 180, padName = 'OWL HOOT', h
         {CAP_ROWS.map(([hw, y]) => (
           <rect key={`cap-${y}`} x={cx - hw} y={y} width={hw * 2} height={2} fill="#A03028" />
         ))}
-        {/* Top highlight band */}
-        <rect x={cx - 12} y={2} width={24} height={1} fill="#C8443A" />
-        <rect x={cx - 18} y={4} width={36} height={1} fill="#B83A30" />
+        {/* Top highlight band — must stay inside the cap silhouette at
+            each row. Cap is only 8 px wide at y=2 and 16 px wide at y=4,
+            so the highlights are bound a hair narrower than the cap row. */}
+        <rect x={cx - 3} y={2} width={6}  height={1} fill="#C8443A" />
+        <rect x={cx - 7} y={4} width={14} height={1} fill="#B83A30" />
         {/* Cap rim — slightly darker bottom line for definition */}
         <rect x={cx - 24} y={26} width={48} height={2} fill="#7E1F18" />
         <rect x={cx - 20} y={28} width={40} height={1} fill="#5B1614" />
@@ -56,9 +58,12 @@ function MushroomClock({ mode = 'live', remaining = 180, padName = 'OWL HOOT', h
           <rect key={`ds-${i}`} x={cx + dx} y={y} width={dw} height={1} fill="rgba(0,0,0,.25)" />
         ))}
 
-        {/* ───── GILLS — vertical strokes under the cap ─────── */}
-        {[-16, -12, -8, -4, 0, 4, 8, 12, 16].map((dx, i) => (
-          <rect key={`g-${i}`} x={cx + dx} y={29} width={1} height={4} fill={i % 2 ? '#5B1614' : '#8A6E34'} />
+        {/* ───── GILLS — vertical strokes in the gap between cap and stem.
+            Constrained: y=30..32 (fills the 3 px gap between the cap's
+            last row at y=28-29 and the stem starting at y=33) and dx ≤ ±10
+            (stays inside the stem's half-width of 13 with a margin). */}
+        {[-10, -6, -2, 2, 6, 10].map((dx, i) => (
+          <rect key={`g-${i}`} x={cx + dx} y={30} width={1} height={3} fill={i % 2 ? '#5B1614' : '#8A6E34'} />
         ))}
 
         {/* ───── STEM — warm cream column with side shading ── */}

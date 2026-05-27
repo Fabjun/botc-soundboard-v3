@@ -168,6 +168,13 @@ export function StartScreen(): JSX.Element {
       >
         <button
           class="sb-btn sb-btn-sm sb-btn-ghost"
+          onClick={() => { currentScreen.value = 'board-list'; }}
+        >
+          <PixelIcon name="scroll" size={12} />
+          BOARD
+        </button>
+        <button
+          class="sb-btn sb-btn-sm sb-btn-ghost"
           onClick={() => { currentScreen.value = 'library'; }}
         >
           <PixelIcon name="book" size={12} />

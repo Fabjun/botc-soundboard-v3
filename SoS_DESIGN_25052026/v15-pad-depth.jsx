@@ -12,6 +12,18 @@ function DepthPad({ depth = 'baseline', type = 'loop', name = 'Rain', hk = 'F2',
   const iconN = type === 'loop' ? 'loop' : type === 'playlist' ? 'scroll' : type === 'combo' ? 'rune' : 'play';
 
   // Shared base style — same shape, fonts, spine.
+  // The stepped pixel-frame silhouette (matches `.sb-pad` in tokens.css)
+  // is applied here so all depth treatments inherit it. Per DESIGN_SYSTEM.md
+  // §2 Q1: if the chunky stepped corner shape is needed, use the clip-path
+  // — don't draw rectangles.
+  const STEP = 5;
+  const padClipPath = `polygon(
+    0 ${STEP}px, ${STEP}px ${STEP}px, ${STEP}px 0,
+    calc(100% - ${STEP}px) 0, calc(100% - ${STEP}px) ${STEP}px, 100% ${STEP}px,
+    100% calc(100% - ${STEP}px), calc(100% - ${STEP}px) calc(100% - ${STEP}px), calc(100% - ${STEP}px) 100%,
+    ${STEP}px 100%, ${STEP}px calc(100% - ${STEP}px), 0 calc(100% - ${STEP}px)
+  )`;
+
   const base = {
     width: size, minHeight: 100,
     position: 'relative',
@@ -19,6 +31,7 @@ function DepthPad({ depth = 'baseline', type = 'loop', name = 'Rain', hk = 'F2',
     display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
     color: 'var(--text)',
     cursor: 'pointer',
+    clipPath: padClipPath,
   };
 
   // Each treatment is one preset. Multiple presets compose into "stack".
@@ -99,11 +112,15 @@ function DepthPad({ depth = 'baseline', type = 'loop', name = 'Rain', hk = 'F2',
 
   const style = treatments[depth] || treatments.baseline;
 
-  // Hot state: amber border + outer glow on whatever depth treatment is active
+  // Hot state: amber border + outer glow + INNER glow on whatever depth
+  // treatment is active. Inner glow is layered onto any existing inset
+  // box-shadow (treatments D/F) so the pixel-edge relief is preserved.
   if (hot) {
     style.border = `1px solid ${c}`;
     style.filter = (style.filter ? style.filter + ' ' : '') +
       `drop-shadow(0 0 6px ${glow}) drop-shadow(0 0 14px ${glow})`;
+    const innerGlow = `inset 0 0 6px ${glow}, inset 0 0 18px ${glow}`;
+    style.boxShadow = style.boxShadow ? `${style.boxShadow}, ${innerGlow}` : innerGlow;
   }
 
   return (

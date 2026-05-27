@@ -45,12 +45,27 @@ export type PadSet = {
 
 export type PadType = 'single' | 'loop' | 'playlist' | 'combo';
 
+export type PadPosition = {
+  col: number; // 0-indexed, 0..cols-1
+  row: number; // 0-indexed, 0..rows-1
+};
+
 export type Pad = {
   id: string;
   type: PadType;
   name: string;
+  /**
+   * Grid position within the parent Scene.
+   * null = unplaced (reserved for Slice 8 / unplaced-pad feature).
+   * Slice 3 always assigns a real position on creation.
+   */
+  position: PadPosition | null;
   hotkey?: string;
-  libraryItemRef: string;
+  /**
+   * SHA-256 hash of the referenced LibraryItem.
+   * Optional: COMBO pads may have no single source (Slice 4+).
+   */
+  libraryItemRef?: string;
   iconRef?: string;
   color?: string;
   volume: number;  // 0–100

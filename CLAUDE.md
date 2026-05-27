@@ -302,6 +302,25 @@ computePeaks(decoded: AudioBuffer, N?: number): number[]
   // N=30 peaks from channel 0. Call before nulling decoded buffer.
 ```
 
+```typescript
+// ── Boards (src/db/idb.ts) ───────────────────────────────────────────────
+boardGetAll(): Promise<Board[]>
+  // Load all boards (JSON-only documents, no blobs). Called at app boot;
+  // populates boards signal. iOS-safe: boards contain no audio data.
+
+boardGet(id: string): Promise<Board | null>
+  // Load a single board by ID. Used for optimistic reads before edits.
+
+boardPut(board: Board): Promise<void>
+  // Upsert entire board document (Board + embedded Scenes + Pads).
+  // TRADE-OFF: any pad/scene edit rewrites the full ~50KB document.
+  // Acceptable at 5×16 pads; see DESIGN_NOTES.md "Slice 8 / Performance"
+  // for optimisation path if measured to be a bottleneck.
+
+boardDelete(id: string): Promise<void>
+  // Delete board and all embedded scenes/pads in one operation.
+```
+
 ---
 
 ## Slice progress
@@ -310,7 +329,7 @@ computePeaks(decoded: AudioBuffer, N?: number): number[]
 |---|------|--------|------|-------|
 | 1 | Project setup + StartScreen | ✅ Complete | 2026-05-27 | Vite + Preact + TS scaffold; tokens.css; PixelIcon; TopBarV2; StatusBarV2; StartScreen; Preact Signals store; PWA config |
 | 2 | Library + LibraryItem CRUD | ✅ Complete | 2026-05-27 | idb + @noble/hashes; LibraryItemMeta/LibraryItem split; serial upload pipeline; AudioRow; Waveform; 2-tap delete; rename via <input>; 2-column layout; 4 tabs |
-| 3 | Board + Scene + Pad CRUD | ⬜ Pending | — | Create board, add scene, place pads |
+| 3 | Board + Scene + Pad CRUD | ✅ Complete | 2026-05-27 | Board CRUD (BoardListScreen), Scene CRUD (SceneRail, inline rename, duplicate, reorder, delete+undo), Pad CRUD (3 paths: tap-slot popover, library drag, ADD PAD), Pad DnD (SWAP+INSERT), PadTypeConfirmDialog (v23 Option C), ModeToggle with sparks, SETUP/GAME modes, empty states |
 | 4 | Audio playback | ⬜ Pending | — | V1 engine wrapped in src/audio/ |
 | 5 | Scene switching | ⬜ Pending | — | Multiple scenes, swap between them |
 | 6 | Sets + Quick Access | ⬜ Pending | — | PadSet model + quick-access strip |
@@ -324,3 +343,6 @@ computePeaks(decoded: AudioBuffer, N?: number): number[]
 - SHA-256 uses `@noble/hashes/sha2.js` (not Web Crypto API) — required for iPhone LAN dev server (no Secure Context at http://IP).
 - Library screen is 2-column in Slice 2; inspector panel deferred to Slice 8+.
 - npm cache: `~/.npm` is user-owned on this machine; no `--cache` flag needed for npm installs.
+- Slice 3: Board persistence as full JSON document (Board + Scenes + Pads); trade-off documented in idb.ts and DESIGN_NOTES.md.
+- Slice 3: `libDragItemId` state removed from BoardScreen — PadGrid reads drag payload directly from `e.dataTransfer`, not from React state.
+- Slice 3: `Waveform` component has no `width` prop (fills flex container); fixed in PadEditorPanel, LibraryPanel, PadCreationPopover.

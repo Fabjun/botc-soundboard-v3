@@ -153,6 +153,24 @@ function ModeBtn({ children, active }) {
 // pad preview thumbnail in the toolbar so context never disappears.
 // ═════════════════════════════════════════════════════════════════
 function PadEditRefined() {
+  // File is 0:12 (12 s). Trim/fade are stored as 0..1 fractions; fmt
+  // converts a fraction back into a human "M:SS.t" string.
+  const [trimStart, setTrimStart] = React.useState(0.017);  // 0:00.2
+  const [trimEnd,   setTrimEnd]   = React.useState(0.983);  // 0:11.8
+  const [fadeIn,    setFadeIn]    = React.useState(0.08);
+  const [fadeOut,   setFadeOut]   = React.useState(0.32);
+  const [playhead,  setPlayhead]  = React.useState(0.43);   // ≈ 0:05.2
+  const [loopPoint, setLoopPoint] = React.useState(0.033);  // ≈ 0:00.4
+  const [volume,    setVolume]    = React.useState(0.80);
+  const [outputBus, setOutputBus] = React.useState('AMB');
+  const [stopMode,  setStopMode]  = React.useState('FADED');
+  const fmt = (frac) => {
+    const total = 12;
+    const s = Math.max(0, frac * total);
+    const m = Math.floor(s / 60);
+    const sec = (s % 60).toFixed(1);
+    return `${m}:${sec.padStart(4, '0')}`;
+  };
   return (
     <div className="sb" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* App top bar — minimal, persistent */}
@@ -286,9 +304,17 @@ function PadEditRefined() {
             <button className="sb-btn sb-btn-sm sb-btn-danger" style={{ padding: '3px 10px' }}>UNLINK</button>
           </div>
 
-          {/* Big waveform with trim + fade markers */}
+          {/* Big waveform with trim + fade markers — all six handles draggable */}
           <div style={{ background: 'var(--sunk)', border: '1px solid var(--border)', padding: 14, marginBottom: 12 }}>
-            <BigWaveform />
+            <BigWaveform
+              fadeIn={fadeIn} fadeOut={fadeOut}
+              trimStart={trimStart} trimEnd={trimEnd}
+              playhead={playhead} loopPoint={loopPoint}
+              onFadeIn={setFadeIn} onFadeOut={setFadeOut}
+              onTrimStart={setTrimStart} onTrimEnd={setTrimEnd}
+              onPlayhead={setPlayhead} onLoopPoint={setLoopPoint}
+              fmt={fmt}
+            />
           </div>
 
           {/* Transport */}
@@ -296,12 +322,12 @@ function PadEditRefined() {
             <button className="sb-btn sb-btn-sm sb-btn-primary"><PixelIcon name="play" size={10} /> PREVIEW</button>
             <button className="sb-btn sb-btn-sm sb-btn-ghost"><PixelIcon name="stop" size={10} /></button>
             <button className="sb-btn sb-btn-sm sb-btn-ghost"><PixelIcon name="loop" size={10} /></button>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--text-dim)', fontVariantNumeric: 'tabular-nums' }}>0:05.2 / 0:12.0</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--text-dim)', fontVariantNumeric: 'tabular-nums' }}>{fmt(playhead)} / 0:12.0</span>
             <div style={{ flex: 1 }} />
             <div style={{ display: 'flex', gap: 6 }}>
-              <span className="sb-num">0:00.2</span>
+              <span className="sb-num">{fmt(trimStart)}</span>
               <span className="sb-mono" style={{ fontSize: 11, color: 'var(--text-mute)' }}>start</span>
-              <span className="sb-num">0:11.8</span>
+              <span className="sb-num">{fmt(trimEnd)}</span>
               <span className="sb-mono" style={{ fontSize: 11, color: 'var(--text-mute)' }}>end</span>
             </div>
           </div>
@@ -322,33 +348,44 @@ function PadEditRefined() {
         <aside className="sb-inspector" style={{ background: 'var(--deep)', overflow: 'auto' }}>
           <PanelHeaderV2 icon="cog" title="AUDIO" active />
           <div className="sb-inspector-section" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <LabelSliderV2 label="VOLUME" value={0.80} color="var(--pad-loop)" />
+            <LabelSliderV2 label="VOLUME" value={volume} color="var(--pad-loop)" onChange={setVolume} />
             <KvRow label="OUTPUT BUS" right={
               <div style={{ display: 'flex', gap: 4 }}>
-                <span className="sb-pill" style={{ fontSize: 9 }}>STG</span>
-                <span className="sb-pill is-loop" style={{ fontSize: 9 }}>AMB</span>
-                <span className="sb-pill" style={{ fontSize: 9 }}>MUS</span>
+                {['STG', 'AMB', 'MUS'].map((b) => (
+                  <span
+                    key={b}
+                    className={'sb-pill ' + (b === outputBus ? 'is-loop' : '')}
+                    onClick={() => setOutputBus(b)}
+                    style={{ fontSize: 9, cursor: 'pointer' }}
+                  >{b}</span>
+                ))}
               </div>
             } />
           </div>
 
           <PanelHeaderV2 icon="loop" title="FADE" />
           <div className="sb-inspector-section" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <LabelSliderV2 label="FADE IN"  value={0.08} color="var(--pad-loop)" />
-            <LabelSliderV2 label="FADE OUT" value={0.32} color="var(--pad-loop)" />
+            <LabelSliderV2 label="FADE IN"  value={fadeIn}  color="var(--fade)" onChange={setFadeIn}  />
+            <LabelSliderV2 label="FADE OUT" value={fadeOut} color="var(--fade)" onChange={setFadeOut} />
             <KvRow label="STOP MODE" right={
               <div style={{ display: 'flex', gap: 4 }}>
-                <span className="sb-pill is-on" style={{ fontSize: 9 }}>FADED</span>
-                <span className="sb-pill" style={{ fontSize: 9 }}>HARD</span>
+                {['FADED', 'HARD'].map((m) => (
+                  <span
+                    key={m}
+                    className={'sb-pill ' + (m === stopMode ? 'is-on' : '')}
+                    onClick={() => setStopMode(m)}
+                    style={{ fontSize: 9, cursor: 'pointer' }}
+                  >{m}</span>
+                ))}
               </div>
             } />
           </div>
 
           <PanelHeaderV2 icon="hourglass" title="TRIM" />
           <div className="sb-inspector-section" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <KvRow label="START" right={<span className="sb-num">0:00.2</span>} />
-            <KvRow label="END"   right={<span className="sb-num">0:11.8</span>} />
-            <KvRow label="LOOP POINT" right={<span className="sb-num">0:00.4</span>} />
+            <KvRow label="START" right={<span className="sb-num">{fmt(trimStart)}</span>} />
+            <KvRow label="END"   right={<span className="sb-num">{fmt(trimEnd)}</span>} />
+            <KvRow label="LOOP POINT" right={<span className="sb-num">{fmt(loopPoint)}</span>} />
             <button className="sb-btn sb-btn-sm sb-btn-ghost" style={{ marginTop: 4 }}>↻ RESET TO FILE</button>
           </div>
 

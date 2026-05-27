@@ -1,9 +1,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // V3.0 IndexedDB Layer
 //
-// Database: 'sos-v3', version 1
+// Database: 'sos-v3', version 2
 // Object stores:
-//   'library'  (keyPath: 'id')  — LibraryItem entries (includes blob)
+//   'library'  (keyPath: 'id')  — LibraryItem entries (includes blob) [since v1]
+//   'boards'   (keyPath: 'id')  — Board documents (JSON, no blobs)    [since v2]
 //
 // MEMORY SAFETY RULES (carried over from V1 — see CLAUDE.md §iPhone rules):
 //   - libGetAllMeta() uses a cursor and NEVER references cursor.value.blob.
@@ -12,26 +13,39 @@
 //   - libRename() briefly holds one Blob in RAM (IDB has no partial-update;
 //     it must read the full entry, patch the name, and re-put). The Blob is
 //     released as soon as libRename() returns. This is intentional and safe.
+//
+// BOARD PERSISTENCE TRADE-OFF (conscious decision):
+//   Boards are stored as complete JSON documents containing embedded Scenes and
+//   Pads. Any pad edit rewrites the entire Board document. At 5 Scenes × 16 Pads
+//   this is ~50 KB — fast and unproblematic. If boards grow significantly (20+
+//   scenes), write-amplification may become measurable. Optimisation path (only
+//   if measured): separate 'scenes' store with Board holding scene IDs only.
+//   Do not optimise until the problem is observed and quantified.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { openDB, type IDBPDatabase } from 'idb';
-import type { LibraryItem, LibraryItemMeta } from '../types';
+import type { Board, LibraryItem, LibraryItemMeta } from '../types';
 
 // ---------------------------------------------------------------------------
 // DB singleton
 // ---------------------------------------------------------------------------
 
 const DB_NAME = 'sos-v3';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 let _db: IDBPDatabase | null = null;
 
 async function getDB(): Promise<IDBPDatabase> {
   if (_db) return _db;
   _db = await openDB(DB_NAME, DB_VERSION, {
-    upgrade(db) {
-      if (!db.objectStoreNames.contains('library')) {
+    upgrade(db, oldVersion) {
+      // v1: library store (audio blobs + metadata)
+      if (oldVersion < 1) {
         db.createObjectStore('library', { keyPath: 'id' });
+      }
+      // v2: boards store (Board documents — JSON only, no blobs)
+      if (oldVersion < 2) {
+        db.createObjectStore('boards', { keyPath: 'id' });
       }
     },
   });
@@ -105,4 +119,46 @@ export async function libRename(id: string, newName: string): Promise<void> {
   const entry = await libGet(id);
   if (!entry) return;
   await libPut({ ...entry, name: newName });
+}
+
+// ── Board API ─────────────────────────────────────────────────────────────────
+//
+// Boards are stored as complete JSON documents (Board contains Scenes and Pads).
+// No blobs live in Board documents — memory safety is not a concern here.
+// See the BOARD PERSISTENCE TRADE-OFF comment at the top of this file.
+
+/**
+ * Load all boards from IDB.
+ * Safe to call at any library size — Board documents contain no blobs.
+ */
+export async function boardGetAll(): Promise<Board[]> {
+  const db = await getDB();
+  return db.getAll('boards') as Promise<Board[]>;
+}
+
+/**
+ * Load a single board by id.
+ */
+export async function boardGet(id: string): Promise<Board | null> {
+  const db = await getDB();
+  const entry = await db.get('boards', id) as Board | undefined;
+  return entry ?? null;
+}
+
+/**
+ * Add or update a board (upsert).
+ * Always writes the complete Board document. Called after any mutation
+ * (scene add/remove/reorder, pad add/edit/delete).
+ */
+export async function boardPut(board: Board): Promise<void> {
+  const db = await getDB();
+  await db.put('boards', board);
+}
+
+/**
+ * Delete a board by id.
+ */
+export async function boardDelete(id: string): Promise<void> {
+  const db = await getDB();
+  await db.delete('boards', id);
 }
