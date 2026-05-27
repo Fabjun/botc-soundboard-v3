@@ -53,6 +53,15 @@ export default defineConfig({
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
   },
+  expect: {
+    toHaveScreenshot: {
+      // Allow very small pixel-level differences (font subpixel rendering).
+      // macOS-only: baselines are NOT committed for CI (different font stack).
+      maxDiffPixels: 100,
+      threshold: 0.2,
+      animations: 'disabled',
+    },
+  },
   projects: [
     {
       name: 'smoke',

@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# Playwright run artifacts (not the visual snapshot baselines — those are committed)
+playwright-report/
+test-results/
+
+# Code coverage
+coverage/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
