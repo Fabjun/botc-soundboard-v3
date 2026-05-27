@@ -7,7 +7,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { signal } from '@preact/signals';
-import type { AppMode, AudioContextState } from '../types';
+import type { AppMode, AudioContextState, LibraryItemMeta, UploadResult } from '../types';
 
 // ---------------------------------------------------------------------------
 // Audio context
@@ -17,8 +17,13 @@ import type { AppMode, AudioContextState } from '../types';
 export const audioContextState = signal<AudioContextState>('locked');
 
 // ---------------------------------------------------------------------------
-// Navigation / routing (expanded in later slices)
+// Navigation / routing
 // ---------------------------------------------------------------------------
+
+export type AppScreen = 'start' | 'library';
+
+/** Top-level screen routing. Expanded with board/scene navigation in later slices. */
+export const currentScreen = signal<AppScreen>('start');
 
 export const currentBoardId = signal<string | null>(null);
 export const currentSceneId = signal<string | null>(null);
@@ -94,3 +99,36 @@ export function removeLoopingPad(id: string): void {
 
 /** Master volume 0–100. Mirrors the master GainNode's value × 100. */
 export const masterVolume = signal<number>(80);
+
+// ---------------------------------------------------------------------------
+// Library
+//
+// libraryItems holds LibraryItemMeta only — never a Blob.
+// The blob lives exclusively in IndexedDB; use libGet(id) for playback.
+// ---------------------------------------------------------------------------
+
+/** All library entries, metadata only. Populated at app boot via libGetAllMeta(). */
+export const libraryItems = signal<LibraryItemMeta[]>([]);
+
+/**
+ * Upload batch result. Set after processFilesSerial() resolves.
+ * Reset to null at the start of each new upload.
+ */
+export const uploadStatus = signal<UploadResult | null>(null);
+
+/** Add a newly uploaded entry to the in-memory list. */
+export function addLibraryItemMeta(meta: LibraryItemMeta): void {
+  libraryItems.value = [...libraryItems.value, meta];
+}
+
+/** Remove an entry from the in-memory list (after IDB delete). */
+export function removeLibraryItemMeta(id: string): void {
+  libraryItems.value = libraryItems.value.filter(m => m.id !== id);
+}
+
+/** Patch the name of an in-memory entry (after IDB rename). */
+export function renameLibraryItemMeta(id: string, newName: string): void {
+  libraryItems.value = libraryItems.value.map(m =>
+    m.id === id ? { ...m, name: newName } : m
+  );
+}

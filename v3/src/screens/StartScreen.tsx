@@ -14,7 +14,7 @@
 
 import type { JSX } from 'preact';
 import { PixelIcon } from '../components/PixelIcon';
-import { audioContextState } from '../state/store';
+import { audioContextState, currentScreen } from '../state/store';
 
 // ── FlameLogo ────────────────────────────────────────────────────────────────
 // Inline here; large enough to warrant a separate component once reused.
@@ -157,6 +157,23 @@ export function StartScreen(): JSX.Element {
         <PixelIcon name="play" size={14} />
         TAP TO UNLOCK
       </button>
+
+      {/* ── Navigation buttons ── */}
+      <div
+        style={{
+          display: 'flex',
+          gap: 12,
+          marginTop: 32,
+        }}
+      >
+        <button
+          class="sb-btn sb-btn-sm sb-btn-ghost"
+          onClick={() => { currentScreen.value = 'library'; }}
+        >
+          <PixelIcon name="book" size={12} />
+          LIBRARY
+        </button>
+      </div>
 
       {/* ── Footer: version + audio state ── */}
       <div

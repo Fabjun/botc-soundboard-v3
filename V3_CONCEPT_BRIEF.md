@@ -50,7 +50,9 @@ V1 keeps running. V3.0 is built in parallel until ready.
 - JSX files (`v2-screens.jsx`, `foundations.jsx`, etc.) — **used as
   starting code**, not as reference. Lift them into V3.0, adapt to
   TypeScript and the V3.0 state model.
-- `HANDOFF.md` — design intent
+- `HANDOFF.md` — moved to `v1-reference/HANDOFF.md`; originally written
+  for V1 migration context, still valuable for design intent and JSX-file
+  index (see CLAUDE.md §Reference documents for usage guidance)
 - `dist/` — partial vanilla ports, ignore in V3.0 (we use JSX directly)
 
 **V1.5 prototypes (`prototype/*.html`):**

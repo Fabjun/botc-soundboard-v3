@@ -60,13 +60,38 @@ export type Pad = {
 
 export type LibraryItemType = 'audio' | 'icon' | 'image';
 
-export type LibraryItem = {
-  id: string;
+/**
+ * LibraryItemMeta — safe working-memory type.
+ * Stored in Preact Signals state. Never contains raw audio data.
+ * The `id` field IS the SHA-256 hash of the file's raw bytes — no separate UUID.
+ */
+export type LibraryItemMeta = {
+  id: string;       // SHA-256 hash of the raw file bytes — IS the identity; no separate UUID
   type: LibraryItemType;
   name: string;
-  blob: Blob;
+  size: number;     // bytes
   tags: string[];
-  addedAt: number; // ms since epoch
+  addedAt: number;  // ms since epoch
+  duration: number; // seconds (0 for non-audio types)
+  peaks: number[];  // 30 peak values [0–1], computed once at upload time
+};
+
+/**
+ * LibraryItem — full entry as persisted in IndexedDB.
+ * NEVER stored in component state, working arrays, or Preact Signals.
+ * Retrieve via libGet(id) only when audio playback is needed (Slice 4+).
+ */
+export type LibraryItem = LibraryItemMeta & {
+  blob: Blob; // raw audio — only lives in IDB, never in working memory
+};
+
+/**
+ * Result of a batch upload operation.
+ */
+export type UploadResult = {
+  imported: number;
+  skipped: number;
+  errors: string[]; // per-file error messages, e.g. "thunder.wav: decode failed"
 };
 
 // ---------------------------------------------------------------------------

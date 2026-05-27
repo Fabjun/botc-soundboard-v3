@@ -32,8 +32,14 @@
   the rules below.
 - **`v1-reference/index.html`** — V1 source, reference for behavior,
   audio engine, IndexedDB schema, template export/import.
-- **`SoS_DESIGN_25052026/`** — design system: tokens, JSX components,
-  HANDOFF document.
+- **`SoS_DESIGN_25052026/`** — design system: tokens, JSX components.
+- **`v1-reference/HANDOFF.md`** — design system handoff document.
+  Originally written for V1 migration context (refers to "porting JSX
+  to vanilla", phase plan for V1 modernization). For V3, ignore the
+  porting guidance and phase plan — V3 uses JSX directly via Preact
+  and follows the slice plan in V3_CONCEPT_BRIEF.md §5.1. Still
+  valuable for: JSX-file index, design intent (type-color spine,
+  depth stack, multi-cue mode), token-system rationale.
 
 ---
 
@@ -217,17 +223,47 @@ cd v3 && npm run build    # production build → v3/dist/ (tsc + vite)
 cd v3 && npm run preview  # serve v3/dist/ locally for PWA testing
 ```
 
-Dependencies installed with `--cache /tmp/npm-cache-v3` if the
-default npm cache is root-owned (known issue on this machine).
-
 ---
 
 ## V3 audio/IDB API
 
-(To be populated by Claude Code when the audio engine is wrapped and
-the IDB layer is implemented. List of typed function signatures with
-short descriptions, so future sessions know the canonical entry
-points.)
+Canonical entry points for the IDB layer (`src/db/idb.ts`).
+Use only these functions — never raw IDB transactions outside `src/db/`.
+
+```typescript
+// ── Library (src/db/idb.ts) ───────────────────────────────────────────────
+libGetAllMeta(): Promise<LibraryItemMeta[]>
+  // Cursor-based enumeration — blob never loaded, iOS-safe for any library size.
+  // Call at app boot; populates libraryItems signal.
+
+libGet(id: string): Promise<LibraryItem | null>
+  // Returns full entry including Blob. Only call for playback (Slice 4+).
+  // Caller must release reference after use.
+
+libPut(item: LibraryItem): Promise<void>
+  // Upsert. Called once per file during upload (after peaks computed).
+
+libDelete(id: string): Promise<void>
+  // Delete by SHA-256 hash-id.
+
+libRename(id: string, newName: string): Promise<void>
+  // Reads full entry (Blob briefly in RAM), patches name, re-puts.
+  // IDB has no partial-update; this is the correct pattern.
+```
+
+Upload pipeline (`src/lib/upload.ts`):
+
+```typescript
+processFilesSerial(files: File[]): Promise<void>
+  // Serial decode (never parallel). Calls addLibraryItemMeta() per file
+  // for live UI progress. Sets uploadStatus signal on completion.
+
+computeHash(buf: ArrayBuffer): string
+  // SHA-256 via @noble/hashes (no Secure Context required — works on iPhone LAN).
+
+computePeaks(decoded: AudioBuffer, N?: number): number[]
+  // N=30 peaks from channel 0. Call before nulling decoded buffer.
+```
 
 ---
 
@@ -236,7 +272,7 @@ points.)
 | # | Name | Status | Date | Notes |
 |---|------|--------|------|-------|
 | 1 | Project setup + StartScreen | ✅ Complete | 2026-05-27 | Vite + Preact + TS scaffold; tokens.css; PixelIcon; TopBarV2; StatusBarV2; StartScreen; Preact Signals store; PWA config |
-| 2 | Library + LibraryItem CRUD | ⬜ Pending | — | IndexedDB (idb), add/edit/delete assets |
+| 2 | Library + LibraryItem CRUD | ✅ Complete | 2026-05-27 | idb + @noble/hashes; LibraryItemMeta/LibraryItem split; serial upload pipeline; AudioRow; Waveform; 2-tap delete; rename via <input>; 2-column layout; 4 tabs |
 | 3 | Board + Scene + Pad CRUD | ⬜ Pending | — | Create board, add scene, place pads |
 | 4 | Audio playback | ⬜ Pending | — | V1 engine wrapped in src/audio/ |
 | 5 | Scene switching | ⬜ Pending | — | Multiple scenes, swap between them |
@@ -247,4 +283,7 @@ points.)
 **Deviations from plan:**
 - State manager chosen: Preact Signals (confirmed by user, Slice 1).
 - App renamed from `app.tsx` kept as-is (Vite scaffold default); imported with lowercase `./app`.
-- `--cache /tmp/npm-cache-v3` required for npm installs due to root-owned cache directory.
+- `LibraryItem.blob` never stored in Signals: type split into `LibraryItemMeta` (in state) + `LibraryItem` (IDB only).
+- SHA-256 uses `@noble/hashes/sha2.js` (not Web Crypto API) — required for iPhone LAN dev server (no Secure Context at http://IP).
+- Library screen is 2-column in Slice 2; inspector panel deferred to Slice 8+.
+- npm cache: `~/.npm` is user-owned on this machine; no `--cache` flag needed for npm installs.
