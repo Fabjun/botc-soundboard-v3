@@ -14,4 +14,13 @@ npm run test || {
   printf '   Tests fixen und dann erneut git commit ausführen.\n\n'
   exit 1
 }
-echo "✅ Unit tests passed — Commit wird fortgesetzt."
+echo "✅ Unit tests passed."
+
+echo "🎭 Pre-commit: running smoke E2E tests..."
+npm run test:e2e:smoke || {
+  printf '\n❌ Smoke E2E tests failed — Commit abgebrochen.\n'
+  printf '   Playwright-Report unter v3/playwright-report/ für Details.\n'
+  printf '   Tests fixen und dann erneut git commit ausführen.\n\n'
+  exit 1
+}
+echo "✅ Smoke E2E passed — Commit wird fortgesetzt."
