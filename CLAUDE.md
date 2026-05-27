@@ -193,9 +193,9 @@ fonts, or spacing.
 4. **Vertical slices**: build complete vertical features (UI + state
    + persistence), not horizontal layers. See §5.1 in the Concept
    Brief.
-5. **After every feature or fix**:
+5. **After every feature or fix**: verify manually, then
    `git add . && git commit -m "..." && git push`
-6. After every push: short summary of what changed and what to test.
+6. After every push: short summary of what changed and what was verified.
 7. **Update this CLAUDE.md** when permanent standards change.
 8. **Update `update_log.md`** after every commit (if the file exists;
    create on first commit).
@@ -219,11 +219,34 @@ without exception:
 
 If any check fails: **do not commit**. Report the failure, ask for direction.
 
+### Manual verification before commit
+
+After build passes, manually verify the slice's user-facing functionality:
+
+1. Run `npm run dev` and open the app in a browser
+2. Walk through the user flow the slice introduced or modified
+3. Document in the commit message OR in chat: which flows were verified
+
+**Example:** "Verified: StartScreen loads, LIBRARY button opens Library,
+IMPORT loads audio file correctly, files appear in list with waveform,
+rename via input works, 2-tap delete removes file from list and IDB."
+
+**Why:** Build success means "compiles", not "works". Logic bugs, UI bugs,
+and persistence bugs don't fail the build but break functionality. Manual
+verification is the only way to catch them before commit.
+
+**Scope:** Verify the flows the slice touched, not the whole app. A Slice 2
+commit doesn't need to verify Slice 1 functionality unless Slice 2 modified
+shared components.
+
+**If verification fails:** Do not commit. Fix the bug, re-verify, then commit.
+
 ### Slice completion checklist (additional, on top of pre-commit)
 
 Before committing a slice, also:
 
-1. Update CLAUDE.md "Slice progress" table with completion date
+1. Manually verify the slice's user-facing flows (see section above)
+2. Update CLAUDE.md "Slice progress" table with completion date
 
 ---
 
