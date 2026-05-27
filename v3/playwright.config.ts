@@ -4,8 +4,14 @@
 // baseURL is http://localhost:5173 (without the Vite base path).
 // Tests navigate explicitly to /botc-soundboard-v3/ so the URL is readable.
 //
-// Browsers: Chromium (Desktop Chrome) + WebKit (Desktop Safari → iOS proxy).
-// Firefox is not in the minimum support matrix (see CLAUDE.md).
+// Projects:
+//   smoke        — 5 smoke specs × Chromium (fast, ~10s)
+//   smoke-webkit — same 5 specs × WebKit (iOS Safari proxy)
+//   full         — 6 full-suite specs × Chromium only (slice-3 coverage, ~90s)
+//   visual       — screenshot regression specs × Chromium (local-only, NOT in CI)
+//
+// Default `playwright test` (no flags) runs all four projects.
+// Use --project=<name> to run a subset.
 //
 // webServer: starts `npm run dev` and waits for the Vite server to be ready
 // at the app's actual URL. `reuseExistingServer` allows reuse on local dev
@@ -13,6 +19,29 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { defineConfig, devices } from '@playwright/test';
+
+const SMOKE_TESTS = [
+  'app-loads',
+  'library-empty',
+  'board-list-empty',
+  'board-create',
+  'mode-toggle',
+];
+const FULL_TESTS = [
+  'board-crud',
+  'scene-crud',
+  'pad-creation',
+  'pad-editing',
+  'pad-dnd',
+  'game-mode',
+];
+
+const smokeMatch = new RegExp(
+  `tests/e2e/(${SMOKE_TESTS.join('|')})\\.spec\\.ts$`,
+);
+const fullMatch = new RegExp(
+  `tests/e2e/(${FULL_TESTS.join('|')})\\.spec\\.ts$`,
+);
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -26,12 +55,24 @@ export default defineConfig({
   },
   projects: [
     {
-      name: 'chromium',
+      name: 'smoke',
+      testMatch: smokeMatch,
       use: { ...devices['Desktop Chrome'] },
     },
     {
-      name: 'webkit',
+      name: 'smoke-webkit',
+      testMatch: smokeMatch,
       use: { ...devices['Desktop Safari'] },
+    },
+    {
+      name: 'full',
+      testMatch: fullMatch,
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      name: 'visual',
+      testMatch: /tests\/e2e\/visual\/.*\.spec\.ts$/,
+      use: { ...devices['Desktop Chrome'] },
     },
   ],
   webServer: {
