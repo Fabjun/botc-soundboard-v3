@@ -4,6 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/botc-soundboard-v3/',
   plugins: [
     preact(),
     VitePWA({
@@ -17,7 +18,7 @@ export default defineConfig({
         name: 'Soundboard of Storytelling',
         short_name: 'SoS',
         description: 'A soundboard for tabletop storytelling',
-        start_url: '/',
+        start_url: '/botc-soundboard-v3/',
         display: 'standalone',
         orientation: 'any',
         background_color: '#0a0a14',
