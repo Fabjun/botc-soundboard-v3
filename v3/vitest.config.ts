@@ -14,5 +14,19 @@ export default defineConfig({
     globals: true,
     include: ['tests/unit/**/*.test.ts'],
     setupFiles: ['tests/unit/setup.ts'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'json-summary'],
+      include: ['src/lib/**', 'src/state/**', 'src/db/**'],
+      exclude: ['tests/**', '**/*.config.ts', 'src/main.tsx', 'src/app.tsx'],
+      // Thresholds intentionally 0 — this tracks trends, not gates CI.
+      // Raise these when meaningful coverage targets are established.
+      thresholds: {
+        lines: 0,
+        functions: 0,
+        branches: 0,
+        statements: 0,
+      },
+    },
   },
 });
