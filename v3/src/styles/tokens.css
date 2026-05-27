@@ -1078,6 +1078,11 @@
 .sb-pad-grid-cell.is-insert-after {
   box-shadow: inset -4px 0 0 var(--mode-setup) !important;
 }
+/* Library-drag drop-target indicator (libDnd.ts, Path B desktop Pointer Events) */
+.sb-pad-grid-cell.is-lib-drag-target {
+  outline: 2px solid var(--mode-setup);
+  outline-offset: -2px;
+}
 
 /* ── Pad Editor Panel (right inspector) ──────────────────────────── */
 .sb-pad-editor {

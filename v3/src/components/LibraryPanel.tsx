@@ -2,33 +2,39 @@
 // LibraryPanel — right-inspector slot showing library items (Path B)
 //
 // Allows dragging library items onto pad grid cells to create pads.
-// Desktop: HTML5 drag events from items, drop handled by PadGrid.
-// Mobile: Long-press → place mode (onEnterPlaceMode) → tap target slot.
 //
-// The actual pad creation happens in PadGrid/BoardScreen (drop handler).
+// Desktop + Mobile: Pointer-Events drag (via libDnd.ts).
+//   Threshold 8px → ghost follows cursor → drop on [data-pos] cell.
+//   HTML5 DnD ('draggable', ondragstart) is explicitly NOT used:
+//   iOS Safari/Brave does not support it.
+//
+// Mobile extra: Long-Press (350ms without movement) → onEnterPlaceMode.
+//   The place-mode flow (tap to place on a grid cell) is managed in BoardScreen.
+//   When drag threshold is crossed, the long-press timer is cancelled.
+//
+// The pad creation on drop happens in BoardScreen (handleLibDrop).
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState, useRef } from 'preact/hooks';
+import { useRef } from 'preact/hooks';
 import type { JSX } from 'preact';
 import type { LibraryItemMeta } from '../types';
 import { PixelIcon } from './PixelIcon';
 import { Waveform } from './Waveform';
 import { libraryItems } from '../state/store';
+import { startLibDrag, type LibDndDropResult } from '../lib/libDnd';
+import { useState } from 'preact/hooks';
 
 interface LibraryPanelProps {
   onClose: () => void;
-  /** Called with the library item ID when user starts a drag (desktop). */
-  onDragStart: (itemId: string) => void;
-  /** Called when drag ends (cancellation or drop — cleanup ghost). */
-  onDragEnd: () => void;
+  /** Called when a library-item drag ends (drop or cancel). */
+  onLibDrop: (result: LibDndDropResult) => void;
   /** Mobile: called to enter place-mode with chosen item. */
   onEnterPlaceMode?: (itemId: string) => void;
 }
 
 export function LibraryPanel({
   onClose,
-  onDragStart,
-  onDragEnd,
+  onLibDrop,
   onEnterPlaceMode,
 }: LibraryPanelProps): JSX.Element {
   const [search, setSearch] = useState('');
@@ -157,8 +163,7 @@ export function LibraryPanel({
             <LibraryPanelRow
               key={item.id}
               item={item}
-              onDragStart={onDragStart}
-              onDragEnd={onDragEnd}
+              onLibDrop={onLibDrop}
               onLongPress={onEnterPlaceMode ? () => onEnterPlaceMode(item.id) : undefined}
             />
           ))
@@ -172,15 +177,13 @@ export function LibraryPanel({
 
 interface LibraryPanelRowProps {
   item: LibraryItemMeta;
-  onDragStart: (id: string) => void;
-  onDragEnd: () => void;
+  onLibDrop: (result: LibDndDropResult) => void;
   onLongPress?: () => void;
 }
 
 function LibraryPanelRow({
   item,
-  onDragStart,
-  onDragEnd,
+  onLibDrop,
   onLongPress,
 }: LibraryPanelRowProps): JSX.Element {
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -192,34 +195,33 @@ function LibraryPanelRow({
     return `${m}:${String(sec).padStart(2, '0')}`;
   }
 
+  function cancelLongPress(): void {
+    if (longPressTimer.current !== null) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  }
+
   return (
     <div
-      draggable
-      onDragStart={e => {
-        e.dataTransfer?.setData('text/plain', item.id);
-        e.dataTransfer!.effectAllowed = 'copy';
-        onDragStart(item.id);
-      }}
-      onDragEnd={() => onDragEnd()}
-      onPointerDown={() => {
+      // Pointer Events drag (NOT HTML5 DnD — see file header)
+      onPointerDown={(e) => {
+        const rowEl = e.currentTarget as HTMLElement;
+
+        // Long-press timer — fires at 350ms if no movement threshold is crossed
         if (onLongPress) {
           longPressTimer.current = setTimeout(() => {
+            longPressTimer.current = null;
             onLongPress();
           }, 350);
         }
+
+        // Start lib drag. onDragActivated cancels the long-press timer so
+        // both paths don't fire simultaneously.
+        startLibDrag(e, item.id, rowEl, onLibDrop, cancelLongPress);
       }}
-      onPointerUp={() => {
-        if (longPressTimer.current !== null) {
-          clearTimeout(longPressTimer.current);
-          longPressTimer.current = null;
-        }
-      }}
-      onPointerCancel={() => {
-        if (longPressTimer.current !== null) {
-          clearTimeout(longPressTimer.current);
-          longPressTimer.current = null;
-        }
-      }}
+      onPointerUp={cancelLongPress}
+      onPointerCancel={cancelLongPress}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -227,6 +229,7 @@ function LibraryPanelRow({
         borderBottom: '1px solid var(--border-soft)',
         cursor: 'grab',
         userSelect: 'none',
+        touchAction: 'none',  // Required: prevents scroll from capturing the pointer
         gap: 3,
       }}
     >

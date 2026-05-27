@@ -4,9 +4,10 @@
 // Orchestrates:
 //   - Rendering 16 cells (occupied + empty)
 //   - SETUP mode: DnD via padDnd.ts (pointer events)
-//   - SETUP mode: Cell-tap → Path A (PadCreationPopover)
+//   - SETUP mode: Cell-tap → Path A (PadCreationPopover) or Place-Mode drop
 //   - SETUP mode: Pad-tap → PadEditorPanel
-//   - Path B: library drag-and-drop (dragover / drop events from LibraryPanel)
+//   - Path B: library drag handled by libDnd.ts (BoardScreen receives onLibDrop)
+//             No HTML5 DnD handlers here — iOS Brave compatibility.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useEffect, useState } from 'preact/hooks';
@@ -23,10 +24,8 @@ import {
   applyInsert,
   type DndDropResult,
 } from '../lib/padDnd';
-import { nextFreeSlot, typeInference } from '../lib/padUtils';
-import { libraryItems, upsertBoard } from '../state/store';
+import { upsertBoard } from '../state/store';
 import { boardPut } from '../db/idb';
-import { nanoid } from '../lib/nanoid';
 
 interface PadGridProps {
   scene: Scene;
@@ -35,6 +34,10 @@ interface PadGridProps {
   selectedPadId: string | null;
   onPadSelect: (pad: Pad) => void;
   onRequestNewPad: (pad: Pad) => void; // Path C / "More options" → opens PadEditorPanel
+  /** Path B mobile: non-null when a library item is pending placement. */
+  placeMode: string | null;
+  /** Called when the user taps an empty cell while placeMode is active. */
+  onPlaceModeTap?: (pos: PadPosition) => void;
 }
 
 export function PadGrid({
@@ -44,6 +47,8 @@ export function PadGrid({
   selectedPadId,
   onPadSelect,
   onRequestNewPad,
+  placeMode,
+  onPlaceModeTap,
 }: PadGridProps): JSX.Element {
   const cols = scene.gridConfig.cols;
   const rows = scene.gridConfig.rows;
@@ -61,7 +66,7 @@ export function PadGrid({
     }
   }
 
-  // ── DnD setup ─────────────────────────────────────────────────────────────
+  // ── DnD setup (pad-to-pad, Pointer Events) ────────────────────────────────
 
   useEffect(() => {
     configureDnd(cols, rows);
@@ -99,77 +104,6 @@ export function PadGrid({
     const cellEl = (e.currentTarget as HTMLElement).closest('.sb-pad-grid-cell') as HTMLElement;
     if (!cellEl) return;
     startDrag(e, pad.id, cellEl, handleDrop);
-  }
-
-  // ── Library drop (Path B) ──────────────────────────────────────────────────
-
-  const [isDragOverGrid, setIsDragOverGrid] = useState(false);
-  const [dragOverPos, setDragOverPos] = useState<PadPosition | null>(null);
-
-  function handleGridDragOver(e: DragEvent) {
-    if (!isSetup) return;
-    const hasLib = e.dataTransfer?.types.includes('text/plain');
-    if (!hasLib) return;
-    e.preventDefault();
-    e.dataTransfer!.dropEffect = 'copy';
-    setIsDragOverGrid(true);
-
-    // Find target cell
-    const target = e.target as HTMLElement;
-    const cell = target.closest('[data-pos]') as HTMLElement | null;
-    if (cell) {
-      const [col, row] = (cell.dataset.pos ?? '').split(',').map(Number);
-      if (!isNaN(col) && !isNaN(row)) {
-        setDragOverPos({ col, row });
-      }
-    }
-  }
-
-  function handleGridDragLeave(e: DragEvent) {
-    const related = e.relatedTarget as Node | null;
-    const grid = e.currentTarget as HTMLElement;
-    if (!grid.contains(related)) {
-      setIsDragOverGrid(false);
-      setDragOverPos(null);
-    }
-  }
-
-  async function handleGridDrop(e: DragEvent) {
-    e.preventDefault();
-    setIsDragOverGrid(false);
-    const itemId = e.dataTransfer?.getData('text/plain');
-    if (!itemId || !isSetup) { setDragOverPos(null); return; }
-
-    // Find drop position
-    let targetPos: PadPosition | null = dragOverPos;
-    if (!targetPos) {
-      targetPos = nextFreeSlot(scene.pads, cols, rows);
-    }
-    if (!targetPos) { setDragOverPos(null); return; }
-
-    // If slot is occupied, use next free
-    const occupied = scene.pads.find(
-      p => p.position?.col === targetPos!.col && p.position?.row === targetPos!.row
-    );
-    const finalPos = occupied ? nextFreeSlot(scene.pads, cols, rows) : targetPos;
-    if (!finalPos) { setDragOverPos(null); return; }
-
-    const item = libraryItems.value.find(m => m.id === itemId);
-    if (!item) { setDragOverPos(null); return; }
-
-    const newPad: Pad = {
-      id: nanoid(),
-      type: typeInference(item.duration, 1),
-      name: item.name,
-      position: finalPos,
-      libraryItemRef: itemId,
-      volume: 80,
-      fadeIn: 0,
-      fadeOut: 0,
-    };
-
-    await savePadToScene(newPad);
-    setDragOverPos(null);
   }
 
   // ── Pad CRUD ───────────────────────────────────────────────────────────────
@@ -214,12 +148,7 @@ export function PadGrid({
           '--grid-cols': String(cols),
           '--grid-rows': String(rows),
           '--grid-gap': `${scene.gridConfig.gap}px`,
-          outline: isDragOverGrid ? '2px solid var(--mode-setup)' : '2px solid transparent',
-          outlineOffset: '-2px',
         } as Record<string, string>}
-        onDragOver={handleGridDragOver}
-        onDragLeave={handleGridDragLeave}
-        onDrop={handleGridDrop}
       >
         {Array.from({ length: rows }, (_, row) =>
           Array.from({ length: cols }, (_, col) => {
@@ -235,6 +164,12 @@ export function PadGrid({
                 selected={!!pad && pad.id === selectedPadId}
                 cellRef={el => registerCellRef(key, el)}
                 onEmpty={(rect) => {
+                  // Place-Mode (Path B mobile): tap → place library item
+                  if (placeMode && onPlaceModeTap) {
+                    onPlaceModeTap({ col, row });
+                    return;
+                  }
+                  // Path A: open creation popover
                   if (!isSetup) return;
                   setPopoverPos({ col, row });
                   setPopoverCellRect(rect);
@@ -245,7 +180,6 @@ export function PadGrid({
             );
           })
         )}
-
       </div>
 
       {/* Path A Popover */}

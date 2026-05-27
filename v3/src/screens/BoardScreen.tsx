@@ -15,7 +15,7 @@
 
 import { useState, useEffect } from 'preact/hooks';
 import type { JSX } from 'preact';
-import { currentScreen, currentSceneId, currentMode, currentBoard, currentScene, upsertBoard } from '../state/store';
+import { currentScreen, currentSceneId, currentMode, currentBoard, currentScene, upsertBoard, libraryItems } from '../state/store';
 import { boardPut } from '../db/idb';
 import { BoardTopBarV3 } from '../components/BoardTopBarV3';
 import { SceneRail } from '../components/SceneRail';
@@ -24,9 +24,10 @@ import { PadEditorPanel } from '../components/PadEditorPanel';
 import { LibraryPanel } from '../components/LibraryPanel';
 import { StatusBarV2 } from '../chrome/StatusBarV2';
 import { PixelIcon } from '../components/PixelIcon';
-import type { AppMode, Board, Pad, Scene } from '../types';
+import type { AppMode, Board, Pad, PadPosition, Scene } from '../types';
 import { nanoid } from '../lib/nanoid';
-import { nextFreeSlot } from '../lib/padUtils';
+import { nextFreeSlot, typeInference } from '../lib/padUtils';
+import { type LibDndDropResult } from '../lib/libDnd';
 
 type RightPanelMode = 'library' | 'editor' | 'empty';
 
@@ -37,8 +38,8 @@ export function BoardScreen(): JSX.Element {
 
   const [rightPanel, setRightPanel] = useState<RightPanelMode>('empty');
   const [selectedPadId, setSelectedPadId] = useState<string | null>(null);
-  // libDragItemId: set by LibraryPanel onDragStart/onDragEnd; consumed by PadGrid via
-  // e.dataTransfer directly — not needed as React state in BoardScreen.
+  /** Mobile Place-Mode: non-null while user is tapping a slot to place a library item. */
+  const [placeMode, setPlaceMode] = useState<{ itemId: string } | null>(null);
 
   // Select first scene if none selected
   useEffect(() => {
@@ -109,6 +110,72 @@ export function BoardScreen(): JSX.Element {
   function handleLibraryToggle() {
     setRightPanel(prev => prev === 'library' ? 'empty' : 'library');
     setSelectedPadId(null);
+    setPlaceMode(null); // cancel any pending place-mode
+  }
+
+  // ── Path B — Library drop (Pointer Events via libDnd.ts) ──────────────────
+
+  async function handleLibDrop(result: LibDndDropResult) {
+    if (result.kind === 'cancel' || !scene || !board) return;
+    const { itemId, targetPos } = result;
+
+    // If the target slot is occupied, fall back to the next free slot
+    const occupied = scene.pads.find(
+      p => p.position?.col === targetPos.col && p.position?.row === targetPos.row
+    );
+    const finalPos = occupied
+      ? nextFreeSlot(scene.pads, scene.gridConfig.cols, scene.gridConfig.rows)
+      : targetPos;
+    if (!finalPos) return; // grid full
+
+    const item = libraryItems.value.find(m => m.id === itemId);
+    if (!item) return;
+
+    const newPad: Pad = {
+      id: nanoid(),
+      type: typeInference(item.duration, 1),
+      name: item.name,
+      position: finalPos,
+      libraryItemRef: itemId,
+      volume: 80,
+      fadeIn: 0,
+      fadeOut: 0,
+    };
+
+    const updatedScene: Scene = { ...scene, pads: [...scene.pads, newPad] };
+    const updatedBoard: Board = {
+      ...board,
+      scenes: board.scenes.map(s => s.id === scene.id ? updatedScene : s),
+    };
+    try {
+      await boardPut(updatedBoard);
+      upsertBoard(updatedBoard);
+    } catch (e) {
+      console.error('Lib drop pad create failed:', e);
+    }
+  }
+
+  // ── Path B Mobile — Place-Mode ─────────────────────────────────────────────
+
+  function handleEnterPlaceMode(itemId: string) {
+    setPlaceMode({ itemId });
+    setRightPanel('empty'); // close library panel so the grid is fully visible
+  }
+
+  async function handlePlaceModeTap(pos: PadPosition) {
+    if (!placeMode || !scene || !board) return;
+    const { itemId } = placeMode;
+    setPlaceMode(null); // clear immediately so double-taps don't create two pads
+
+    // Occupied slot → fall back to next free slot (consistent with handleLibDrop)
+    const occupied = scene.pads.find(
+      p => p.position?.col === pos.col && p.position?.row === pos.row
+    );
+    const finalPos = occupied
+      ? nextFreeSlot(scene.pads, scene.gridConfig.cols, scene.gridConfig.rows)
+      : pos;
+
+    await handleLibDrop({ kind: 'drop', itemId, targetPos: finalPos ?? pos });
   }
 
   async function handlePadDelete(padId: string) {
@@ -264,17 +331,52 @@ export function BoardScreen(): JSX.Element {
               Select a scene
             </div>
           ) : (
-            <PadGrid
-              scene={scene}
-              board={board}
-              mode={mode}
-              selectedPadId={selectedPadId}
-              onPadSelect={handlePadSelect}
-              onRequestNewPad={(pad) => {
-                setSelectedPadId(pad.id);
-                setRightPanel('editor');
-              }}
-            />
+            <>
+              {/* Path B Mobile — Place-Mode banner */}
+              {placeMode && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    padding: '6px 12px',
+                    background: 'var(--mode-setup)',
+                    flexShrink: 0,
+                  }}
+                >
+                  <span
+                    style={{
+                      flex: 1,
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '12px',
+                      color: 'var(--night)',
+                    }}
+                  >
+                    Tap a slot to place &quot;{libraryItems.value.find(m => m.id === placeMode.itemId)?.name ?? '…'}&quot;
+                  </span>
+                  <button
+                    class="sb-btn sb-btn-sm sb-btn-ghost"
+                    style={{ color: 'var(--night)', borderColor: 'var(--night)' }}
+                    onClick={() => setPlaceMode(null)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
+              <PadGrid
+                scene={scene}
+                board={board}
+                mode={mode}
+                selectedPadId={selectedPadId}
+                onPadSelect={handlePadSelect}
+                onRequestNewPad={(pad) => {
+                  setSelectedPadId(pad.id);
+                  setRightPanel('editor');
+                }}
+                placeMode={placeMode?.itemId ?? null}
+                onPlaceModeTap={handlePlaceModeTap}
+              />
+            </>
           )}
 
           {/* SETUP toolbar — ADD PAD button */}
@@ -317,8 +419,8 @@ export function BoardScreen(): JSX.Element {
             {rightPanel === 'library' && (
               <LibraryPanel
                 onClose={() => setRightPanel('empty')}
-                onDragStart={() => {}}
-                onDragEnd={() => {}}
+                onLibDrop={handleLibDrop}
+                onEnterPlaceMode={handleEnterPlaceMode}
               />
             )}
             {rightPanel === 'editor' && selectedPad && scene && (
