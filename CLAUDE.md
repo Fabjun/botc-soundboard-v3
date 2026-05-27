@@ -237,6 +237,10 @@ fonts, or spacing.
 7. **Update this CLAUDE.md** when permanent standards change.
 8. **Update `update_log.md`** after every commit (if the file exists;
    create on first commit).
+9. **Testing**: see `TESTING.md` for test architecture, conventions, and
+   commands. Unit tests run automatically via the Pre-Commit-Hook.
+   **Before every `git push`** (until Phase 2 CI): run `npm run test:e2e`
+   manually — E2E tests are not yet in the pre-commit hook.
 
 ### Pre-commit checklist (mandatory before ANY commit)
 
@@ -244,16 +248,17 @@ Applies to slices, refactors, audit passes, bugfixes — every commit
 without exception:
 
 > **Automatisch erzwungen**: Ein Husky-Pre-Commit-Hook führt
-> `npm run build` vor jedem Commit aus und blockt bei Fehler.
-> Das manuelle Vorgehen unten bleibt als Baseline dokumentiert —
-> der Hook ist die Enforcement-Schicht.
+> `npm run build` und `npm run test` (Unit-Tests) vor jedem Commit aus
+> und blockt bei Fehler. Das manuelle Vorgehen unten bleibt als Baseline
+> dokumentiert — der Hook ist die Enforcement-Schicht.
 > Nach `git clone`: `cd v3 && npm install` aktiviert den Hook via
 > `prepare`-Script automatisch.
 
 1. `cd v3 && npm run build` — must exit 0 with zero TypeScript errors
-2. `cd v3 && npm run dev` — must start without errors (verify briefly,
+2. `cd v3 && npm run test` — all unit tests must pass (exit 0)
+3. `cd v3 && npm run dev` — must start without errors (verify briefly,
    then stop with `pkill -f vite` before committing)
-3. Only then: `git add . && git commit -m "..." && git push`
+4. Only then: `git add . && git commit -m "..." && git push`
 
 If any check fails: **do not commit**. Report the failure, ask for direction.
 
@@ -284,7 +289,11 @@ shared components.
 Before committing a slice, also:
 
 1. Manually verify the slice's user-facing flows (see section above)
-2. Update CLAUDE.md "Slice progress" table with completion date
+2. **Unit tests must be green**: `npm run test` exit 0
+3. **New logic modules need unit-test coverage**: any new function in
+   `src/lib/` or `src/state/` must have corresponding tests in
+   `tests/unit/`. No coverage required for UI components or event handlers.
+4. Update CLAUDE.md "Slice progress" table with completion date
 
 ---
 
@@ -293,10 +302,15 @@ Before committing a slice, also:
 All commands run from the `v3/` subdirectory:
 
 ```bash
-cd v3 && npm run dev      # dev server → http://localhost:5173 (HMR)
-cd v3 && npm run build    # production build → v3/dist/ (tsc + vite)
-cd v3 && npm run preview  # serve v3/dist/ locally for PWA testing
+cd v3 && npm run dev           # dev server → http://localhost:5173 (HMR)
+cd v3 && npm run build         # production build → v3/dist/ (tsc + vite)
+cd v3 && npm run preview       # serve v3/dist/ locally for PWA testing
+cd v3 && npm run test          # unit tests (vitest, once) — run before commit
+cd v3 && npm run test:watch    # unit tests in watch mode (while developing)
+cd v3 && npm run test:e2e      # E2E smoke tests (Playwright) — run before push
 ```
+
+See `TESTING.md` for the full test architecture and conventions.
 
 ---
 
