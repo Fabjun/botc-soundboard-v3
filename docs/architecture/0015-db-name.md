@@ -14,11 +14,11 @@ V3 ist außerdem die App "Soundboard of Storytelling" (SoS), nicht mehr
 "Blood on the Clocktower Soundboard" (botc) — die Umbenennung des Apps spiegelt
 sich im DB-Namen wider.
 
-> **Inkonsistenz-Korrektur:** CLAUDE.md §Deviations from plan nennt den DB-Namen
-> `botc-sb-v3`, was ein früher Arbeitstitel war. Der tatsächliche Wert im Code
-> (`v3/src/db/idb.ts`) ist `sos-v3`. Dieser ADR dokumentiert den Code-Stand
-> (`sos-v3`) als die Entscheidung. CLAUDE.md sollte bei nächster Gelegenheit
-> korrigiert werden.
+> *Diese Entscheidung war nicht explizit als eigene Regel in den Quelldokumenten
+> festgehalten. Der DB-Name `sos-v3` wurde beim Einrichten von Slice 2 direkt im
+> Code gesetzt. Der Name wurde im Plan als mögliche "botc-sb-v3"-Inkonsistenz
+> identifiziert — eine Suche im Repo bestätigt, dass `botc-sb-v3` nie in CLAUDE.md
+> vorkam. Der kanonische Name ist `sos-v3` (aus `v3/src/db/idb.ts`).*
 
 ## Decision
 
@@ -52,4 +52,4 @@ beibehält die veraltete "botc"-Bezeichnung nach App-Umbenennung.
 
 - **Dateien:** `v3/src/db/idb.ts` (DB_NAME Konstante)
 - **ADRs:** ADR-0014 (IndexedDB als Persistenz), ADR-0017 (Schema-Versioning)
-- **Quelldokumente:** `CLAUDE.md §Deviations from plan` (Inkonsistenz: dort als `botc-sb-v3` notiert)
+- **Quelldokumente:** `V3_CONCEPT_BRIEF.md §4.5`
