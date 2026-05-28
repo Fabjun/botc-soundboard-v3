@@ -9,6 +9,7 @@ Vier Schichten, eingeführt in Phase 1 & 2 (Slice 3.5):
 | Unit | Vitest | Logik-Korrektheit (pure functions, signals, IDB-API) | ~1s |
 | E2E Smoke | Playwright | Kritische Pfade in Chromium + WebKit | ~6s |
 | E2E Full | Playwright | Alle 22 Slice-3-Verifikationspunkte | ~90s |
+| Mobile E2E | Playwright (WebKit) | Touch-wiring, touch target sizes, overflow — iPhone 13 Pro profile | ~30s |
 | Visual Regression | Playwright Screenshots | Pixel-Vergleich (lokal-only) | ~30s |
 
 ---
@@ -51,6 +52,14 @@ v3/
       pad-editing.spec.ts     ← Full: Tests 16–19 (PadEditorPanel, TypChange)
       pad-dnd.spec.ts         ← Full: Tests 20–21 (SWAP/INSERT DnD) [test.skip]
       game-mode.spec.ts       ← Full: Test 22 (GAME-Modus: kein CRUD)
+      mobile/
+        mobile-unlock-nav.spec.ts    ← Mobile: TAP TO UNLOCK + nav buttons via tap()
+        mobile-board-flow.spec.ts    ← Mobile: NEW BOARD + back button via tap()
+        mobile-mode-toggle.spec.ts   ← Mobile: SETUP ↔ GAME toggle via tap()
+        mobile-pad-interaction.spec.ts ← Mobile: pad tap → is-hot/is-looping (core)
+        mobile-pad-creation.spec.ts  ← Mobile: empty cell tap → popover → pad
+        mobile-touch-targets.spec.ts ← Mobile: boundingBox() >= 44×44px
+        mobile-overflow.spec.ts      ← Mobile: no elements beyond 390px viewport
       visual/
         visual-setup.ts               ← stableScreenshot() Hilfsfunktion
         visual-startscreen.spec.ts
@@ -100,6 +109,51 @@ pad-cell-empty-{col}-{row} ← Koordinaten als Suffix
 - Nur test-kritische Elemente bekommen `data-testid` (kein vollständiges DOM-Coverage)
 - IDs werden nur wo nötig angefügt (Listen-Items, mehrfach vorkommende Typen)
 - In Playwright verwenden: `page.getByTestId('...')` oder `page.locator('[data-testid^="..."]')` für Prefix-Matches
+
+---
+
+## Mobile Testing (iPhone / iOS)
+
+The `mobile` Playwright project runs all specs in `tests/e2e/mobile/` against the
+Playwright **iPhone 13 Pro** device profile (viewport 390×844, `hasTouch: true`,
+`isMobile: true`, WebKit engine). All tested interactions use `tap()` to send real
+touch events (pointerType: 'touch'), not mouse-click events.
+
+### What the `mobile` project covers (automated)
+
+| Spec | What it tests |
+|------|--------------|
+| `mobile-unlock-nav` | TAP TO UNLOCK + BOARD/LIBRARY navigation buttons respond to `tap()` |
+| `mobile-board-flow` | NEW BOARD, board-row-title, back button respond to `tap()` |
+| `mobile-mode-toggle` | SETUP ↔ GAME toggle switches in both directions via `tap()` |
+| `mobile-pad-interaction` | **Core:** pad `tap()` → `.sb-pad.is-hot` / `.sb-pad.is-looping` DOM state |
+| `mobile-pad-creation` | Empty cell `tap()` → popover → `tap()` through to pad creation |
+| `mobile-touch-targets` | `boundingBox()` ≥ 44×44px on TAP TO UNLOCK, NEW BOARD, back button, pad cells |
+| `mobile-overflow` | No structural element extends beyond 390px viewport width |
+
+### What is deliberately NOT automated (manual only)
+
+The following cannot be tested honestly in Playwright:
+
+| Item | Why not automatable |
+|------|---------------------|
+| File upload via iOS picker | `setInputFiles()` bypasses the native picker — a test using it would be green while the real device fails |
+| Audio output | Headless WebKit has no audio hardware |
+| Ringer Switch behaviour | Physical hardware signal |
+| Tab-switch / backgrounding | iOS lifecycle events require a real device |
+| Backup import/export | iOS Files app integration is outside the browser sandbox |
+
+These items are covered by the manual checklist at
+[docs/MANUAL_IPHONE_CHECKLIST.md](docs/MANUAL_IPHONE_CHECKLIST.md).
+
+### Running mobile tests
+
+```bash
+cd v3 && npm run test:e2e:mobile   # iPhone 13 Pro profile, WebKit (~30s)
+```
+
+Mobile tests run in CI as a separate `e2e-mobile` job (parallel to `e2e-smoke` and
+`e2e-full`). They are **not** in the pre-commit hook (hook is already ~14s).
 
 ---
 
@@ -162,10 +216,13 @@ unit-build-lint
   └── npm run link:check     (markdown-link-check)     ← Link integrity
 
 e2e-smoke (needs: unit-build-lint)
-  └── npm run test:e2e:smoke  (10 Tests: 5 × Chromium + 5 × WebKit)
+  └── npm run test:e2e:smoke   (10 Tests: 5 × Chromium + 5 × WebKit)
+
+e2e-mobile (needs: unit-build-lint)
+  └── npm run test:e2e:mobile  (Mobile touch-wiring, targets, overflow — WebKit/iPhone 13 Pro)
 
 e2e-full (needs: unit-build-lint)
-  └── npm run test:e2e:full   (18+ Tests in Chromium)
+  └── npm run test:e2e:full    (18+ Tests in Chromium)
 ```
 
 Playwright-Reports werden als Artifact hochgeladen (7 Tage, bei Fehler).
@@ -200,6 +257,7 @@ cd v3 && npm run test:ui           # Browser-Interface
 # ── E2E ───────────────────────────────────────────────────────────────────
 cd v3 && npm run test:e2e:smoke    # 10 Smoke-Tests (Chromium + WebKit)
 cd v3 && npm run test:e2e:full     # 18+ Slice-3-Tests (Chromium)
+cd v3 && npm run test:e2e:mobile   # Mobile touch-wiring + targets + overflow (WebKit)
 cd v3 && npm run test:e2e          # Smoke + Full kombiniert
 
 # ── Visual Regression (lokal only) ────────────────────────────────────────
@@ -280,6 +338,7 @@ test('beschreibt den Nutzer-Flow in einem Satz', async ({ page }) => {
 |------|-------|---------|
 | Kern-Navigation, App-Start | `tests/e2e/*.spec.ts` (Smoke-Namelist in playwright.config) | `smoke` |
 | Slice-3 Verifikation | `tests/e2e/<feature>.spec.ts` (Full-Namelist) | `full` |
+| Touch-wiring, Touch-Targets, Overflow | `tests/e2e/mobile/*.spec.ts` | `mobile` |
 | Pixel-Vergleich | `tests/e2e/visual/*.spec.ts` | `visual` |
 
 ---
