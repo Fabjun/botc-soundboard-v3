@@ -511,3 +511,15 @@ vollständig beseitigt. Betroffene Dateien:
 **`v3/src/chrome/TopBarV2.tsx`**
 - Titel-Span: Inline-Styling →`class="sb-display-vt"` + fontSize 22px
   (war 16px + var(--text); Design-Referenz: VT323 22px gold-bright mit Glow)
+
+---
+
+## iOS Plattform-Grenzen
+
+### Ringer-Switch (physischer Stummschalter)
+
+Ringer-Switch (iOS): App ist stummgeschaltet, wenn der physische Schalter auf
+lautlos steht — wie V1. Der AVAudioSession-Silent-WAV-Trick kann den physischen
+Schalter nicht überstimmen (iOS-Plattformgrenze), dient aber weiterhin
+konsistentem `resume()` nach Interruptions/Tab-Wechsel. Bewusst akzeptiert,
+kein toter Code.
