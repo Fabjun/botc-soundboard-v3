@@ -7,11 +7,11 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '0.4.0-alpha';
+export const APP_VERSION = '3.0.4';
 
 export const CHANGELOG: ChangelogEntry[] = [
   {
-    version: '0.4.0-alpha',
+    version: '3.0.4',
     date: '2026-05-28',
     items: [
       'Audio playback: SINGLE, LOOP, PLAYLIST, COMBO pads all play audio',
@@ -22,7 +22,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    version: '0.3.0',
+    version: '3.0.3',
     date: '2026-05-27',
     items: [
       'Board, Scene, Pad CRUD — full create / rename / duplicate / delete',
@@ -33,7 +33,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    version: '0.2.0',
+    version: '3.0.2',
     date: '2026-05-27',
     items: [
       'Library: import audio files, rename, delete',
@@ -43,7 +43,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     ],
   },
   {
-    version: '0.1.0',
+    version: '3.0.1',
     date: '2026-05-27',
     items: [
       'Project scaffold: Preact + TypeScript + Vite + PWA (vite-plugin-pwa)',
