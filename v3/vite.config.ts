@@ -3,7 +3,14 @@ import preact from '@preact/preset-vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  define: {
+    // Injected at build time — allows the UI to show the exact build date.
+    // In dev mode, shows 'dev' so it's clear this is not a deployed build.
+    __BUILD_DATE__: JSON.stringify(
+      command === 'build' ? new Date().toISOString().slice(0, 16).replace('T', ' ') : 'dev',
+    ),
+  },
   base: '/botc-soundboard-v3/',
   plugins: [
     preact(),
@@ -41,4 +48,4 @@ export default defineConfig({
       },
     }),
   ],
-});
+}));

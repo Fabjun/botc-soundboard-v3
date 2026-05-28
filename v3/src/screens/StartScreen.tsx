@@ -76,6 +76,7 @@ function handleUnlock(): void {
 // ── Screen ────────────────────────────────────────────────────────────────────
 
 const APP_VERSION = '3.0.0-alpha';
+declare const __BUILD_DATE__: string;
 
 export function StartScreen(): JSX.Element {
   return (
@@ -200,7 +201,7 @@ export function StartScreen(): JSX.Element {
           padding: '0 16px',
         }}
       >
-        v {APP_VERSION} · {describeAudioState()}
+        v {APP_VERSION} · build {__BUILD_DATE__} · {describeAudioState()}
       </div>
     </div>
   );
