@@ -1,5 +1,10 @@
 # Soundboard of Storytelling — Design Notes
 
+> **Architektur-Entscheidungen** (Datenmodell, Persistenz, Cross-Cutting-Pattern,
+> Plattform-Annahmen) leben in `docs/architecture/` als ADRs. Diese Datei
+> dokumentiert Design-Detail-Entscheidungen, offene Slice-Fragen und
+> RESOLVED-Einträge zu konkreten Refactoring-Schritten.
+
 > Captured design ideas that came up during design sessions but were not
 > implemented in the explorations. Living backlog; entries get pulled into
 > V3 implementation when relevant.

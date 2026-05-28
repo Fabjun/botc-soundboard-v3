@@ -251,6 +251,14 @@ fonts, or spacing.
 11. **Lint + Format**: ESLint and Prettier are configured. Before committing
     any TypeScript/TSX: `npm run lint` must exit 0. Format with
     `npm run format` if needed. CI enforces both.
+12. **Architecture Decision Records**: Bei jeder substantiellen Architektur-
+    Entscheidung (Datenmodell, Persistenz, Cross-Cutting-Pattern, Plattform-
+    Annahmen, neue Infrastruktur) ein ADR in `docs/architecture/` anlegen.
+    Format laut `docs/architecture/_template.md`. Index in
+    `docs/architecture/README.md` ergänzen. Verstreute Architektur-Notizen in
+    `DESIGN_NOTES.md` sind keine ADRs — `DESIGN_NOTES.md` dokumentiert
+    Design-Detail-Entscheidungen; `docs/architecture/` dokumentiert
+    Architektur-Entscheidungen.
 
 ### Pre-commit checklist (mandatory before ANY commit)
 
