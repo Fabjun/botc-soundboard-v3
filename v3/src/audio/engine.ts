@@ -145,7 +145,11 @@ export async function playOnce(padId: string, pad: SinglePad): Promise<void> {
   if (!ctx || !pad.libraryItemRef) return;
   const hash = pad.libraryItemRef;
 
-  if (ctx.state === 'suspended') await ctx.resume();
+  // Fire-and-forget — consistent with playLoop/playPlaylist/playCombo.
+  // Awaiting resume() creates an async gap during which iOS WebKit can cancel
+  // running source nodes in other pads. The source scheduled below will play
+  // once the context is running.
+  if (ctx.state === 'suspended') ctx.resume().catch(() => {});
 
   try {
     await ensureLibBuf(hash);
@@ -200,7 +204,8 @@ export async function playLoop(padId: string, pad: LoopPad): Promise<void> {
   if (srcs[padId]) return; // defensive: caller should have checked isPlaying
 
   const hash = pad.libraryItemRef;
-  if (ctx.state === 'suspended') await ctx.resume();
+  // Fire-and-forget resume — avoids async gap that can cancel other pads on iOS.
+  if (ctx.state === 'suspended') ctx.resume().catch(() => {});
 
   try {
     await ensureLibBuf(hash);
