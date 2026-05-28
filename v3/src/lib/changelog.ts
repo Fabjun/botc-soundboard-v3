@@ -7,9 +7,30 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.4';
+export const APP_VERSION = '3.0.7';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.7',
+    date: '2026-05-28',
+    items: [
+      'Fix: mehrere Loop-PADs gleichzeitig spielbar — ctx.resume() nicht mehr awaited in Playback-Funktionen (iOS WebKit cancelld sonst laufende Sources)',
+    ],
+  },
+  {
+    version: '3.0.6',
+    date: '2026-05-28',
+    items: [
+      'Fix: AudioContext auf iOS zuverlässig gestartet — ctx.resume() direkt in initAudio() im TAP-TO-UNLOCK-Gesture-Tick',
+    ],
+  },
+  {
+    version: '3.0.5',
+    date: '2026-05-28',
+    items: [
+      'Fix: iOS Datei-Picker zeigt MP3-Dateien — explizite MIME-Typen statt audio/* (Brave/Safari erfordert beide: MIME + Extension)',
+    ],
+  },
   {
     version: '3.0.4',
     date: '2026-05-28',
