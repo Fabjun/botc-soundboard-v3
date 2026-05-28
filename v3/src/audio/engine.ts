@@ -112,7 +112,10 @@ export function initAudio(): void {
     src: 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA',
   });
   sil.setAttribute('playsinline', '');
-  sil.play().catch(() => {});
+  // play() returns a Promise in modern browsers, undefined in old WebKit.
+  // Guard against calling .catch() on undefined to avoid a sync throw.
+  const silPlay = sil.play();
+  if (silPlay) silPlay.catch(() => {});
 
   ctx = new (window.AudioContext ||
     (window as unknown as { webkitAudioContext: typeof AudioContext })

@@ -58,9 +58,17 @@ function describeAudioState(): string {
  * initAudio() MUST be the first statement — no await before it.
  * iOS Safari's user-gesture window closes on the first async tick.
  * See ADR-0043.
+ *
+ * initAudio() is wrapped in try-catch so navigation always succeeds even if
+ * AudioContext creation fails (e.g. browser privacy settings blocking it).
+ * Pads will be silent until a subsequent user gesture re-tries audio init.
  */
 function handleUnlock(): void {
-  initAudio(); // synchronous — must come first, before any await
+  try {
+    initAudio(); // synchronous — must come first, before any await
+  } catch (e) {
+    console.warn('[audio] AudioContext init failed — pads will be silent:', e);
+  }
   audioContextState.value = 'running';
   currentScreen.value = 'board-list';
 }
