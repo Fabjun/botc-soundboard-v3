@@ -5,13 +5,22 @@
 // Tests navigate explicitly to /botc-soundboard-v3/ so the URL is readable.
 //
 // Projects:
-//   smoke        — 5 smoke specs × Chromium (fast, ~10s)
-//   smoke-webkit — same 5 specs × WebKit (iOS Safari proxy)
-//   full         — 6 full-suite specs × Chromium only (slice-3 coverage, ~90s)
-//   mobile       — touch-wiring, target sizes, overflow × WebKit/iPhone 13 Pro (~30s)
-//   visual       — screenshot regression specs × Chromium (local-only, NOT in CI)
+//   smoke           — 5 smoke specs × Chromium (fast, ~10s)
+//   smoke-webkit    — same 5 specs × WebKit (iOS Safari proxy)
+//   full            — 6 full-suite specs × Chromium only (slice-3 coverage, ~90s)
+//   mobile          — touch-wiring (audio-free) × WebKit/iPhone 13 Pro (~15s)
+//   mobile-chromium — pad touch-wiring (requires audio) × Chromium/iPhone 13 Pro (~20s)
+//   visual          — screenshot regression specs × Chromium (local-only, NOT in CI)
 //
-// Default `playwright test` (no flags) runs all five projects.
+// Why two mobile projects:
+//   Playwright's headless WebKit has no audio codec support — decodeAudioData
+//   fails, breaking any test that needs an audio file in the library.
+//   Tests that assert pad is-hot/is-looping DOM state run under Chromium with
+//   iPhone 13 Pro device settings (viewport 390×844, hasTouch, isMobile).
+//   Audio-free navigation/touch tests run under WebKit to exercise the actual
+//   Safari engine path for pointer events and CSS.
+//
+// Default `playwright test` (no flags) runs all projects.
 // Use --project=<name> to run a subset.
 //
 // webServer: starts `npm run dev` and waits for the Vite server to be ready
@@ -37,12 +46,29 @@ const FULL_TESTS = [
   'game-mode',
   'audio',
 ];
+// Audio-free mobile specs: WebKit exercises the real Safari engine path.
+const MOBILE_WEBKIT_TESTS = [
+  'mobile-unlock-nav',
+  'mobile-board-flow',
+  'mobile-mode-toggle',
+  'mobile-touch-targets',
+  'mobile-overflow',
+];
+// Audio-dependent mobile specs: Chromium needed because headless WebKit has
+// no audio codec support (decodeAudioData fails → upload pipeline is skipped).
+const MOBILE_CHROMIUM_TESTS = ['mobile-pad-interaction', 'mobile-pad-creation'];
 
 const smokeMatch = new RegExp(
   `tests/e2e/(${SMOKE_TESTS.join('|')})\\.spec\\.ts$`,
 );
 const fullMatch = new RegExp(
   `tests/e2e/(${FULL_TESTS.join('|')})\\.spec\\.ts$`,
+);
+const mobileWebKitMatch = new RegExp(
+  `tests/e2e/mobile/(${MOBILE_WEBKIT_TESTS.join('|')})\\.spec\\.ts$`,
+);
+const mobileChromiumMatch = new RegExp(
+  `tests/e2e/mobile/(${MOBILE_CHROMIUM_TESTS.join('|')})\\.spec\\.ts$`,
 );
 
 export default defineConfig({
@@ -83,11 +109,21 @@ export default defineConfig({
     {
       // iPhone 13 Pro: viewport 390×844, hasTouch: true, isMobile: true,
       // deviceScaleFactor: 3, defaultBrowserType: webkit.
-      // Covers touch-wiring (tap() events), touch target sizes, overflow.
+      // Covers audio-free touch-wiring (tap() events), touch target sizes, overflow.
       // File-picker, audio output, Ringer Switch: see docs/MANUAL_IPHONE_CHECKLIST.md.
       name: 'mobile',
-      testMatch: /tests\/e2e\/mobile\/.*\.spec\.ts$/,
+      testMatch: mobileWebKitMatch,
       use: { ...devices['iPhone 13 Pro'] },
+    },
+    {
+      // Same iPhone 13 Pro profile but running on Chromium.
+      // Required for pad-interaction and pad-creation tests because headless
+      // WebKit has no audio codec support — decodeAudioData fails and the
+      // upload pipeline skips the file, so those tests time out in WebKit.
+      // Chromium decodes WAV without issue.
+      name: 'mobile-chromium',
+      testMatch: mobileChromiumMatch,
+      use: { ...devices['iPhone 13 Pro'], defaultBrowserType: 'chromium' as const },
     },
     {
       name: 'visual',

@@ -99,9 +99,9 @@ jobs:
         working-directory: v3
         run: npm ci
 
-      - name: Install Playwright browsers (WebKit only)
+      - name: Install Playwright browsers (WebKit + Chromium)
         working-directory: v3
-        run: npx playwright install --with-deps webkit
+        run: npx playwright install --with-deps webkit chromium
 
       - name: Run mobile E2E tests
         working-directory: v3

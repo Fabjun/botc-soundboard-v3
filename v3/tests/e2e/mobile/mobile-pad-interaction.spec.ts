@@ -1,9 +1,15 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Mobile E2E — Pad Touch Interaction (Playwright WebKit, iPhone 13 Pro profile)
+// Mobile E2E — Pad Touch Interaction (Playwright Chromium, iPhone 13 Pro profile)
 //
 // SCOPE: This is the core touch-wiring test. Verifies that a pad tap() in GAME
 // mode triggers the correct Signal → DOM state change (.sb-pad.is-hot,
 // .sb-pad.is-looping) on a 390×844 viewport with hasTouch: true.
+//
+// Runs under Chromium (not WebKit) because headless WebKit has no audio codec
+// support — decodeAudioData fails, the upload pipeline skips the file, and any
+// test waiting for library audio times out. Chromium decodes WAV correctly.
+// The iPhone 13 Pro device settings (viewport, hasTouch, isMobile, UA) are
+// preserved via the mobile-chromium project in playwright.config.ts.
 //
 // This is the class of bug that has occurred on the real device: pads failed
 // to respond to touch events (Touch-Event-Wiring). The test catches it by
@@ -13,28 +19,28 @@
 //   C. LOOP pad:   tap → is-looping; tap again → is-looping gone
 //
 // OUT OF SCOPE (see docs/MANUAL_IPHONE_CHECKLIST.md):
-//   Audio output (headless WebKit — no sound), Ringer Switch, backgrounding.
-//   File upload uses setInputFiles() which bypasses the iOS native picker —
-//   the upload step here is setup infrastructure only, not under test.
+//   Audio output (headless Chromium — no sound), Ringer Switch, backgrounding.
+//   File upload uses the filechooser approach (IMPORT button → chooser.setFiles)
+//   which bypasses the iOS native picker — upload is setup infrastructure only.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { test, expect } from '@playwright/test';
 import {
   goToLibrary,
-  uploadTestAudio,
   goToBoardList,
   createBoardAndNavigate,
   createScene,
   enterSetupMode,
   enterGameMode,
 } from '../helpers';
+import { mobileUploadTestAudio } from './mobile-helpers';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/botc-soundboard-v3/');
 
-  // Upload audio (setInputFiles — bypasses iOS picker; this is setup infrastructure)
+  // Upload audio via IMPORT button filechooser (consistent with WebKit-safe pattern)
   await goToLibrary(page);
-  await uploadTestAudio(page);
+  await mobileUploadTestAudio(page);
 
   // Return to start and tap TAP TO UNLOCK (initialises AudioContext)
   await page.goto('/botc-soundboard-v3/');

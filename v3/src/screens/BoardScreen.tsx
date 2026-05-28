@@ -470,36 +470,9 @@ export function BoardScreen(): JSX.Element {
                 onDelete={handlePadDelete}
               />
             )}
-            {rightPanel === 'empty' && (
-              <div
-                style={{
-                  width: 280,
-                  flexShrink: 0,
-                  background: 'var(--surface)',
-                  borderLeft: '1px solid var(--border)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  padding: '24px 16px',
-                }}
-              >
-                <PixelIcon name="eye" size={24} color="var(--border)" />
-                <span
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '12px',
-                    color: 'var(--text-mute)',
-                    textAlign: 'center',
-                  }}
-                >
-                  Select a pad to edit
-                  <br />
-                  or open the Library
-                </span>
-              </div>
-            )}
+            {/* No placeholder when rightPanel === 'empty': the pad grid fills
+                the available width on all viewport sizes. On 390px, SceneRail
+                (220px) + a 280px placeholder would squeeze the grid to 0px. */}
           </>
         )}
       </div>

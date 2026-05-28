@@ -114,22 +114,32 @@ pad-cell-empty-{col}-{row} ← Koordinaten als Suffix
 
 ## Mobile Testing (iPhone / iOS)
 
-The `mobile` Playwright project runs all specs in `tests/e2e/mobile/` against the
-Playwright **iPhone 13 Pro** device profile (viewport 390×844, `hasTouch: true`,
-`isMobile: true`, WebKit engine). All tested interactions use `tap()` to send real
-touch events (pointerType: 'touch'), not mouse-click events.
+Mobile tests are split across two Playwright projects, both using the **iPhone 13 Pro**
+device profile (viewport 390×844, `hasTouch: true`, `isMobile: true`):
 
-### What the `mobile` project covers (automated)
+| Project | Browser | Tests |
+|---------|---------|-------|
+| `mobile` | WebKit | 5 audio-free specs (navigation, mode toggle, touch targets, overflow) |
+| `mobile-chromium` | Chromium | 2 audio-dependent specs (pad interaction, pad creation) |
 
-| Spec | What it tests |
-|------|--------------|
-| `mobile-unlock-nav` | TAP TO UNLOCK + BOARD/LIBRARY navigation buttons respond to `tap()` |
-| `mobile-board-flow` | NEW BOARD, board-row-title, back button respond to `tap()` |
-| `mobile-mode-toggle` | SETUP ↔ GAME toggle switches in both directions via `tap()` |
-| `mobile-pad-interaction` | **Core:** pad `tap()` → `.sb-pad.is-hot` / `.sb-pad.is-looping` DOM state |
-| `mobile-pad-creation` | Empty cell `tap()` → popover → `tap()` through to pad creation |
-| `mobile-touch-targets` | `boundingBox()` ≥ 44×44px on TAP TO UNLOCK, NEW BOARD, back button, pad cells |
-| `mobile-overflow` | No structural element extends beyond 390px viewport width |
+All tested interactions use `tap()` to send real touch events (pointerType: 'touch').
+
+**Why two projects:** Playwright's headless WebKit has no audio codec support.
+`decodeAudioData()` fails, the upload pipeline skips the file, and any test waiting for
+audio in the library times out. Audio-dependent tests run on Chromium with the same
+iPhone 13 Pro device settings (viewport, hasTouch, isMobile, UA) applied.
+
+### What the mobile projects cover (automated)
+
+| Spec | Project | What it tests |
+|------|---------|--------------|
+| `mobile-unlock-nav` | `mobile` (WebKit) | TAP TO UNLOCK + BOARD/LIBRARY navigation buttons respond to `tap()` |
+| `mobile-board-flow` | `mobile` (WebKit) | NEW BOARD, board-row-title, back button respond to `tap()` |
+| `mobile-mode-toggle` | `mobile` (WebKit) | SETUP ↔ GAME toggle switches in both directions via `tap()` |
+| `mobile-touch-targets` | `mobile` (WebKit) | `boundingBox()` ≥ 44×44px on TAP TO UNLOCK, NEW BOARD, back button, pad cells |
+| `mobile-overflow` | `mobile` (WebKit) | No structural element extends beyond 390px viewport width |
+| `mobile-pad-interaction` | `mobile-chromium` | **Core:** pad `tap()` → `.sb-pad.is-hot` / `.sb-pad.is-looping` DOM state |
+| `mobile-pad-creation` | `mobile-chromium` | Empty cell `tap()` → popover → `tap()` through to pad creation |
 
 ### What is deliberately NOT automated (manual only)
 
@@ -149,7 +159,7 @@ These items are covered by the manual checklist at
 ### Running mobile tests
 
 ```bash
-cd v3 && npm run test:e2e:mobile   # iPhone 13 Pro profile, WebKit (~30s)
+cd v3 && npm run test:e2e:mobile   # Both projects: WebKit (5 tests) + Chromium (2 tests)
 ```
 
 Mobile tests run in CI as a separate `e2e-mobile` job (parallel to `e2e-smoke` and
@@ -219,7 +229,7 @@ e2e-smoke (needs: unit-build-lint)
   └── npm run test:e2e:smoke   (10 Tests: 5 × Chromium + 5 × WebKit)
 
 e2e-mobile (needs: unit-build-lint)
-  └── npm run test:e2e:mobile  (Mobile touch-wiring, targets, overflow — WebKit/iPhone 13 Pro)
+  └── npm run test:e2e:mobile  (17 Tests: 5 × WebKit + 2 × Chromium — both iPhone 13 Pro profile)
 
 e2e-full (needs: unit-build-lint)
   └── npm run test:e2e:full    (18+ Tests in Chromium)
@@ -338,7 +348,8 @@ test('beschreibt den Nutzer-Flow in einem Satz', async ({ page }) => {
 |------|-------|---------|
 | Kern-Navigation, App-Start | `tests/e2e/*.spec.ts` (Smoke-Namelist in playwright.config) | `smoke` |
 | Slice-3 Verifikation | `tests/e2e/<feature>.spec.ts` (Full-Namelist) | `full` |
-| Touch-wiring, Touch-Targets, Overflow | `tests/e2e/mobile/*.spec.ts` | `mobile` |
+| Touch-wiring (audio-free), Touch-Targets, Overflow | `tests/e2e/mobile/*` (audio-free specs) | `mobile` (WebKit) |
+| Touch-wiring (pad tap → is-hot/is-looping, pad creation) | `tests/e2e/mobile/*` (audio-dependent specs) | `mobile-chromium` (Chromium) |
 | Pixel-Vergleich | `tests/e2e/visual/*.spec.ts` | `visual` |
 
 ---
@@ -394,7 +405,33 @@ Tests 9, 14, 20, 21 (Scene-Reorder, Library-Drag Path B, Pad SWAP, Pad INSERT)
 erfordern pointer-event-basiertes Drag (`mouse.down + move + up`). Diese Tests
 sind als `test.skip` markiert — in Phase 3 aktivieren wenn Drag-Sequenz stabil ist.
 
-### 6. getByText-Ambiguität in Playwright
+### 7. WebKit headless: no audio codec support
+
+Playwright's headless WebKit build does not include audio codec support. Calls to
+`AudioContext.decodeAudioData()` with a WAV (or most other formats) fail with a
+`DOMException`. In `processFilesSerial`, this error is caught and the file is
+skipped — the library item is never stored, and any test waiting for the filename
+in the UI will time out.
+
+Additionally, `setInputFiles()` on a `display:none` input does **not** dispatch the
+`change` event in Playwright WebKit, so the upload pipeline never starts.
+
+**Fix (mobile tests):** Audio-dependent mobile specs (`mobile-pad-interaction`,
+`mobile-pad-creation`) run under the `mobile-chromium` project (Chromium + iPhone 13
+Pro device settings). Chromium decodes WAV correctly, and `setInputFiles` works on
+hidden inputs. Audio-free specs (`mobile-unlock-nav`, etc.) continue running under
+the `mobile` (WebKit) project to exercise the real Safari engine path.
+
+**Fix (file upload in WebKit):** In WebKit specs that need uploads, use
+`mobileUploadTestAudio(page)` from `tests/e2e/mobile/mobile-helpers.ts`. This uses
+`page.waitForEvent('filechooser')` + `tap()` on the IMPORT button, which triggers
+a real filechooser event that Playwright can intercept and satisfy with the test file.
+
+A `patchAudioDecodeForWebKit` approach was attempted (replacing `decodeAudioData` via
+`addInitScript`) but does not work: Playwright's WebKit runs `addInitScript` in an
+isolated context that does not affect the app's main realm, so the mock is never applied.
+
+### 8. getByText-Ambiguität in Playwright
 
 `page.getByText('X')` schlägt fehl wenn "X" mehrfach im DOM vorkommt (strict mode
 violation). Immer präzisere Selektoren verwenden:
