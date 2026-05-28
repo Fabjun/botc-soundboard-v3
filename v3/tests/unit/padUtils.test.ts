@@ -260,7 +260,7 @@ describe('applyTypeChange', () => {
 
   test('LOSSY case: preserves libraryItemRef (item 1 survives)', () => {
     // PlaylistPad requires files: string[]; first file becomes libraryItemRef on conversion
-    const pad: import('../../src/types').Pad = {
+    const pad: Pad = {
       id: 'p1',
       type: 'playlist',
       name: 'Pad p1',

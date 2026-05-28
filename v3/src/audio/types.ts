@@ -2,7 +2,7 @@
 // Audio engine — internal types
 // ─────────────────────────────────────────────────────────────────────────────
 
-import type { Pad } from '../types';
+import type { ComboPad, Pad } from '../types';
 
 /** Callbacks wired by index.ts to connect engine events to Preact Signals. */
 export type AudioCallbacks = {
@@ -29,5 +29,5 @@ export type ComboRuntimeState = {
   onFinish: (() => void) | null;
   pauseTimer?: ReturnType<typeof setTimeout>;
   /** Reference to the ComboPad for cleanup: iterate steps to stop nested combos. */
-  pad: import('../types').ComboPad;
+  pad: ComboPad;
 };
