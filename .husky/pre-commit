@@ -8,6 +8,14 @@ npm run build || {
 }
 echo "✅ Build passed."
 
+echo "🔍 Pre-commit: running lint in v3/..."
+npm run lint || {
+  printf '\n❌ Lint failed — Commit abgebrochen.\n'
+  printf '   npm run lint zeigt die genauen Fehler. npm run format für Auto-Fix.\n\n'
+  exit 1
+}
+echo "✅ Lint passed."
+
 echo "🧪 Pre-commit: running unit tests in v3/..."
 npm run test || {
   printf '\n❌ Unit tests failed — Commit abgebrochen.\n'
