@@ -131,14 +131,18 @@ describe('lruDelete', () => {
 
   test('freed bytes allow subsequent adds without unwanted eviction', () => {
     const SAMPLES_80MB = 20 * 1024 * 1024;
-    libBufs['a'] = mockBuf(SAMPLES_80MB, 1); lruSet('a'); // 80 MB
-    libBufs['b'] = mockBuf(SAMPLES_80MB, 1); lruSet('b'); // 160 MB > cap → 'a' evicted
+    libBufs['a'] = mockBuf(SAMPLES_80MB, 1);
+    lruSet('a'); // 80 MB
+    libBufs['b'] = mockBuf(SAMPLES_80MB, 1);
+    lruSet('b'); // 160 MB > cap → 'a' evicted
 
     // Now delete 'b' and add two 60 MB buffers — both should fit within 150 MB
     lruDelete('b');
     const SAMPLES_60MB = 15 * 1024 * 1024;
-    libBufs['c'] = mockBuf(SAMPLES_60MB, 1); lruSet('c'); // 60 MB
-    libBufs['d'] = mockBuf(SAMPLES_60MB, 1); lruSet('d'); // 120 MB, still under cap
+    libBufs['c'] = mockBuf(SAMPLES_60MB, 1);
+    lruSet('c'); // 60 MB
+    libBufs['d'] = mockBuf(SAMPLES_60MB, 1);
+    lruSet('d'); // 120 MB, still under cap
 
     expect(libBufs['c']).toBeDefined();
     expect(libBufs['d']).toBeDefined();

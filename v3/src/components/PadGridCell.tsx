@@ -76,7 +76,10 @@ export function PadGridCell({
   const isLooping = loopingPads.value.has(p.id);
 
   function handleTap(): void {
-    if (isSetup) { onPadSelect(p); return; }
+    if (isSetup) {
+      onPadSelect(p);
+      return;
+    }
     // GAME mode: play/stop toggle
     if (isPlaying(p.id)) {
       stop(p.id);

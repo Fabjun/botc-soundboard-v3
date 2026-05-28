@@ -266,22 +266,24 @@ fonts, or spacing.
 Applies to slices, refactors, audit passes, bugfixes — every commit
 without exception:
 
-> **Automatisch erzwungen** (Phase 2): Husky-Pre-Commit-Hook führt vier
+> **Automatisch erzwungen** (Phase 2): Husky-Pre-Commit-Hook führt fünf
 > Gates in Folge aus und blockt bei Fehler:
 > 1. `npm run build` (tsc + vite, ~4s)
-> 2. `npm run lint` (ESLint, ~2s)
-> 3. `npm run test` (vitest, ~1s)
-> 4. `npm run test:e2e:smoke` (Chromium + WebKit, ~6s)
+> 2. `npm run format:check` (Prettier, ~1s) — bei Fehler: `npm run format`
+> 3. `npm run lint` (ESLint, ~2s)
+> 4. `npm run test` (vitest, ~1s)
+> 5. `npm run test:e2e:smoke` (Chromium + WebKit, ~6s)
 >
 > Das manuelle Vorgehen unten bleibt als Baseline dokumentiert.
 > Nach `git clone`: `cd v3 && npm install` aktiviert den Hook automatisch.
 
 1. `cd v3 && npm run build` — must exit 0 with zero TypeScript errors
-2. `cd v3 && npm run lint` — must exit 0 (CI gate — blocks deployment if missed)
-3. `cd v3 && npm run test` — all unit tests must pass (exit 0)
-4. `cd v3 && npm run test:e2e:smoke` — 10 smoke tests must pass
-5. `cd v3 && npm run dev` — must start without errors (verify briefly)
-6. Only then: `git add . && git commit -m "..." && git push`
+2. `cd v3 && npm run format:check` — must pass; fix with `npm run format`
+3. `cd v3 && npm run lint` — must exit 0 (CI gate — blocks deployment if missed)
+4. `cd v3 && npm run test` — all unit tests must pass (exit 0)
+5. `cd v3 && npm run test:e2e:smoke` — 10 smoke tests must pass
+6. `cd v3 && npm run dev` — must start without errors (verify briefly)
+7. Only then: `git add . && git commit -m "..." && git push`
 
 If any check fails: **do not commit**. Report the failure, ask for direction.
 

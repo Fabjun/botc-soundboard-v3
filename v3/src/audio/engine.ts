@@ -117,9 +117,10 @@ export function initAudio(): void {
   const silPlay = sil.play();
   if (silPlay) silPlay.catch(() => {});
 
-  ctx = new (window.AudioContext ||
-    (window as unknown as { webkitAudioContext: typeof AudioContext })
-      .webkitAudioContext)();
+  ctx = new (
+    window.AudioContext ||
+    (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+  )();
   masterGain = ctx.createGain();
   masterGain.connect(ctx.destination);
 
@@ -173,7 +174,8 @@ export async function playOnce(padId: string, pad: SinglePad): Promise<void> {
   s.connect(g);
   g.connect(masterGain!);
   gains[padId] = g;
-  if (hasDur) s.start(0, tStart, dur); else s.start(0, tStart);
+  if (hasDur) s.start(0, tStart, dur);
+  else s.start(0, tStart);
   srcs[padId] = [s];
 
   s.onended = () => {
@@ -220,7 +222,8 @@ export async function playLoop(padId: string, pad: LoopPad): Promise<void> {
   s.buffer = buf;
   s.loop = true;
   s.connect(g);
-  if (hasDur) s.start(0, tStart, dur); else s.start(0, tStart);
+  if (hasDur) s.start(0, tStart, dur);
+  else s.start(0, tStart);
   srcs[padId] = [s];
 
   onPadStarted(padId, true);
@@ -297,7 +300,10 @@ async function playNextTrack(padId: string, pad: PlaylistPad): Promise<void> {
  * cut). immediate=true always overrides to instant stop regardless of fadeOut.
  */
 export function stopPad(padId: string, immediate = false, fadeOut = 0): void {
-  if (comboState[padId]) { stopCombo(padId); return; }
+  if (comboState[padId]) {
+    stopCombo(padId);
+    return;
+  }
   if (!srcs[padId]) return;
 
   onPadStopped(padId);
@@ -310,16 +316,27 @@ export function stopPad(padId: string, immediate = false, fadeOut = 0): void {
     g.gain.setValueAtTime(g.gain.value, ctx!.currentTime);
     g.gain.linearRampToValueAtTime(0, ctx!.currentTime + fo);
     srcs[padId].forEach((s) => {
-      try { s.onended = null; s.stop(ctx!.currentTime + fo); } catch (_) {}
+      try {
+        s.onended = null;
+        s.stop(ctx!.currentTime + fo);
+      } catch (_) {}
     });
     const pid = padId;
-    setTimeout(() => {
-      delete srcs[pid];
-      delete gains[pid];
-      delete playPos[pid];
-    }, fo * 1000 + 100);
+    setTimeout(
+      () => {
+        delete srcs[pid];
+        delete gains[pid];
+        delete playPos[pid];
+      },
+      fo * 1000 + 100,
+    );
   } else {
-    srcs[padId].forEach((s) => { try { s.onended = null; s.stop(); } catch (_) {} });
+    srcs[padId].forEach((s) => {
+      try {
+        s.onended = null;
+        s.stop();
+      } catch (_) {}
+    });
     delete srcs[padId];
     delete gains[padId];
     delete playPos[padId];
@@ -328,7 +345,12 @@ export function stopPad(padId: string, immediate = false, fadeOut = 0): void {
 
 export function stopAllInternal(): void {
   for (const padId of Object.keys(srcs)) {
-    srcs[padId].forEach((s) => { try { s.onended = null; s.stop(); } catch (_) {} });
+    srcs[padId].forEach((s) => {
+      try {
+        s.onended = null;
+        s.stop();
+      } catch (_) {}
+    });
     onPadStopped(padId);
     delete srcs[padId];
     delete gains[padId];
@@ -359,15 +381,23 @@ export function fadeOutAllInternal(duration: number): void {
     }
   }
 
-  setTimeout(() => {
-    for (const padId of Object.keys(srcs)) {
-      srcs[padId].forEach((s) => { try { s.onended = null; s.stop(); } catch (_) {} });
-      onPadStopped(padId);
-      delete srcs[padId];
-      delete gains[padId];
-      delete playPos[padId];
-    }
-  }, duration * 1000 + 50);
+  setTimeout(
+    () => {
+      for (const padId of Object.keys(srcs)) {
+        srcs[padId].forEach((s) => {
+          try {
+            s.onended = null;
+            s.stop();
+          } catch (_) {}
+        });
+        onPadStopped(padId);
+        delete srcs[padId];
+        delete gains[padId];
+        delete playPos[padId];
+      }
+    },
+    duration * 1000 + 50,
+  );
 }
 
 // ── COMBO ENGINE (V1 lines 3970–4238) ────────────────────────────────────────
@@ -403,56 +433,101 @@ function createPadInstance(
     if (pad.type === 'single') {
       (async () => {
         const hash = pad.libraryItemRef;
-        if (!hash) { onEnded?.(); return; }
+        if (!hash) {
+          onEnded?.();
+          return;
+        }
         try {
           await ensureLibBuf(hash);
           const b = libBufs[hash];
-          if (!b || stopped) { onEnded?.(); return; }
+          if (!b || stopped) {
+            onEnded?.();
+            return;
+          }
           const s = ctx!.createBufferSource();
-          s.buffer = b; s.connect(g); active.push(s);
-          s.onended = () => { if (!stopped) onEnded?.(); };
-          if (hasDur) s.start(0, tStart, dur); else s.start(0, tStart);
-        } catch (e) { console.warn('Combo single load:', e); onEnded?.(); }
+          s.buffer = b;
+          s.connect(g);
+          active.push(s);
+          s.onended = () => {
+            if (!stopped) onEnded?.();
+          };
+          if (hasDur) s.start(0, tStart, dur);
+          else s.start(0, tStart);
+        } catch (e) {
+          console.warn('Combo single load:', e);
+          onEnded?.();
+        }
       })();
     } else if (pad.type === 'loop') {
       (async () => {
         const hash = pad.libraryItemRef;
-        if (!hash) { onEnded?.(); return; }
+        if (!hash) {
+          onEnded?.();
+          return;
+        }
         try {
           await ensureLibBuf(hash);
           const b = libBufs[hash];
-          if (!b || stopped) { onEnded?.(); return; }
+          if (!b || stopped) {
+            onEnded?.();
+            return;
+          }
           const s = ctx!.createBufferSource();
-          s.buffer = b; s.loop = true; s.connect(g); active.push(s);
-          if (hasDur) s.start(0, tStart, dur); else s.start(0, tStart);
+          s.buffer = b;
+          s.loop = true;
+          s.connect(g);
+          active.push(s);
+          if (hasDur) s.start(0, tStart, dur);
+          else s.start(0, tStart);
           // infinite loop — onEnded fires only when instance.stop() is called
-        } catch (e) { console.warn('Combo loop load:', e); onEnded?.(); }
+        } catch (e) {
+          console.warn('Combo loop load:', e);
+          onEnded?.();
+        }
       })();
     } else {
       // playlist
-      if (!pad.files.length) { onEnded?.(); return; }
+      if (!pad.files.length) {
+        onEnded?.();
+        return;
+      }
       let pos = 0;
       (async function nextTrack() {
         if (stopped) return;
-        if (pos >= pad.files.length) { onEnded?.(); return; }
+        if (pos >= pad.files.length) {
+          onEnded?.();
+          return;
+        }
         const i = pad.shuffle ? Math.floor(Math.random() * pad.files.length) : pos;
         pos++;
         const hash = pad.files[i] ?? null;
-        if (!hash) { nextTrack(); return; }
+        if (!hash) {
+          nextTrack();
+          return;
+        }
         try {
           await ensureLibBuf(hash);
           const b = libBufs[hash];
-          if (!b || stopped) { nextTrack(); return; }
+          if (!b || stopped) {
+            nextTrack();
+            return;
+          }
           const s = ctx!.createBufferSource();
-          s.buffer = b; s.connect(g); active.push(s);
+          s.buffer = b;
+          s.connect(g);
+          active.push(s);
           s.onended = () => {
             if (stopped) return;
             active.splice(active.indexOf(s), 1);
             lruDelete(hash);
             nextTrack();
           };
-          if (hasDur) s.start(0, tStart, dur); else s.start(0, tStart);
-        } catch (e) { console.warn('Combo playlist decode failed:', e); nextTrack(); }
+          if (hasDur) s.start(0, tStart, dur);
+          else s.start(0, tStart);
+        } catch (e) {
+          console.warn('Combo playlist decode failed:', e);
+          nextTrack();
+        }
       })();
     }
   }
@@ -461,8 +536,14 @@ function createPadInstance(
     start: doStart,
     stop: () => {
       stopped = true;
-      active.forEach((s) => { try { s.stop(); } catch (_) {} });
-      try { g.gain.value = 0; } catch (_) {}
+      active.forEach((s) => {
+        try {
+          s.stop();
+        } catch (_) {}
+      });
+      try {
+        g.gain.value = 0;
+      } catch (_) {}
     },
   };
 }
@@ -612,17 +693,25 @@ function fadeOutAllExcept(exceptPadId: string, duration: number): void {
     }
   }
 
-  setTimeout(() => {
-    for (const pid of fadingIds) {
-      if (srcs[pid]) {
-        srcs[pid].forEach((s) => { try { s.onended = null; s.stop(); } catch (_) {} });
-        delete srcs[pid];
+  setTimeout(
+    () => {
+      for (const pid of fadingIds) {
+        if (srcs[pid]) {
+          srcs[pid].forEach((s) => {
+            try {
+              s.onended = null;
+              s.stop();
+            } catch (_) {}
+          });
+          delete srcs[pid];
+        }
+        onPadStopped(pid);
+        delete gains[pid];
+        delete playPos[pid];
       }
-      onPadStopped(pid);
-      delete gains[pid];
-      delete playPos[pid];
-    }
-  }, duration * 1000 + 50);
+    },
+    duration * 1000 + 50,
+  );
 }
 
 // ── Public configuration ──────────────────────────────────────────────────────

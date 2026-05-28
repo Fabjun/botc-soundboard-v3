@@ -8,10 +8,18 @@ npm run build || {
 }
 echo "✅ Build passed."
 
+echo "🎨 Pre-commit: running Prettier format check in v3/..."
+npm run format:check || {
+  printf '\n❌ Format check failed — Commit abgebrochen.\n'
+  printf '   npm run format ausführen, dann erneut git commit.\n\n'
+  exit 1
+}
+echo "✅ Format passed."
+
 echo "🔍 Pre-commit: running lint in v3/..."
 npm run lint || {
   printf '\n❌ Lint failed — Commit abgebrochen.\n'
-  printf '   npm run lint zeigt die genauen Fehler. npm run format für Auto-Fix.\n\n'
+  printf '   npm run lint zeigt die genauen Fehler.\n\n'
   exit 1
 }
 echo "✅ Lint passed."
