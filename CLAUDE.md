@@ -240,8 +240,8 @@ fonts, or spacing.
    create on first commit).
 9. **Testing**: see `TESTING.md` for full test architecture, commands, and
    conventions. Phase 2 testing infrastructure is complete:
-   - Pre-commit: build + unit tests + smoke E2E (auto via Husky)
-   - CI: GitHub Actions `tests.yml` runs unit + lint + size + full E2E
+   - Pre-commit: sync:docs (auto-stage) + build + lint + unit tests + smoke E2E + link:check
+   - CI: GitHub Actions `tests.yml` runs unit + lint + size + docs sync check + link check + full E2E
    - Deploy is gated on green `tests.yml` run (via `workflow_run`)
 10. **Visual Regression**: Before UI-relevant commits (components, CSS,
     design-system tokens — especially Slice 8 / Polish), run:
@@ -260,20 +260,34 @@ fonts, or spacing.
     `DESIGN_NOTES.md` sind keine ADRs — `DESIGN_NOTES.md` dokumentiert
     Design-Detail-Entscheidungen; `docs/architecture/` dokumentiert
     Architektur-Entscheidungen.
+    **Neues ADR-Header-Feld:** `**Category:**` (nach `**Slice:**`) — eines der
+    8 kanonischen Werte; Generator-Fehler wenn fehlend → "Unkategorisiert".
+13. **Auto-generierte Inventuren**: Drei Sections werden per Generator befüllt —
+    nie manuell editieren:
+    - `docs/architecture/README.md §Index` — via `npm run sync:adr`
+    - `DESIGN_SYSTEM.md §6` (sb-*-Klassen) — via `npm run sync:classes`
+    - `DESIGN_SYSTEM.md §A` (Tokens) — via `npm run sync:tokens`
+    Der Pre-Commit-Hook führt `sync:docs` automatisch aus und staged die
+    Ergebnisse. Zum manuellen Aktualisieren: `cd v3 && npm run sync:docs`.
+    Neue sb-*-Klassen dokumentieren mit `/* @inventory: Beschreibung */`
+    am CSS-Selektor. Neue Tokens bekommen ihre Beschreibung aus dem
+    Inline-Kommentar nach dem Semikolon in `tokens.css`.
 
 ### Pre-commit checklist (mandatory before ANY commit)
 
 Applies to slices, refactors, audit passes, bugfixes — every commit
 without exception:
 
-> **Automatisch erzwungen** (Phase 2): Husky-Pre-Commit-Hook führt vier
-> Gates in Folge aus und blockt bei Fehler:
-> 1. `npm run build` (tsc + vite, ~4s)
-> 2. `npx lint-staged` — Prettier + ESLint nur auf gestageten Dateien; auto-fix + re-stage
-> 3. `npm run test` (vitest, ~1s)
-> 4. `npm run test:e2e:smoke` (Chromium + WebKit, ~6s)
+> **Automatisch erzwungen** (Phase 2 + Doku-Sync): Husky-Pre-Commit-Hook führt
+> sechs Gates in Folge aus und blockt bei Fehler:
+> 1. `npm run sync:docs` + `git add` (~1s) — Auto-generierte Docs; Ergebnis wird automatisch gestaged
+> 2. `npm run build` (tsc + vite, ~4s)
+> 3. `npx lint-staged` — Prettier + ESLint nur auf gestageten Dateien; auto-fix + re-stage
+> 4. `npm run test` (vitest, ~1s)
+> 5. `npm run test:e2e:smoke` (Chromium + WebKit, ~6s)
+> 6. `npm run link:check` (markdown-link-check, ~1s) — tote interne Links
 >
-> CI führt zusätzlich `format:check` und `lint` auf dem gesamten Tree aus.
+> CI führt zusätzlich `format:check`, `lint`, `sync:docs` (+ `git diff --exit-code`) und `link:check` aus.
 >
 > Das manuelle Vorgehen unten bleibt als Baseline dokumentiert.
 > Nach `git clone`: `cd v3 && npm install` aktiviert den Hook automatisch.

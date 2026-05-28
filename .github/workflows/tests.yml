@@ -41,6 +41,17 @@ jobs:
         working-directory: v3
         run: npm run size
 
+      - name: Docs sync check
+        working-directory: v3
+        run: |
+          npm run sync:docs
+          git diff --exit-code -- ../docs/architecture/README.md ../DESIGN_SYSTEM.md \
+            || { echo "❌ Doku veraltet — npm run sync:docs lokal ausführen und committen."; exit 1; }
+
+      - name: Link integrity check
+        working-directory: v3
+        run: npm run link:check
+
   e2e-smoke:
     runs-on: ubuntu-latest
     needs: unit-build-lint

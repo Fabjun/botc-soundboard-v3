@@ -1,6 +1,17 @@
 #!/bin/sh
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT/v3" || exit 1
+
+echo "📚 Pre-commit: syncing auto-generated docs..."
+npm run sync:docs || {
+  printf '\n❌ sync:docs failed — Commit abgebrochen.\n'
+  printf '   Generator-Fehler oben beheben und erneut git commit.\n\n'
+  exit 1
+}
+git -C "$ROOT" add docs/architecture/README.md DESIGN_SYSTEM.md
+echo "✅ Docs synced and staged."
+
 echo "🔨 Pre-commit: running build check in v3/..."
-cd "$(git rev-parse --show-toplevel)/v3" || exit 1
 npm run build || {
   printf '\n❌ Build failed — Commit abgebrochen.\n'
   printf '   Fehler beheben und dann erneut git commit ausführen.\n\n'
@@ -31,4 +42,12 @@ npm run test:e2e:smoke || {
   printf '   Tests fixen und dann erneut git commit ausführen.\n\n'
   exit 1
 }
-echo "✅ Smoke E2E passed — Commit wird fortgesetzt."
+echo "✅ Smoke E2E passed."
+
+echo "🔗 Pre-commit: checking markdown link integrity..."
+npm run link:check || {
+  printf '\n❌ Link check failed — Commit abgebrochen.\n'
+  printf '   Tote interne Links oben fixen und erneut git commit.\n\n'
+  exit 1
+}
+echo "✅ Link check passed — Commit wird fortgesetzt."

@@ -153,11 +153,13 @@ GitHub Actions unter [`.github/workflows/tests.yml`](.github/workflows/tests.yml
 
 ```
 unit-build-lint
-  ├── npm run build     (tsc + vite)
-  ├── npm run test      (vitest 91 Tests)
-  ├── npm run lint      (eslint)
-  ├── npm run format:check (prettier)
-  └── npm run size      (size-limit)
+  ├── npm run build          (tsc + vite)
+  ├── npm run test           (vitest 91 Tests)
+  ├── npm run lint           (eslint)
+  ├── npm run format:check   (prettier)
+  ├── npm run size           (size-limit)
+  ├── npm run sync:docs      (+ git diff --exit-code)  ← Docs sync check
+  └── npm run link:check     (markdown-link-check)     ← Link integrity
 
 e2e-smoke (needs: unit-build-lint)
   └── npm run test:e2e:smoke  (10 Tests: 5 × Chromium + 5 × WebKit)
@@ -174,12 +176,15 @@ Playwright-Reports werden als Artifact hochgeladen (7 Tage, bei Fehler).
 
 ### Pre-Commit-Hook
 
-Husky-Hook führt vor jedem lokalen Commit aus:
-1. `npm run build` (~4s)
-2. `npm run test` (~1s)
-3. `npm run test:e2e:smoke` (~6s)
+Husky-Hook führt vor jedem lokalen Commit aus (in dieser Reihenfolge):
+1. `npm run sync:docs` + `git add` (~1s) — Auto-generierte Docs aktualisieren und stagen
+2. `npm run build` (~4s)
+3. lint-staged: Prettier + ESLint auf gestageten Dateien
+4. `npm run test` (~1s)
+5. `npm run test:e2e:smoke` (~6s)
+6. `npm run link:check` (~1s) — Tote interne Markdown-Links erkennen
 
-Gesamt ~11s. Schlägt einer der drei Schritte fehl → Commit wird abgebrochen.
+Gesamt ~14s. Schlägt einer der Schritte fehl → Commit wird abgebrochen.
 
 ---
 
