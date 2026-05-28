@@ -109,10 +109,10 @@ export type ComboPad = PadBase & {
 export type Pad = SinglePad | LoopPad | PlaylistPad | ComboPad;
 
 // Type guards — prefer these over inline `pad.type === 'x'` comparisons.
-export const isSinglePad   = (p: Pad): p is SinglePad   => p.type === 'single';
-export const isLoopPad     = (p: Pad): p is LoopPad     => p.type === 'loop';
+export const isSinglePad = (p: Pad): p is SinglePad => p.type === 'single';
+export const isLoopPad = (p: Pad): p is LoopPad => p.type === 'loop';
 export const isPlaylistPad = (p: Pad): p is PlaylistPad => p.type === 'playlist';
-export const isComboPad    = (p: Pad): p is ComboPad    => p.type === 'combo';
+export const isComboPad = (p: Pad): p is ComboPad => p.type === 'combo';
 
 export type LibraryItemType = 'audio' | 'icon' | 'image';
 

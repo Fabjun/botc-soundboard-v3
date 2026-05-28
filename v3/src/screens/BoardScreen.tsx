@@ -196,8 +196,26 @@ export function BoardScreen(): JSX.Element {
     const inferredType = typeInference(item.duration, 1); // returns 'single' or 'loop' for fileCount=1
     const newPad: Pad =
       inferredType === 'loop'
-        ? { id: nanoid(), type: 'loop', name: item.name, position: finalPos, libraryItemRef: itemId, volume: 80, fadeIn: 0, fadeOut: 0 }
-        : { id: nanoid(), type: 'single', name: item.name, position: finalPos, libraryItemRef: itemId, volume: 80, fadeIn: 0, fadeOut: 0 };
+        ? {
+            id: nanoid(),
+            type: 'loop',
+            name: item.name,
+            position: finalPos,
+            libraryItemRef: itemId,
+            volume: 80,
+            fadeIn: 0,
+            fadeOut: 0,
+          }
+        : {
+            id: nanoid(),
+            type: 'single',
+            name: item.name,
+            position: finalPos,
+            libraryItemRef: itemId,
+            volume: 80,
+            fadeIn: 0,
+            fadeOut: 0,
+          };
 
     const updatedScene: Scene = { ...scene, pads: [...scene.pads, newPad] };
     const updatedBoard: Board = {

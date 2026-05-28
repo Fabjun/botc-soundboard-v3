@@ -217,8 +217,7 @@ export function applyTypeChange(pad: Pad, newType: PadType): Pad {
     case 'loop':
       return { ...base, type: 'loop', libraryItemRef: ref };
     case 'playlist': {
-      const files =
-        isPlaylistPad(pad) && verdict !== 'reset' ? pad.files : ref ? [ref] : [];
+      const files = isPlaylistPad(pad) && verdict !== 'reset' ? pad.files : ref ? [ref] : [];
       return { ...base, type: 'playlist', files };
     }
     case 'combo': {

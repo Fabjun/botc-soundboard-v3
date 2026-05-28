@@ -175,7 +175,9 @@ export function PadEditorPanel({
   function applyTypeSwitch(newType: PadType) {
     const migrated = applyTypeChange(buildCurrentPad(), newType);
     setType(migrated.type);
-    setLibraryRef(isSinglePad(migrated) || isLoopPad(migrated) ? migrated.libraryItemRef : undefined);
+    setLibraryRef(
+      isSinglePad(migrated) || isLoopPad(migrated) ? migrated.libraryItemRef : undefined,
+    );
     scheduleAutoSave(migrated);
     setPendingType(null);
   }
