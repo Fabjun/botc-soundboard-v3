@@ -523,3 +523,38 @@ lautlos steht — wie V1. Der AVAudioSession-Silent-WAV-Trick kann den physische
 Schalter nicht überstimmen (iOS-Plattformgrenze), dient aber weiterhin
 konsistentem `resume()` nach Interruptions/Tab-Wechsel. Bewusst akzeptiert,
 kein toter Code.
+
+---
+
+## Known limitation: SETUP layout on narrow viewports
+
+Measured geometry at 390px viewport (Playwright diagnostic, 2026-05-28):
+
+| SETUP state | SceneRail | Right panel | Center `<main>` (pad grid) |
+|---|---|---|---|
+| No panel open | 220px (fixed) | — | 170px ✓ |
+| Pad selected (PadEditorPanel) | 220px (fixed) | 280px (fixed) | 0px ✗ |
+| Library open (LibraryPanel) | 220px (fixed) | 280px (fixed) | 0px ✗ |
+
+Both SceneRail and the inspector panels use `flex-shrink: 0` with fixed widths.
+At 390px their combined minimum (220 + 280 = 500px) exceeds the viewport, pushing
+the center `<main>` to 0px. This is expected for the current desktop-first layout
+and is deferred to the dedicated mobile adaptation phase (Slice 8).
+
+**Inspector placeholder removal (commit 402b4c2):** The empty-SETUP inspector
+placeholder ("Select a pad to edit or open the Library") was removed as a
+side-effect of a test fix. Whether the empty SETUP state should show guidance
+(the removed affordance), a wider bare grid, or a different solution is an open
+desktop-UX question. There is currently no usage data to inform this — the app
+has only been developed, not yet used in real sessions. To be decided deliberately
+once the app sees real use, likely with Claude Design.
+
+**Backlog for Slice 8 / mobile adaptation phase:**
+- Make SceneRail collapsible or overlay at narrow viewports
+- Make inspector panels (PadEditorPanel, LibraryPanel) slide over the pad grid
+  rather than pushing it, or use a tab-based layout
+- Revisit the empty-SETUP affordance question (see placeholder note above)
+- Re-enable `mobile-touch-targets.spec.ts` and `mobile-overflow.spec.ts` once
+  the responsive layout is in place
+- Minimum viable threshold: pad grid center area ≥ 44px in all three SETUP states
+  at 390px
