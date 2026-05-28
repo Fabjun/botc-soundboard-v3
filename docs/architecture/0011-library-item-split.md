@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** Slice 2
 
+**Category:** Datenmodell
+
 ## Context
 
 Die Library enthält Audio-Dateien. Eine Audio-Datei hat zwei Aspekte:

@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** cross-cutting
 
+**Category:** Plattform-Constraints
+
 ## Context
 
 V3 wird primär auf einem iPhone 13 Pro + Brave Browser verwendet (Live-Einsatz

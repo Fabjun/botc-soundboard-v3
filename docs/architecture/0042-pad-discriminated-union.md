@@ -4,6 +4,8 @@
 **Date:** 2026-05-28
 **Slice:** Slice 4
 
+**Category:** Datenmodell
+
 ## Context
 
 V3_CONCEPT_BRIEF.md §4.1 definierte `Pad` als flachen Typ mit `type: PadType`

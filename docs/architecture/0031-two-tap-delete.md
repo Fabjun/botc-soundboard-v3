@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** cross-cutting
 
+**Category:** Interaktion
+
 ## Context
 
 Delete-Operationen (Pad löschen, Library-Eintrag löschen, Scene löschen,

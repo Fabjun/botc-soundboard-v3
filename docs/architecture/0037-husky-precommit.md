@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** infrastructure
 
+**Category:** Test-Infrastruktur & Workflow
+
 ## Context
 
 Manuelles Ausführen von Build + Tests vor jedem Commit erfordert Disziplin.

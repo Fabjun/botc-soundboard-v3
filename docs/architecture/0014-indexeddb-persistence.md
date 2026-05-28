@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** cross-cutting
 
+**Category:** Persistenz
+
 ## Context
 
 V3 ist eine local-first PWA ohne Backend. Alle Daten müssen client-seitig

@@ -3,6 +3,7 @@
 **Status:** Accepted | Deprecated | Superseded by ADR-YYYY
 **Date:** YYYY-MM-DD
 **Slice:** Slice X | cross-cutting | infrastructure
+**Category:** Tech Stack | Plattform-Constraints | Datenmodell | Persistenz | Audio-Engine & iOS Memory | UI-Architektur | Interaktion | Test-Infrastruktur & Workflow
 
 ## Context
 

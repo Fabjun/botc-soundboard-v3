@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** infrastructure
 
+**Category:** Test-Infrastruktur & Workflow
+
 ## Context
 
 Visual Regression Tests (Screenshot-Vergleiche) wurden in Phase 2 eingeführt.

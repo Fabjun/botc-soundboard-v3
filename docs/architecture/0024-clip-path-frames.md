@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** cross-cutting
 
+**Category:** UI-Architektur
+
 ## Context
 
 Das Design-System verwendet `clip-path: polygon(...)` für die charakteristischen

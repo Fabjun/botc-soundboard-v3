@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** cross-cutting
 
+**Category:** Tech Stack
+
 ## Context
 
 V3 ist eine PWA, die auf dem iPhone 13 Pro (Brave Browser) läuft. Bundle-Größe

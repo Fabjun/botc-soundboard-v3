@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** Slice 3
 
+**Category:** Datenmodell
+
 ## Context
 
 Das Datenmodell aus `V3_CONCEPT_BRIEF.md §4.1` nennt das Konzept "Set" —

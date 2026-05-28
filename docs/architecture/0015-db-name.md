@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** Slice 1
 
+**Category:** Persistenz
+
 ## Context
 
 V1 und V3 laufen während der Entwicklungsphase parallel auf demselben Gerät

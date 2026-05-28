@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** Slice 1
 
+**Category:** Tech Stack
+
 ## Context
 
 V3 ist eine PWA: sie braucht einen Service Worker für Offline-Fähigkeit und

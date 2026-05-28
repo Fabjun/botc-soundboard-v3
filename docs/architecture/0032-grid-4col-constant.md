@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** Slice 3
 
+**Category:** Interaktion
+
 ## Context
 
 Das Standard-Grid ist 4×4. Auf einem 360 px Portrait-Viewport wären die Cells

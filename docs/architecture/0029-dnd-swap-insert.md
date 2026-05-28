@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** Slice 3
 
+**Category:** Interaktion
+
 ## Context
 
 Pad-zu-Pad-Drag im Grid (SETUP-Modus) braucht eine definierte Semantik:

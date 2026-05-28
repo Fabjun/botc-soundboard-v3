@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** Slice 1
 
+**Category:** Tech Stack
+
 ## Context
 
 V3 braucht einen zentralen Store für UI-State (current board, current scene,

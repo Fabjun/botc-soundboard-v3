@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** Slice 4
 
+**Category:** Audio-Engine & iOS Memory
+
 ## Context
 
 Web Audio API auf iOS erfordert, dass der `AudioContext` in einer User-Gesture-

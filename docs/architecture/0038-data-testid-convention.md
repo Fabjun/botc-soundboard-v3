@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** infrastructure
 
+**Category:** Test-Infrastruktur & Workflow
+
 ## Context
 
 E2E-Tests brauchen stabile Selektoren für DOM-Elemente. Alternativen:

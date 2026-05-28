@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** Slice 4
 
+**Category:** Audio-Engine & iOS Memory
+
 ## Context
 
 V3 braucht eine Audio-Engine für: Pad-Playback (single shots), Loop-Playback,

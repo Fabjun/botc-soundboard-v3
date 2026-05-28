@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** cross-cutting
 
+**Category:** Test-Infrastruktur & Workflow
+
 ## Context
 
 V3 wird primär von einer Person genutzt — dem Entwickler selbst — für

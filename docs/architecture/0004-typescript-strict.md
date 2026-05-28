@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** cross-cutting
 
+**Category:** Tech Stack
+
 ## Context
 
 Der Projekt-Grundsatz (CLAUDE.md §Permanent coding standards) ist:

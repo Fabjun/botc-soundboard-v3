@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** Slice 2 (v1: library), Slice 3 (v2: boards)
 
+**Category:** Persistenz
+
 ## Context
 
 IndexedDB-Schemas müssen versioniert werden. Wenn ein User V3 nach einem Update

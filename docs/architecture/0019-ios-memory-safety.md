@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** cross-cutting
 
+**Category:** Audio-Engine & iOS Memory
+
 ## Context
 
 iOS Safari killt den Browser-Tab, wenn der JS-Heap eine Grenze überschreitet:

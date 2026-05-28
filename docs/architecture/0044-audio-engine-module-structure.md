@@ -3,6 +3,7 @@
 **Date**: 2026-05-28
 **Status**: Accepted
 **Refines**: ADR-0018 (Audio Engine Strategy — "copy V1 unchanged")
+**Category:** Audio-Engine & iOS Memory
 
 ---
 

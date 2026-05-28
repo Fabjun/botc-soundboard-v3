@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** cross-cutting
 
+**Category:** UI-Architektur
+
 ## Context
 
 Bei UI-Entwicklung entsteht oft die Versuchung, für "leicht unterschiedliche"

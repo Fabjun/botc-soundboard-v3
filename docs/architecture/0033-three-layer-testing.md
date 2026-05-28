@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** infrastructure
 
+**Category:** Test-Infrastruktur & Workflow
+
 ## Context
 
 Testing-Infrastruktur wurde in Phase 1 (Slice 3.5) nach Abschluss von Slice 3

@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** Slice 3
 
+**Category:** UI-Architektur
+
 ## Context
 
 Das Design-System `v15-pad-depth.jsx` exploriert sechs Depth-Treatments für Pads.

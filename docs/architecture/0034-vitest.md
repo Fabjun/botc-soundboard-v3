@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** infrastructure
 
+**Category:** Test-Infrastruktur & Workflow
+
 ## Context
 
 Unit-Tests in einem Vite/Preact/TypeScript-Projekt brauchen einen Test-Runner.

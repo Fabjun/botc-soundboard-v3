@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** cross-cutting
 
+**Category:** Test-Infrastruktur & Workflow
+
 ## Context
 
 V3 ist ein Rewrite mit klar definiertem Feature-Set. Die Frage: Wie wird die

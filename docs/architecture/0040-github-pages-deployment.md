@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** infrastructure
 
+**Category:** Test-Infrastruktur & Workflow
+
 ## Context
 
 V3 wird auf GitHub Pages deployed. Das Deployment soll nur stattfinden, wenn

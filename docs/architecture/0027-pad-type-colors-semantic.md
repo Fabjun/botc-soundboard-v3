@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** cross-cutting
 
+**Category:** UI-Architektur
+
 ## Context
 
 Die vier PAD-Typen (SINGLE, LOOP, PLAYLIST, COMBO) haben dedizierte Farben.

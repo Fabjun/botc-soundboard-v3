@@ -4,6 +4,8 @@
 **Date:** 2026-05-27
 **Slice:** Slice 3
 
+**Category:** Datenmodell
+
 ## Context
 
 Grid-Konfigurationen können sich ändern (Slice 8: user ändert cols/rows).
