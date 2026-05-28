@@ -124,6 +124,12 @@ export function initAudio(): void {
   masterGain = ctx.createGain();
   masterGain.connect(ctx.destination);
 
+  // iOS creates AudioContexts in 'suspended' state even inside a user-gesture
+  // handler. Fire resume() synchronously here — iOS honours the request because
+  // we are still in the same gesture tick. The async chain in playOnce/playLoop
+  // is a safety net but is not reliable on its own for older iOS versions.
+  ctx.resume().catch(() => {});
+
   // Resume AudioContext when the tab becomes visible after backgrounding.
   // iOS suspends it automatically on tab switch; this restores it.
   document.addEventListener('visibilitychange', () => {
