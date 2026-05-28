@@ -93,3 +93,6 @@ Jede Entscheidung bekommt eine eigene Datei. Format: `docs/architecture/_templat
 | [ADR-0039](0039-vertical-slices.md) | Vertikale Slices als Entwicklungsmodell (8 Slices) | Accepted | cross-cutting | 2026-05-27 |
 | [ADR-0040](0040-github-pages-deployment.md) | GitHub Pages Deployment gated auf CI | Accepted | infrastructure | 2026-05-27 |
 | [ADR-0041](0041-english-only.md) | Englisch als App-Sprache — keine i18n-Infrastruktur | Accepted | cross-cutting | 2026-05-27 |
+| [ADR-0042](0042-pad-discriminated-union.md) | Pad als Discriminated Union (SinglePad ∣ LoopPad ∣ PlaylistPad ∣ ComboPad) | Accepted | data-model | 2026-05-28 |
+| [ADR-0043](0043-audiocontext-timing.md) | AudioContext Timing — synchron im Click-Handler (ADR-0020 Verfeinerung) | Accepted | audio | 2026-05-28 |
+| [ADR-0044](0044-audio-engine-module-structure.md) | Audio Engine Modulstruktur (engine.ts / index.ts / types.ts) | Accepted | audio | 2026-05-28 |

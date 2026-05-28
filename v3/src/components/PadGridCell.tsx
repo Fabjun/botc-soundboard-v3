@@ -12,6 +12,8 @@
 import type { JSX } from 'preact';
 import type { AppMode, Pad } from '../types';
 import { padTypeColor, padTypeLabel } from '../lib/padUtils';
+import { play, stop, isPlaying } from '../audio/index';
+import { playingPads, loopingPads } from '../state/store';
 
 interface PadGridCellProps {
   pad: Pad | null;
@@ -65,39 +67,57 @@ export function PadGridCell({
     );
   }
 
-  const color = padTypeColor(pad.type);
-  const typeLabel = padTypeLabel(pad.type);
+  // Capture non-null reference — pad is guaranteed Pad (not null) by the guard above.
+  const p = pad;
+  const color = padTypeColor(p.type);
+  const typeLabel = padTypeLabel(p.type);
   const isSetup = mode === 'edit';
+  const isHot = playingPads.value.has(p.id);
+  const isLooping = loopingPads.value.has(p.id);
+
+  function handleTap(): void {
+    if (isSetup) { onPadSelect(p); return; }
+    // GAME mode: play/stop toggle
+    if (isPlaying(p.id)) {
+      stop(p.id);
+    } else {
+      play(p.id, p);
+    }
+  }
 
   return (
     <div
       ref={cellRef as ((el: Element | null) => void) | undefined}
       class="sb-pad-grid-cell"
       data-pos={`${col},${row}`}
-      data-testid={`pad-cell-${pad.id}`}
+      data-testid={`pad-cell-${p.id}`}
     >
       <div
-        class={'sb-pad is-deep' + (isSetup ? ' is-setup' : '') + (selected ? ' is-active' : '')}
+        class={
+          'sb-pad is-deep' +
+          (isSetup ? ' is-setup' : '') +
+          (selected ? ' is-active' : '') +
+          (isHot ? ' is-hot' : '') +
+          (isLooping ? ' is-looping' : '')
+        }
         style={
           {
             '--pad-color': color,
-            '--pad-glow': `var(--pad-${pad.type}-glow)`,
+            '--pad-glow': `var(--pad-${p.type}-glow)`,
             '--pix-bg': 'var(--raised)',
             height: '100%',
             touchAction: 'none', // required for pointer capture on iOS
           } as Record<string, string>
         }
-        onClick={() => {
-          if (isSetup) onPadSelect(pad);
-        }}
+        onClick={handleTap}
         onPointerDown={
-          isSetup && onPadPointerDown ? (e: PointerEvent) => onPadPointerDown(e, pad) : undefined
+          isSetup && onPadPointerDown ? (e: PointerEvent) => onPadPointerDown(e, p) : undefined
         }
         role="button"
-        aria-label={pad.name}
+        aria-label={p.name}
         tabIndex={0}
         onKeyDown={(e) => {
-          if ((e.key === 'Enter' || e.key === ' ') && isSetup) onPadSelect(pad);
+          if (e.key === 'Enter' || e.key === ' ') handleTap();
         }}
       >
         {/* Type badge */}
@@ -123,11 +143,11 @@ export function PadGridCell({
             alignItems: 'center',
           }}
         >
-          {pad.name || '—'}
+          {p.name || '—'}
         </div>
 
         {/* Hotkey badge */}
-        {pad.hotkey && <div class="sb-pad-key">{pad.hotkey}</div>}
+        {p.hotkey && <div class="sb-pad-key">{p.hotkey}</div>}
 
         {/* SETUP: drag handle indicator */}
         {isSetup && (

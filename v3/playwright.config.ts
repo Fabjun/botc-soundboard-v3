@@ -34,6 +34,7 @@ const FULL_TESTS = [
   'pad-editing',
   'pad-dnd',
   'game-mode',
+  'audio',
 ];
 
 const smokeMatch = new RegExp(

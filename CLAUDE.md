@@ -403,7 +403,7 @@ boardDelete(id: string): Promise<void>
 | 1 | Project setup + StartScreen | ✅ Complete | 2026-05-27 | Vite + Preact + TS scaffold; tokens.css; PixelIcon; TopBarV2; StatusBarV2; StartScreen; Preact Signals store; PWA config |
 | 2 | Library + LibraryItem CRUD | ✅ Complete | 2026-05-27 | idb + @noble/hashes; LibraryItemMeta/LibraryItem split; serial upload pipeline; AudioRow; Waveform; 2-tap delete; rename via <input>; 2-column layout; 4 tabs |
 | 3 | Board + Scene + Pad CRUD | ✅ Complete | 2026-05-27 | Board CRUD (BoardListScreen), Scene CRUD (SceneRail, inline rename, duplicate, reorder, delete+undo), Pad CRUD (3 paths: tap-slot popover, library drag, ADD PAD), Pad DnD (SWAP+INSERT), PadTypeConfirmDialog (v23 Option C), ModeToggle with sparks, SETUP/GAME modes, empty states |
-| 4 | Audio playback | ⬜ Pending | — | V1 engine wrapped in src/audio/ |
+| 4 | Audio playback | ✅ Complete | 2026-05-28 | Discriminated union (ADR-0042), engine.ts/index.ts/types.ts (ADR-0044), iOS hacks + LRU 150 MB (ADR-0043), all 4 pad types, Signal bridge, TAP TO UNLOCK wired, is-hot/is-looping CSS classes |
 | 5 | Scene switching | ⬜ Pending | — | Multiple scenes, swap between them |
 | 6 | Sets + Quick Access | ⬜ Pending | — | PadSet model + quick-access strip |
 | 7 | Template export/import | ⬜ Pending | — | V1 compatibility |
@@ -417,6 +417,9 @@ boardDelete(id: string): Promise<void>
 - Library screen is 2-column in Slice 2; inspector panel deferred to Slice 8+.
 - npm cache: `~/.npm/_cacache/` partially root-owned on this machine; use `--cache /tmp/npm-cache-sos` flag for npm installs if permission error occurs.
 - Slice 3: Board persistence as full JSON document (Board + Scenes + Pads); trade-off documented in idb.ts and DESIGN_NOTES.md.
+- Slice 4: `stopPad(padId, immediate, fadeOut?)` takes explicit fadeOut parameter — engine doesn't hold a Pad reference after playback starts; callers pass `pad.fadeOut`. Pad-on-stop fadeOut is effectively 0 in Slice 4 (Slice 8 refinement).
+- Slice 4: Infinite loops only (no loopCount > 0 support); crossfade is a stub (`stop(from)` + `play(to)`).
+- Slice 4: `audio.spec.ts` added to FULL_TESTS in playwright.config.ts.
 - Slice 3: `libDragItemId` state removed from BoardScreen — PadGrid reads drag payload directly from `e.dataTransfer`, not from React state.
 - Slice 3: `Waveform` component has no `width` prop (fills flex container); fixed in PadEditorPanel, LibraryPanel, PadCreationPopover.
 - Phase 2 (Testing Infra): `@size-limit/preset-app` replaced with `@size-limit/file` — preset-app uses Chrome for timing (crashes on this ARM mac due to estimo/chromium issue); file plugin measures gzip size only, which is what we need.

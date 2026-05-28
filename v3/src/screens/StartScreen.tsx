@@ -15,6 +15,7 @@
 import type { JSX } from 'preact';
 import { PixelIcon } from '../components/PixelIcon';
 import { audioContextState, currentScreen } from '../state/store';
+import { initAudio } from '../audio/index';
 
 // ── FlameLogo ────────────────────────────────────────────────────────────────
 // Inline here; large enough to warrant a separate component once reused.
@@ -51,24 +52,17 @@ function describeAudioState(): string {
   }
 }
 
-/** Unlocks the Web Audio API context (required by browsers, especially iOS). */
-async function handleUnlock(): Promise<void> {
-  // TODO Slice 4: integrate with real audio engine (src/audio/);
-  //               handle iOS AudioContext suspend/resume lifecycle properly.
-  try {
-    const ctx = new (
-      window.AudioContext ??
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
-    )();
-    if (ctx.state === 'suspended') {
-      await ctx.resume();
-    }
-    audioContextState.value = ctx.state === 'running' ? 'running' : 'suspended';
-  } catch {
-    // Older browsers or unusual environments: optimistically mark running
-    // so the user can proceed. The real engine will validate in Slice 4.
-    audioContextState.value = 'running';
-  }
+/**
+ * Unlocks the Web Audio API context.
+ *
+ * initAudio() MUST be the first statement — no await before it.
+ * iOS Safari's user-gesture window closes on the first async tick.
+ * See ADR-0043.
+ */
+function handleUnlock(): void {
+  initAudio(); // synchronous — must come first, before any await
+  audioContextState.value = 'running';
+  currentScreen.value = 'board-list';
 }
 
 // ── Screen ────────────────────────────────────────────────────────────────────
@@ -152,9 +146,7 @@ export function StartScreen(): JSX.Element {
           justifyContent: 'center',
           gap: 10,
         }}
-        onClick={() => {
-          handleUnlock().catch(console.error);
-        }}
+        onClick={handleUnlock}
       >
         <PixelIcon name="play" size={14} />
         TAP TO UNLOCK
