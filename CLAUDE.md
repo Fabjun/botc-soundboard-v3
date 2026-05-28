@@ -20,6 +20,7 @@
 - **Secondary**: laptop/desktop
 - **App UI language**: English
 - **Communication language**: German or English
+- **Lizenz und Status**: V3 ist ein privates Tool unter "All Rights Reserved"-Lizenz (siehe `LICENSE`). Langfristig potentielles kommerzielles Produkt. Keine Open-Source-Beiträge geplant. Beim Ergänzen von Code sicherstellen, dass keine Open-Source-Lizenzen verletzt werden. Kontakt: soundboard_of_storytelling@pm.me
 
 ---
 
