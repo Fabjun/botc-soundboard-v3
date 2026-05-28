@@ -259,14 +259,17 @@ describe('applyTypeChange', () => {
   });
 
   test('LOSSY case: preserves libraryItemRef (item 1 survives)', () => {
-    const pad = makePad(
-      'p1',
-      { col: 0, row: 0 },
-      {
-        type: 'playlist',
-        libraryItemRef: 'xyz789',
-      },
-    );
+    // PlaylistPad requires files: string[]; first file becomes libraryItemRef on conversion
+    const pad: import('../../src/types').Pad = {
+      id: 'p1',
+      type: 'playlist',
+      name: 'Pad p1',
+      position: { col: 0, row: 0 },
+      volume: 80,
+      fadeIn: 0,
+      fadeOut: 0,
+      files: ['xyz789'],
+    };
     const result = applyTypeChange(pad, 'single'); // playlist→single = lossy
     expect(result.type).toBe('single');
     expect(result.libraryItemRef).toBe('xyz789');

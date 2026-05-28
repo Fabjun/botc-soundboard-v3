@@ -24,7 +24,7 @@ import { nanoid } from '../lib/nanoid';
 
 export type CreationResult =
   | { action: 'create'; pad: Pad }
-  | { action: 'open-editor'; partialPad: Partial<Pad> }
+  | { action: 'open-editor'; partialPad: Pad }
   | { action: 'cancel' };
 
 interface PadCreationPopoverProps {
@@ -79,32 +79,33 @@ export function PadCreationPopover({
     return () => document.removeEventListener('keydown', onKey);
   }, [onResult]);
 
-  function handleCreate() {
-    const newPad: Pad = {
-      id: nanoid(),
-      type: padType,
+  function buildPad(id: string): Pad {
+    const base = {
+      id,
       name: padName.trim() || (selectedItem?.name ?? 'New Pad'),
       position,
-      libraryItemRef: selectedItemId ?? undefined,
       volume: 80,
       fadeIn: 0,
       fadeOut: 0,
     };
-    onResult({ action: 'create', pad: newPad });
+    switch (padType) {
+      case 'single':
+        return { ...base, type: 'single', libraryItemRef: selectedItemId ?? undefined };
+      case 'loop':
+        return { ...base, type: 'loop', libraryItemRef: selectedItemId ?? undefined };
+      case 'playlist':
+        return { ...base, type: 'playlist', files: selectedItemId ? [selectedItemId] : [] };
+      case 'combo':
+        return { ...base, type: 'combo', steps: [] };
+    }
+  }
+
+  function handleCreate() {
+    onResult({ action: 'create', pad: buildPad(nanoid()) });
   }
 
   function handleMoreOptions() {
-    const partial: Partial<Pad> = {
-      id: nanoid(),
-      type: padType,
-      name: padName.trim() || selectedItem?.name,
-      position,
-      libraryItemRef: selectedItemId ?? undefined,
-      volume: 80,
-      fadeIn: 0,
-      fadeOut: 0,
-    };
-    onResult({ action: 'open-editor', partialPad: partial });
+    onResult({ action: 'open-editor', partialPad: buildPad(nanoid()) });
   }
 
   const content = (

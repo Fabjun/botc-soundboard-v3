@@ -2,7 +2,8 @@
 // Pad Utilities — pure functions, no side effects, no IDB/signal access
 // ─────────────────────────────────────────────────────────────────────────────
 
-import type { Pad, PadPosition, PadType } from '../types';
+import type { Pad, PadBase, PadPosition, PadType } from '../types';
+import { isSinglePad, isLoopPad, isPlaylistPad, isComboPad } from '../types';
 
 // ── Slot scanning ────────────────────────────────────────────────────────────
 
@@ -177,24 +178,54 @@ function universalFields(): string[] {
 
 /**
  * Apply a type change to a pad, following the migration policy.
- * Returns a new Pad (immutable).
+ * Returns a new Pad (immutable). Constructs the correct union variant.
  *
- * For RESET cases: clears libraryItemRef (the chain/source is gone).
- * For LOSSY cases: keeps libraryItemRef (first item survives).
- * All other cases: keeps libraryItemRef unchanged.
+ * - RESET:  type-specific source data cleared (combo steps → [], playlist files → [])
+ * - LOSSY:  first playlist item promoted to libraryItemRef; rest dropped
+ * - Others: source preserved where semantically compatible
  *
  * Caller is responsible for showing PadTypeConfirmDialog before calling this.
  */
 export function applyTypeChange(pad: Pad, newType: PadType): Pad {
   const { verdict } = padMigrationMatrix(pad.type, newType);
-  const next: Pad = { ...pad, type: newType };
 
-  if (verdict === 'reset') {
-    delete next.libraryItemRef;
+  const base: PadBase = {
+    id: pad.id,
+    name: pad.name,
+    position: pad.position,
+    hotkey: pad.hotkey,
+    iconRef: pad.iconRef,
+    color: pad.color,
+    volume: pad.volume,
+    fadeIn: pad.fadeIn,
+    fadeOut: pad.fadeOut,
+  };
+
+  // Extract the "primary" library reference from the current pad.
+  const sourceRef: string | undefined =
+    isSinglePad(pad) || isLoopPad(pad)
+      ? pad.libraryItemRef
+      : isPlaylistPad(pad)
+        ? (pad.files[0] ?? undefined)
+        : undefined;
+
+  const ref = verdict === 'reset' ? undefined : sourceRef;
+
+  switch (newType) {
+    case 'single':
+      return { ...base, type: 'single', libraryItemRef: ref };
+    case 'loop':
+      return { ...base, type: 'loop', libraryItemRef: ref };
+    case 'playlist': {
+      const files =
+        isPlaylistPad(pad) && verdict !== 'reset' ? pad.files : ref ? [ref] : [];
+      return { ...base, type: 'playlist', files };
+    }
+    case 'combo': {
+      const steps = isComboPad(pad) && verdict !== 'reset' ? pad.steps : [];
+      return { ...base, type: 'combo', steps };
+    }
   }
-  // For ADD, MIGRATE, DROP, LOSSY: libraryItemRef is preserved as-is.
-
-  return next;
 }
 
 // ── Pad type tokens ──────────────────────────────────────────────────────────

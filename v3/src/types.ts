@@ -50,28 +50,69 @@ export type PadPosition = {
   row: number; // 0-indexed, 0..rows-1
 };
 
-export type Pad = {
+/** Fields shared by every pad type. */
+export type PadBase = {
   id: string;
-  type: PadType;
   name: string;
-  /**
-   * Grid position within the parent Scene.
-   * null = unplaced (reserved for Slice 8 / unplaced-pad feature).
-   * Slice 3 always assigns a real position on creation.
-   */
+  /** Grid position; null = unplaced (Slice 8+). Slice 3 always assigns a real position. */
   position: PadPosition | null;
   hotkey?: string;
-  /**
-   * SHA-256 hash of the referenced LibraryItem.
-   * Optional: COMBO pads may have no single source (Slice 4+).
-   */
-  libraryItemRef?: string;
   iconRef?: string;
   color?: string;
   volume: number; // 0–100
   fadeIn: number; // seconds
   fadeOut: number; // seconds
 };
+
+/** One step in a combo sequence. */
+export type ComboStep = {
+  /** UUIDs of pads on the same board to trigger simultaneously. */
+  padIds: string[];
+  /** How long to wait before advancing to the next step (seconds). */
+  duration?: number;
+  /** Special directive: stop all currently playing pads first. */
+  stopAll?: boolean;
+  /** Special directive: fade all pads out over this duration (seconds). */
+  fadeOutAll?: number;
+};
+
+/** One-shot playback. libraryItemRef points to a single audio file (hash). */
+export type SinglePad = PadBase & {
+  type: 'single';
+  libraryItemRef?: string; // optional: pad may have no source yet
+  trimStart?: number;
+  trimEnd?: number;
+};
+
+/** Infinite-loop playback. libraryItemRef points to a single audio file (hash). */
+export type LoopPad = PadBase & {
+  type: 'loop';
+  libraryItemRef?: string; // optional: pad may have no source yet
+  trimStart?: number;
+  trimEnd?: number;
+};
+
+/** Sequential playlist. files is an ordered list of library item hashes. */
+export type PlaylistPad = PadBase & {
+  type: 'playlist';
+  files: string[]; // ordered list of hashes; may be empty
+  shuffle?: boolean;
+};
+
+/** Combo sequence: a chain of steps, each triggering one or more pads. */
+export type ComboPad = PadBase & {
+  type: 'combo';
+  steps: ComboStep[]; // may be empty
+};
+
+/** Discriminated union of all pad types. Use type guards to narrow. */
+export type Pad = SinglePad | LoopPad | PlaylistPad | ComboPad;
+
+// Type guards — prefer these over inline `pad.type === 'x'` comparisons.
+export const isSinglePad   = (p: Pad): p is SinglePad   => p.type === 'single';
+export const isLoopPad     = (p: Pad): p is LoopPad     => p.type === 'loop';
+export const isPlaylistPad = (p: Pad): p is PlaylistPad => p.type === 'playlist';
+export const isComboPad    = (p: Pad): p is ComboPad    => p.type === 'combo';
 
 export type LibraryItemType = 'audio' | 'icon' | 'image';
 

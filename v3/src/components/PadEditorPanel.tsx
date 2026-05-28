@@ -22,7 +22,8 @@
 
 import { useState, useRef, useEffect } from 'preact/hooks';
 import type { JSX } from 'preact';
-import type { Board, Pad, PadType, Scene } from '../types';
+import type { Board, Pad, PadBase, PadType, Scene } from '../types';
+import { isSinglePad, isLoopPad, isPlaylistPad, isComboPad } from '../types';
 import { PixelIcon } from './PixelIcon';
 import { Waveform } from './Waveform';
 import { PadTypeConfirmDialog } from './PadTypeConfirmDialog';
@@ -51,7 +52,9 @@ export function PadEditorPanel({
   // Local state mirrors the pad; auto-saved on change
   const [name, setName] = useState(pad.name);
   const [type, setType] = useState<PadType>(pad.type);
-  const [libraryRef, setLibraryRef] = useState<string | undefined>(pad.libraryItemRef);
+  const [libraryRef, setLibraryRef] = useState<string | undefined>(
+    isSinglePad(pad) || isLoopPad(pad) ? pad.libraryItemRef : undefined,
+  );
   const [volume, setVolume] = useState(pad.volume);
   const [fadeIn, setFadeIn] = useState(pad.fadeIn);
   const [fadeOut, setFadeOut] = useState(pad.fadeOut);
@@ -69,7 +72,7 @@ export function PadEditorPanel({
   useEffect(() => {
     setName(pad.name);
     setType(pad.type);
-    setLibraryRef(pad.libraryItemRef);
+    setLibraryRef(isSinglePad(pad) || isLoopPad(pad) ? pad.libraryItemRef : undefined);
     setVolume(pad.volume);
     setFadeIn(pad.fadeIn);
     setFadeOut(pad.fadeOut);
@@ -98,8 +101,34 @@ export function PadEditorPanel({
     }, 500);
   }
 
-  function buildCurrentPad(): Pad {
-    return { ...pad, name, type, libraryItemRef: libraryRef, volume, fadeIn, fadeOut };
+  // libraryRefOverride: when the libraryRef state hasn't committed yet (handleLibrarySelect)
+  function buildCurrentPad(libraryRefOverride?: string): Pad {
+    const effectiveRef = libraryRefOverride !== undefined ? libraryRefOverride : libraryRef;
+    const base: PadBase = {
+      id: pad.id,
+      name,
+      position: pad.position,
+      hotkey: pad.hotkey,
+      iconRef: pad.iconRef,
+      color: pad.color,
+      volume,
+      fadeIn,
+      fadeOut,
+    };
+    switch (type) {
+      case 'single':
+        return { ...base, type: 'single', libraryItemRef: effectiveRef };
+      case 'loop':
+        return { ...base, type: 'loop', libraryItemRef: effectiveRef };
+      case 'playlist': {
+        const files = isPlaylistPad(pad) ? pad.files : effectiveRef ? [effectiveRef] : [];
+        return { ...base, type: 'playlist', files };
+      }
+      case 'combo': {
+        const steps = isComboPad(pad) ? pad.steps : [];
+        return { ...base, type: 'combo', steps };
+      }
+    }
   }
 
   function handleNameChange(newName: string) {
@@ -125,7 +154,7 @@ export function PadEditorPanel({
   function handleLibrarySelect(id: string) {
     setLibraryRef(id);
     setLibPickerOpen(false);
-    scheduleAutoSave({ ...buildCurrentPad(), libraryItemRef: id });
+    scheduleAutoSave(buildCurrentPad(id));
   }
 
   // ── Type change ──────────────────────────────────────────────────────────
@@ -133,7 +162,8 @@ export function PadEditorPanel({
   function requestTypeChange(newType: PadType) {
     if (newType === type) return;
     // No dialog for brand-new pad (no name or library ref = fresh)
-    const isFresh = !pad.libraryItemRef && pad.name === '';
+    const ref = isSinglePad(pad) || isLoopPad(pad) ? pad.libraryItemRef : undefined;
+    const isFresh = !ref && pad.name === '';
     const { verdict } = padMigrationMatrix(type, newType);
     if (isFresh || verdict === 'add') {
       applyTypeSwitch(newType);
@@ -143,9 +173,9 @@ export function PadEditorPanel({
   }
 
   function applyTypeSwitch(newType: PadType) {
-    const migrated = applyTypeChange({ ...buildCurrentPad(), type }, newType);
+    const migrated = applyTypeChange(buildCurrentPad(), newType);
     setType(migrated.type);
-    setLibraryRef(migrated.libraryItemRef);
+    setLibraryRef(isSinglePad(migrated) || isLoopPad(migrated) ? migrated.libraryItemRef : undefined);
     scheduleAutoSave(migrated);
     setPendingType(null);
   }

@@ -83,6 +83,7 @@ export function BoardScreen(): JSX.Element {
       volume: 80,
       fadeIn: 0,
       fadeOut: 0,
+      // libraryItemRef intentionally absent: editor opens to fill it in
     };
     const updatedScene: Scene = { ...scene, pads: [...scene.pads, newPad] };
     const updatedBoard: Board = {
@@ -192,16 +193,11 @@ export function BoardScreen(): JSX.Element {
     const item = libraryItems.value.find((m) => m.id === itemId);
     if (!item) return;
 
-    const newPad: Pad = {
-      id: nanoid(),
-      type: typeInference(item.duration, 1),
-      name: item.name,
-      position: finalPos,
-      libraryItemRef: itemId,
-      volume: 80,
-      fadeIn: 0,
-      fadeOut: 0,
-    };
+    const inferredType = typeInference(item.duration, 1); // returns 'single' or 'loop' for fileCount=1
+    const newPad: Pad =
+      inferredType === 'loop'
+        ? { id: nanoid(), type: 'loop', name: item.name, position: finalPos, libraryItemRef: itemId, volume: 80, fadeIn: 0, fadeOut: 0 }
+        : { id: nanoid(), type: 'single', name: item.name, position: finalPos, libraryItemRef: itemId, volume: 80, fadeIn: 0, fadeOut: 0 };
 
     const updatedScene: Scene = { ...scene, pads: [...scene.pads, newPad] };
     const updatedBoard: Board = {

@@ -24,7 +24,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { openDB, type IDBPDatabase } from 'idb';
-import type { Board, LibraryItem, LibraryItemMeta } from '../types';
+import type { Board, Pad, LibraryItem, LibraryItemMeta } from '../types';
 
 // ---------------------------------------------------------------------------
 // DB singleton
@@ -126,6 +126,47 @@ export async function libRename(id: string, newName: string): Promise<void> {
   await libPut({ ...entry, name: newName });
 }
 
+// ── Pad migration ─────────────────────────────────────────────────────────────
+//
+// Converts old flat Pad objects (Slice 3 format) to the Discriminated Union
+// format (Slice 4+). Called at IDB read time so legacy boards load correctly.
+//
+// Slice-3 storage:
+//   playlist pads: had `libraryItemRef?: string`, no `files`
+//   combo pads:    had `libraryItemRef?: string`, no `steps`
+//
+// After migration:
+//   playlist pads: `files = [libraryItemRef]` (or [] if no ref)
+//   combo pads:    `steps = []`
+
+function migratePad(raw: unknown): Pad {
+  const p = raw as Record<string, unknown>;
+  if (p.type === 'playlist') {
+    const hasFiles = Array.isArray(p.files);
+    const files = hasFiles
+      ? (p.files as string[])
+      : typeof p.libraryItemRef === 'string' && p.libraryItemRef
+        ? [p.libraryItemRef]
+        : [];
+    return { ...(p as Pad), type: 'playlist', files } as Pad;
+  }
+  if (p.type === 'combo') {
+    const steps = Array.isArray(p.steps) ? p.steps : [];
+    return { ...(p as Pad), type: 'combo', steps } as Pad;
+  }
+  return p as Pad;
+}
+
+function migrateBoard(board: Board): Board {
+  return {
+    ...board,
+    scenes: board.scenes.map((scene) => ({
+      ...scene,
+      pads: scene.pads.map(migratePad),
+    })),
+  };
+}
+
 // ── Board API ─────────────────────────────────────────────────────────────────
 //
 // Boards are stored as complete JSON documents (Board contains Scenes and Pads).
@@ -134,20 +175,23 @@ export async function libRename(id: string, newName: string): Promise<void> {
 
 /**
  * Load all boards from IDB.
+ * Applies pad migration for Slice-3 legacy data (playlist→files, combo→steps).
  * Safe to call at any library size — Board documents contain no blobs.
  */
 export async function boardGetAll(): Promise<Board[]> {
   const db = await getDB();
-  return db.getAll('boards') as Promise<Board[]>;
+  const raw = (await db.getAll('boards')) as Board[];
+  return raw.map(migrateBoard);
 }
 
 /**
  * Load a single board by id.
+ * Applies pad migration for Slice-3 legacy data.
  */
 export async function boardGet(id: string): Promise<Board | null> {
   const db = await getDB();
   const entry = (await db.get('boards', id)) as Board | undefined;
-  return entry ?? null;
+  return entry ? migrateBoard(entry) : null;
 }
 
 /**

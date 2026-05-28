@@ -132,7 +132,7 @@ export function PadGrid({
       await savePadToScene(result.pad);
     } else if (result.action === 'open-editor') {
       // Build a partial pad and open the editor (sets selectedPad)
-      const partial = result.partialPad as Pad;
+      const partial = result.partialPad;
       await savePadToScene(partial);
       onRequestNewPad(partial);
     }
