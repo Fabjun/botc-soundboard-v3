@@ -211,7 +211,7 @@ export function LibraryScreen(): JSX.Element {
         ref={fileInputRef}
         type="file"
         multiple
-        accept="audio/*"
+        accept="audio/mpeg,audio/wav,audio/mp4,audio/aac,audio/x-m4a,audio/flac,audio/ogg,audio/opus,.mp3,.wav,.m4a,.aac,.flac,.ogg,.opus"
         style={{ display: 'none' }}
         onChange={handleFileInputChange}
       />
