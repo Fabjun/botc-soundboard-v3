@@ -8,9 +8,10 @@
 //   smoke        — 5 smoke specs × Chromium (fast, ~10s)
 //   smoke-webkit — same 5 specs × WebKit (iOS Safari proxy)
 //   full         — 6 full-suite specs × Chromium only (slice-3 coverage, ~90s)
+//   mobile       — touch-wiring, target sizes, overflow × WebKit/iPhone 13 Pro (~30s)
 //   visual       — screenshot regression specs × Chromium (local-only, NOT in CI)
 //
-// Default `playwright test` (no flags) runs all four projects.
+// Default `playwright test` (no flags) runs all five projects.
 // Use --project=<name> to run a subset.
 //
 // webServer: starts `npm run dev` and waits for the Vite server to be ready
@@ -78,6 +79,15 @@ export default defineConfig({
       name: 'full',
       testMatch: fullMatch,
       use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      // iPhone 13 Pro: viewport 390×844, hasTouch: true, isMobile: true,
+      // deviceScaleFactor: 3, defaultBrowserType: webkit.
+      // Covers touch-wiring (tap() events), touch target sizes, overflow.
+      // File-picker, audio output, Ringer Switch: see docs/MANUAL_IPHONE_CHECKLIST.md.
+      name: 'mobile',
+      testMatch: /tests\/e2e\/mobile\/.*\.spec\.ts$/,
+      use: { ...devices['iPhone 13 Pro'] },
     },
     {
       name: 'visual',

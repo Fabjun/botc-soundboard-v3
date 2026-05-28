@@ -40,6 +40,7 @@ export function BoardTopBarV3({
       <div class="sb-board-topbar-left">
         <button
           class="sb-btn sb-btn-sm sb-btn-ghost"
+          data-testid="board-back-button"
           onClick={onBack}
           title="Back to board list"
           style={{ minWidth: 44, padding: '0 8px' }}
