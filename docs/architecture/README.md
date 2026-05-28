@@ -13,6 +13,7 @@ Jede Entscheidung bekommt eine eigene Datei. Format: `docs/architecture/_templat
 
 ## Index
 
+<!-- AUTO-GENERATED:adr-index START — nicht manuell editieren -->
 ### Tech Stack
 
 | # | Titel | Status | Slice | Datum |
@@ -35,11 +36,12 @@ Jede Entscheidung bekommt eine eigene Datei. Format: `docs/architecture/_templat
 | # | Titel | Status | Slice | Datum |
 |---|-------|--------|-------|-------|
 | [ADR-0008](0008-pad-position-struct.md) | Pad-Position als `{col, row}` Struct | Accepted | Slice 3 | 2026-05-27 |
-| [ADR-0009](0009-pad-position-null.md) | Pad-Position kann `null` sein (UNPLACED) | Accepted | Slice 3 | 2026-05-27 |
+| [ADR-0009](0009-pad-position-null.md) | Pad-Position kann `null` sein (UNPLACED-State) | Accepted | Slice 3 | 2026-05-27 |
 | [ADR-0010](0010-board-json-document.md) | Board als monolithisches JSON-Dokument in IDB | Accepted | Slice 3 | 2026-05-27 |
 | [ADR-0011](0011-library-item-split.md) | LibraryItem aufgeteilt in Meta (Signals) + Blob (IDB-only) | Accepted | Slice 2 | 2026-05-27 |
 | [ADR-0012](0012-sha256-noble-hashes.md) | SHA-256 via `@noble/hashes` statt Web Crypto API | Accepted | Slice 2 | 2026-05-27 |
 | [ADR-0013](0013-padset-naming.md) | Type `PadSet` statt `Set` | Accepted | Slice 3 | 2026-05-27 |
+| [ADR-0042](0042-pad-discriminated-union.md) | Pad als Discriminated Union | Accepted | Slice 4 | 2026-05-28 |
 
 ### Persistenz
 
@@ -48,21 +50,23 @@ Jede Entscheidung bekommt eine eigene Datei. Format: `docs/architecture/_templat
 | [ADR-0014](0014-indexeddb-persistence.md) | IndexedDB alleinige Persistenz; localStorage nur für UI-Präferenzen | Accepted | cross-cutting | 2026-05-27 |
 | [ADR-0015](0015-db-name.md) | DB-Name `sos-v3` (getrennt von V1) | Accepted | Slice 1 | 2026-05-27 |
 | [ADR-0016](0016-idb-library.md) | `idb` Library als IDB-Wrapper | Accepted | Slice 2 | 2026-05-27 |
-| [ADR-0017](0017-idb-schema-versioning.md) | IDB Schema-Versioning mit Upgrade-Pfaden | Accepted | Slice 2 | 2026-05-27 |
+| [ADR-0017](0017-idb-schema-versioning.md) | IDB Schema-Versioning mit Upgrade-Pfaden | Accepted | Slice 2 (v1: library), Slice 3 (v2: boards) | 2026-05-27 |
 
 ### Audio-Engine & iOS Memory
 
 | # | Titel | Status | Slice | Datum |
 |---|-------|--------|-------|-------|
 | [ADR-0018](0018-v1-audio-engine.md) | V1 Audio-Engine 1:1 kopiert — kein Neubau | Accepted | Slice 4 | 2026-05-27 |
-| [ADR-0019](0019-ios-memory-safety.md) | iOS Memory Safety Rules (150 MB LRU, serielles Decode) | Accepted | cross-cutting | 2026-05-27 |
-| [ADR-0020](0020-audiocontext-lifecycle.md) | AudioContext-Lifecycle: TAP TO UNLOCK + visibilitychange | Accepted | Slice 4 | 2026-05-27 |
+| [ADR-0019](0019-ios-memory-safety.md) | iOS Memory Safety Rules (150 MB LRU-Cache, serielles Decode) | Accepted | cross-cutting | 2026-05-27 |
+| [ADR-0020](0020-audiocontext-lifecycle.md) | AudioContext-Lifecycle — TAP TO UNLOCK + visibilitychange | Accepted | Slice 4 | 2026-05-27 |
+| [ADR-0043](0043-audiocontext-timing.md) | AudioContext Timing — Synchronous in Click Handler | Accepted | — | 2026-05-28 |
+| [ADR-0044](0044-audio-engine-module-structure.md) | Audio Engine Module Structure | Accepted | — | 2026-05-28 |
 
 ### UI-Architektur
 
 | # | Titel | Status | Slice | Datum |
 |---|-------|--------|-------|-------|
-| [ADR-0021](0021-css-naming.md) | CSS-Klassen: `sb-<block>` / `sb-<block>-<part>` / `is-<state>` | Accepted | cross-cutting | 2026-05-27 |
+| [ADR-0021](0021-css-naming.md) | CSS-Klassen `sb-<block>` / `sb-<block>-<part>` / `is-<state>` | Accepted | cross-cutting | 2026-05-27 |
 | [ADR-0022](0022-design-tokens.md) | Design-Tokens in `tokens.css` — keine Farbliterale | Accepted | cross-cutting | 2026-05-27 |
 | [ADR-0023](0023-surface-hierarchy.md) | Fünf-Ebenen-Surface-Hierarchie | Accepted | cross-cutting | 2026-05-27 |
 | [ADR-0024](0024-clip-path-frames.md) | `clip-path` für Pixel-Frames — `filter: drop-shadow()` statt `box-shadow` | Accepted | cross-cutting | 2026-05-27 |
@@ -91,8 +95,6 @@ Jede Entscheidung bekommt eine eigene Datei. Format: `docs/architecture/_templat
 | [ADR-0037](0037-husky-precommit.md) | Husky Pre-Commit-Hook: Build + Unit + Smoke E2E | Accepted | infrastructure | 2026-05-27 |
 | [ADR-0038](0038-data-testid-convention.md) | `data-testid`-Konvention für E2E-Selektoren | Accepted | infrastructure | 2026-05-27 |
 | [ADR-0039](0039-vertical-slices.md) | Vertikale Slices als Entwicklungsmodell (8 Slices) | Accepted | cross-cutting | 2026-05-27 |
-| [ADR-0040](0040-github-pages-deployment.md) | GitHub Pages Deployment gated auf CI | Accepted | infrastructure | 2026-05-27 |
+| [ADR-0040](0040-github-pages-deployment.md) | GitHub Pages Deployment gated auf CI (`workflow_run`) | Accepted | infrastructure | 2026-05-27 |
 | [ADR-0041](0041-english-only.md) | Englisch als App-Sprache — keine i18n-Infrastruktur | Accepted | cross-cutting | 2026-05-27 |
-| [ADR-0042](0042-pad-discriminated-union.md) | Pad als Discriminated Union (SinglePad ∣ LoopPad ∣ PlaylistPad ∣ ComboPad) | Accepted | data-model | 2026-05-28 |
-| [ADR-0043](0043-audiocontext-timing.md) | AudioContext Timing — synchron im Click-Handler (ADR-0020 Verfeinerung) | Accepted | audio | 2026-05-28 |
-| [ADR-0044](0044-audio-engine-module-structure.md) | Audio Engine Modulstruktur (engine.ts / index.ts / types.ts) | Accepted | audio | 2026-05-28 |
+<!-- AUTO-GENERATED:adr-index END -->

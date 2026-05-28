@@ -23,7 +23,11 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "size": "size-limit"
+    "size": "size-limit",
+    "sync:adr": "tsx ../scripts/sync-adr-index.ts",
+    "sync:classes": "tsx ../scripts/sync-sb-classes-inventory.ts",
+    "sync:tokens": "tsx ../scripts/sync-tokens-inventory.ts",
+    "sync:docs": "npm run sync:adr && npm run sync:classes && npm run sync:tokens"
   },
   "dependencies": {
     "@noble/hashes": "^2.2.0",
@@ -58,6 +62,7 @@
     "lint-staged": "^17.0.5",
     "prettier": "^3.8.3",
     "size-limit": "^12.1.0",
+    "tsx": "^4.19.4",
     "typescript": "~6.0.2",
     "vite": "^8.0.12",
     "vite-plugin-pwa": "^1.3.0",
