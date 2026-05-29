@@ -486,7 +486,7 @@ used for static structural values (e.g., `sb-creation-popover-section` bypassed 
 `style={{ padding: '8px', borderTop: ... }}`), bypassing the design-system class system and
 creating drift that the `sync:classes` audit cannot detect.
 
-### Session 0 — Documentation organization
+### Session 0 — Documentation organization ✅ Done (5298705)
 _Purpose:_ Clarify the roles and hierarchy of all design-related documentation loci before
 any new convention rules are written. Without this, new rules risk landing in the wrong file
 and going unread.
