@@ -644,6 +644,30 @@ genuinely needed (per Session 1 rules), with explicit anti-duplication disciplin
 
 ---
 
+### Color-literal audit — investigate Stylelint first
+
+ADR-0022 forbids color literals (hex, rgb(), named colors) in favour of design
+tokens (`var(--token)`). There is currently no automated check that this holds.
+A measurement of where literals slipped in would be useful — same idea as the
+inline-style audit.
+
+**Important — check the right tool first:** Before building a custom audit script,
+investigate whether Stylelint (or an existing ESLint plugin) already covers this.
+There are standard rules for "no color literals / enforce custom properties." If a
+lint rule exists, use that (it runs in-editor and can gate pre-commit) rather than
+writing and maintaining a custom script. A custom audit is only justified if no
+lint rule fits AND we specifically want a count/baseline rather than a pass/fail gate.
+
+**Why deferred:** Not urgent; the inline-style discipline work (CSS Class Discipline
+Sessions 1–3) takes priority. Color-token discipline appears largely followed already
+(the tokens-inventory generator runs cleanly), so drift here is likely small.
+
+**When:** After CSS Class Discipline Sessions 1–3 are complete. Low priority.
+
+**Source:** Conversation 2026-05-29 — "should we use audit scripts elsewhere?"
+
+---
+
 ## 6. Known Limitations
 
 Documented, accepted constraints. Will not be fixed until the triggering platform or slice
