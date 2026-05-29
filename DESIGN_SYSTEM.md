@@ -87,34 +87,34 @@ Verbotene Muster in neuem V3-Code:
 | `sb-board-topbar-right` | Right column of the board top bar (actions, right-aligned). | `v3/src/styles/tokens.css` |
 | `sb-btn` | Pixel-frame button base; all button variants extend this. | `v3/src/styles/tokens.css` |
 | `sb-btn-danger` | Button variant for destructive actions; blood-red border and label. | `v3/src/styles/tokens.css` |
-| `sb-btn-filled` | Button variant — solid gold fill and dark label; primary CTA. | `v3/src/styles/tokens.css` |
+| `sb-btn-filled` | Button variant — solid gold fill and dark label; primary CTA. Currently no TSX usage. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-btn-ghost` | Button variant — transparent fill, dimmed border; low-emphasis. | `v3/src/styles/tokens.css` |
 | `sb-btn-primary` | Button variant — gold border and label; highlighted action. | `v3/src/styles/tokens.css` |
 | `sb-btn-sm` | Small-size modifier for .sb-btn; tighter padding and smaller font. | `v3/src/styles/tokens.css` |
-| `sb-caption` | Smallest text style — xs mono in text-mute; filenames and metadata. | `v3/src/styles/tokens.css` |
-| `sb-card` | Pixel-frame container card with padding and drop-shadow elevation. | `v3/src/styles/tokens.css` |
+| `sb-caption` | Smallest text style — xs mono in text-mute; for filenames and metadata. Currently no TSX usage. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-card` | Pixel-frame container card with padding and drop-shadow elevation. Currently no TSX usage; V3 list items use sb-menu-row instead. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-creation-popover` | Fixed 300px popover for Path A (desktop) pad creation flow. | `v3/src/styles/tokens.css` |
-| `sb-creation-popover-section` | Padded section divider within the creation popover. | `v3/src/styles/tokens.css` |
-| `sb-creation-sheet` | Mobile bottom sheet for Path A pad creation (slides up from bottom, max 85dvh). | `v3/src/styles/tokens.css` |
-| `sb-creation-sheet-backdrop` | Semi-opaque scrim behind the pad creation bottom sheet. | `v3/src/styles/tokens.css` |
+| `sb-creation-popover-section` | Padded section divider within the creation popover. Not applied in current PadCreationPopover.tsx implementation. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-creation-sheet` | Mobile bottom sheet for pad creation and pad-type confirmation (slides up from bottom, max 85dvh). | `v3/src/styles/tokens.css` |
+| `sb-creation-sheet-backdrop` | Mobile backdrop behind sb-creation-sheet; sb-type-confirm-backdrop is the desktop equivalent. | `v3/src/styles/tokens.css` |
 | `sb-display` | Hero title — Press Start 2P with gold glow; for page-level titles only. | `v3/src/styles/tokens.css` |
 | `sb-display-vt` | VT323 heading variant of sb-display for medium headings; same glow, less chunky pixels. | `v3/src/styles/tokens.css` |
 | `sb-grid-bg` | Cross-hatch layout grid on the board canvas in SETUP mode. | `v3/src/styles/tokens.css` |
-| `sb-inspector` | Generic right-rail inspector shell; V3 uses specific variants sb-pad-editor and sb-library-panel. | `v3/src/styles/tokens.css` |
+| `sb-inspector` | Generic right-rail inspector shell; V3 uses specific variants sb-pad-editor and sb-library-panel. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-inspector-section` | Padded content section within an inspector panel, separated by bottom border. | `v3/src/styles/tokens.css` |
-| `sb-label` | Uppercase tracking label in font-ui; field labels and section categories. | `v3/src/styles/tokens.css` |
+| `sb-label` | Uppercase VT323 label; intended for field labels and section headings. Currently no TSX usage. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-library-panel` | Library browse panel in the board right rail (280px, hides overflow). | `v3/src/styles/tokens.css` |
 | `sb-menu-row` | Pixel-frame list row with icon, primary title, and subtitle slots. | `v3/src/styles/tokens.css` |
 | `sb-mode-badge` | Compact inline SETUP/GAME badge for top-bar and status-bar surfaces. | `v3/src/styles/tokens.css` |
 | `sb-mode-toggle` | Interactive SETUP | GAME pill in the board top bar center (v24 design). | `v3/src/styles/tokens.css` |
-| `sb-mode-toggle-flash` | Planned reduced-motion fallback for sb-mode-toggle (brightness flash); not yet applied in ModeToggle.tsx. [verify] | `v3/src/styles/tokens.css` |
+| `sb-mode-toggle-flash` | Reduced-motion fallback for sb-mode-toggle (brightness flash instead of sparks). ModeToggle.tsx skips animation entirely rather than applying this class. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-mode-toggle-half` | Left or right half-button of the mode toggle pill. | `v3/src/styles/tokens.css` |
 | `sb-mode-toggle-sep` | 1 px vertical separator between the two mode toggle halves. | `v3/src/styles/tokens.css` |
 | `sb-mode-toggle-spark` | Individual animated spark particle emitted on mode switch. | `v3/src/styles/tokens.css` |
-| `sb-mode-toggle-sparks` | Overflow container holding all spark particles during mode-switch animation. | `v3/src/styles/tokens.css` |
-| `sb-mono` | Mono body text in text-dim; descriptions, subtitles, filenames, body copy. | `v3/src/styles/tokens.css` |
-| `sb-num` | Numeric scrubber chip — ew-resize cursor, sunk background; for PAD editor (CSS-only). | `v3/src/styles/tokens.css` |
-| `sb-overlay-scroll` | Scroll container for overlays and panels; contains overscroll within the element. | `v3/src/styles/global.css` |
+| `sb-mode-toggle-sparks` | Overflow container intended for spark particles during mode-switch. Not used; ModeToggle.tsx appends sparks to document.body instead. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-mono` | Secondary mono body text in text-dim; currently used only for the StartScreen tagline, designed as a utility for descriptions and body copy. | `v3/src/styles/tokens.css` |
+| `sb-num` | Premiere-style numeric scrubber chip — ew-resize cursor, sunk background; for PAD editor trim and loop inputs. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-overlay-scroll` | Scroll container for overlays and panels; contains overscroll within the element. Currently no TSX usage. [unused-css] | `v3/src/styles/global.css` |
 | `sb-pad` | Base pad shell — pixel-frame, type-colour left spine, is-hot glow, is-setup dashed border. | `v3/src/styles/tokens.css` |
 | `sb-pad-cell-add` | "+" symbol in empty grid cells; the tap-to-create affordance. | `v3/src/styles/tokens.css` |
 | `sb-pad-editor` | Right inspector panel shown when a pad is selected in SETUP mode (280px, scrolls). | `v3/src/styles/tokens.css` |
@@ -122,21 +122,21 @@ Verbotene Muster in neuem V3-Code:
 | `sb-pad-grid-cell` | Single cell wrapper in the pad grid; carries position, DnD states, and touch targets. | `v3/src/styles/tokens.css` |
 | `sb-panel-header` | Compact 28px header strip on inspector panels (icon + uppercase label). | `v3/src/styles/tokens.css` |
 | `sb-pill` | Compact pixel-frame badge; type-colour variants via is-on, is-loop, is-playlist, is-combo. | `v3/src/styles/tokens.css` |
-| `sb-pix` | Base pixel-frame shell — clip-path stepped corners and gradient-as-border trick. | `v3/src/styles/tokens.css` |
-| `sb-scanlines` | CRT scanline overlay via ::after pseudo-element; StartScreen and GAME-mode board. | `v3/src/styles/tokens.css` |
+| `sb-pix` | Shared CSS base for card/btn/pad/pill/menu-row pixel-frame styling; never applied directly as a className. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-scanlines` | CRT scanline overlay via ::after pseudo-element; currently applied to StartScreen only. | `v3/src/styles/tokens.css` |
 | `sb-scene-rail` | Left 220px scene navigation column on BoardScreen (fixed width, scrollable). | `v3/src/styles/tokens.css` |
 | `sb-scene-tab` | Clickable scene entry in the scene rail; is-active highlights the current scene. | `v3/src/styles/tokens.css` |
 | `sb-scene-tab-actions` | Action buttons (duplicate, delete) revealed on hover or on the active scene tab. | `v3/src/styles/tokens.css` |
-| `sb-scroll` | iOS-momentum scroll container (touch scrolling without overscroll containment). | `v3/src/styles/global.css` |
-| `sb-slider` | Horizontal range track bar for volume and trim controls (CSS-only, Slice 8+). | `v3/src/styles/tokens.css` |
-| `sb-slider-fill` | Active filled portion of the slider track; width set by inline style. | `v3/src/styles/tokens.css` |
-| `sb-slider-thumb` | Draggable thumb on the slider track with gold glow. | `v3/src/styles/tokens.css` |
+| `sb-scroll` | iOS-momentum scroll utility; touch scrolling without overscroll containment. Currently no TSX usage. [unused-css] | `v3/src/styles/global.css` |
+| `sb-slider` | Horizontal range track bar for volume and trim controls; Slice 8+ feature. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-slider-fill` | Active filled portion of the slider track; width set by inline style. Slice 8+ feature. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-slider-thumb` | Draggable thumb on the slider track with gold glow. Slice 8+ feature. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-status-bar` | Bottom 24px strip showing mode, board name, and other metadata. | `v3/src/styles/tokens.css` |
 | `sb-tab` | Individual tab in a tab bar; is-active shows gold underline and label colour. | `v3/src/styles/tokens.css` |
 | `sb-tabs` | Tab bar container — flex row with bottom border separating tabs from content. | `v3/src/styles/tokens.css` |
-| `sb-toggle` | Binary on/off toggle switch (40×20px); is-on moves thumb right and adds gold glow. | `v3/src/styles/tokens.css` |
-| `sb-type-confirm` | Modal dialog for confirming a pad-type change (z-index 500, pixel corners). | `v3/src/styles/tokens.css` |
-| `sb-type-confirm-backdrop` | Semi-opaque backdrop behind the pad type confirm dialog. | `v3/src/styles/tokens.css` |
+| `sb-toggle` | Binary on/off toggle switch (40×20px); is-on moves thumb right and adds gold glow. Currently no TSX usage. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-type-confirm` | Desktop modal for confirming a pad-type change (z-index 500, pixel corners); sb-creation-sheet is used on mobile. | `v3/src/styles/tokens.css` |
+| `sb-type-confirm-backdrop` | Desktop backdrop for sb-type-confirm; sb-creation-sheet-backdrop is the mobile equivalent. | `v3/src/styles/tokens.css` |
 | `sb-undo-toast` | Fixed notification toast above the status bar shown after scene deletion. | `v3/src/styles/tokens.css` |
 | `sb-undo-toast-progress` | Animated gold progress bar at the bottom of the undo toast (linear shrink). | `v3/src/styles/tokens.css` |
 <!-- AUTO-GENERATED:sb-classes END -->

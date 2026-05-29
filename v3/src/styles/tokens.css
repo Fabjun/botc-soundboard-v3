@@ -469,7 +469,7 @@
 }
 
 .sb-label {
-  /* @inventory: Uppercase tracking label in font-ui; field labels and section categories. */
+  /* @inventory: Uppercase VT323 label; intended for field labels and section headings. Currently no TSX usage. [unused-css] */
   font-family: var(--font-ui);
   font-weight: 400;
   text-transform: uppercase;
@@ -478,7 +478,7 @@
 }
 
 .sb-mono {
-  /* @inventory: Mono body text in text-dim; descriptions, subtitles, filenames, body copy. */
+  /* @inventory: Secondary mono body text in text-dim; currently used only for the StartScreen tagline, designed as a utility for descriptions and body copy. */
   font-family: var(--font-mono);
   font-weight: 400;
   color: var(--text-dim);
@@ -491,7 +491,7 @@
 }
 
 .sb-caption {
-  /* @inventory: Smallest text style — xs mono in text-mute; filenames and metadata. */
+  /* @inventory: Smallest text style — xs mono in text-mute; for filenames and metadata. Currently no TSX usage. [unused-css] */
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--text-mute);
@@ -538,10 +538,10 @@
 
 /* ── Card ────────────────────────────────────────────────────────── */
 .sb-pix {
-  /* @inventory: Base pixel-frame shell — clip-path stepped corners and gradient-as-border trick. */
+  /* @inventory: Shared CSS base for card/btn/pad/pill/menu-row pixel-frame styling; never applied directly as a className. [unused-css] */
 }
 .sb-card {
-  /* @inventory: Pixel-frame container card with padding and drop-shadow elevation. */
+  /* @inventory: Pixel-frame container card with padding and drop-shadow elevation. Currently no TSX usage; V3 list items use sb-menu-row instead. [unused-css] */
   --pix-step: 6px;
   padding: var(--space-5);
   filter: var(--shadow-card);
@@ -628,7 +628,7 @@
   color: var(--gold);
 }
 .sb-btn-filled {
-  /* @inventory: Button variant — solid gold fill and dark label; primary CTA. */
+  /* @inventory: Button variant — solid gold fill and dark label; primary CTA. Currently no TSX usage. [unused-css] */
   --pix-bg: var(--gold);
   --pix-border: var(--gold);
   color: var(--text-on-gold);
@@ -793,7 +793,7 @@
 
 /* ── Slider ───────────────────────────────────────────────── */
 .sb-slider {
-  /* @inventory: Horizontal range track bar for volume and trim controls (CSS-only, Slice 8+). */
+  /* @inventory: Horizontal range track bar for volume and trim controls; Slice 8+ feature. [unused-css] */
   position: relative;
   height: 6px;
   background: var(--sunk);
@@ -801,13 +801,13 @@
   overflow: hidden;
 }
 .sb-slider-fill {
-  /* @inventory: Active filled portion of the slider track; width set by inline style. */
+  /* @inventory: Active filled portion of the slider track; width set by inline style. Slice 8+ feature. [unused-css] */
   position: absolute;
   inset: 0 auto 0 0;
   background: var(--gold);
 }
 .sb-slider-thumb {
-  /* @inventory: Draggable thumb on the slider track with gold glow. */
+  /* @inventory: Draggable thumb on the slider track with gold glow. Slice 8+ feature. [unused-css] */
   position: absolute;
   top: 50%;
   width: 12px;
@@ -819,7 +819,7 @@
 
 /* ── Toggle ───────────────────────────────────────────────── */
 .sb-toggle {
-  /* @inventory: Binary on/off toggle switch (40×20px); is-on moves thumb right and adds gold glow. */
+  /* @inventory: Binary on/off toggle switch (40×20px); is-on moves thumb right and adds gold glow. Currently no TSX usage. [unused-css] */
   width: 40px;
   height: 20px;
   background: var(--sunk);
@@ -953,7 +953,7 @@
 /* Inspector — right-rail panel container used in editor screens.
    Densely packed; section dividers visible.                       */
 .sb-inspector {
-  /* @inventory: Generic right-rail inspector shell; V3 uses specific variants sb-pad-editor and sb-library-panel. */
+  /* @inventory: Generic right-rail inspector shell; V3 uses specific variants sb-pad-editor and sb-library-panel. [unused-css] */
   background: var(--surface);
   border-left: 1px solid var(--border);
   display: flex;
@@ -967,7 +967,7 @@
 
 /* Numeric input chip (Premiere-style scrubber) */
 .sb-num {
-  /* @inventory: Numeric scrubber chip — ew-resize cursor, sunk background; for PAD editor (CSS-only). */
+  /* @inventory: Premiere-style numeric scrubber chip — ew-resize cursor, sunk background; for PAD editor trim and loop inputs. [unused-css] */
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
@@ -988,7 +988,7 @@
 /* Faint scanline overlay — used selectively on the Start screen and the
    GAME-mode board to deepen the CRT atmosphere without obscuring text. */
 .sb-scanlines {
-  /* @inventory: CRT scanline overlay via ::after pseudo-element; StartScreen and GAME-mode board. */
+  /* @inventory: CRT scanline overlay via ::after pseudo-element; currently applied to StartScreen only. */
 }
 .sb-scanlines::after {
   content: '';
@@ -1128,7 +1128,7 @@
 
 /* Spark layer — absolutely positioned sibling, not clipped by toggle */
 .sb-mode-toggle-sparks {
-  /* @inventory: Overflow container holding all spark particles during mode-switch animation. */
+  /* @inventory: Overflow container intended for spark particles during mode-switch. Not used; ModeToggle.tsx appends sparks to document.body instead. [unused-css] */
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -1158,7 +1158,7 @@
     display: none;
   }
   .sb-mode-toggle-flash {
-    /* @inventory: Planned reduced-motion fallback for sb-mode-toggle (brightness flash); not yet applied in ModeToggle.tsx. [verify] */
+    /* @inventory: Reduced-motion fallback for sb-mode-toggle (brightness flash instead of sparks). ModeToggle.tsx skips animation entirely rather than applying this class. [unused-css] */
     animation: sb-mode-flash 220ms ease-out;
   }
 }
@@ -1365,7 +1365,7 @@
   );
 }
 .sb-creation-popover-section {
-  /* @inventory: Padded section divider within the creation popover. */
+  /* @inventory: Padded section divider within the creation popover. Not applied in current PadCreationPopover.tsx implementation. [unused-css] */
   padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--border-soft);
 }
@@ -1375,7 +1375,7 @@
 
 /* ── Creation Sheet (Path A mobile — bottom sheet) ────────────────── */
 .sb-creation-sheet {
-  /* @inventory: Mobile bottom sheet for Path A pad creation (slides up from bottom, max 85dvh). */
+  /* @inventory: Mobile bottom sheet for pad creation and pad-type confirmation (slides up from bottom, max 85dvh). */
   position: fixed;
   bottom: 0;
   left: 0;
@@ -1393,7 +1393,7 @@
   -webkit-overflow-scrolling: touch;
 }
 .sb-creation-sheet-backdrop {
-  /* @inventory: Semi-opaque scrim behind the pad creation bottom sheet. */
+  /* @inventory: Mobile backdrop behind sb-creation-sheet; sb-type-confirm-backdrop is the desktop equivalent. */
   position: fixed;
   inset: 0;
   z-index: 399;
@@ -1402,7 +1402,7 @@
 
 /* ── Type Confirm Dialog ──────────────────────────────────────────── */
 .sb-type-confirm {
-  /* @inventory: Modal dialog for confirming a pad-type change (z-index 500, pixel corners). */
+  /* @inventory: Desktop modal for confirming a pad-type change (z-index 500, pixel corners); sb-creation-sheet is used on mobile. */
   position: fixed;
   z-index: 500;
   width: 320px;
@@ -1428,7 +1428,7 @@
   );
 }
 .sb-type-confirm-backdrop {
-  /* @inventory: Semi-opaque backdrop behind the pad type confirm dialog. */
+  /* @inventory: Desktop backdrop for sb-type-confirm; sb-creation-sheet-backdrop is the mobile equivalent. */
   position: fixed;
   inset: 0;
   z-index: 499;
