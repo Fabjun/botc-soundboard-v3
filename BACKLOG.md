@@ -517,7 +517,7 @@ multi-session plan.
 
 ---
 
-### Session 1 — Workflow rule + audit tooling + sync:classes warning ✅ Done (next commit SHA)
+### Session 1 — Workflow rule + audit tooling + sync:classes warning ✅ Done (3b1ae06)
 _Purpose:_ Establish the rule that prevents inline-style drift, build the tooling that
 measures it, and tighten the existing `sync:classes` generator to warn on undocumented
 new classes.
