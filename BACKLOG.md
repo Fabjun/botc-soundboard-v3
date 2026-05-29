@@ -475,6 +475,51 @@ fallbacks remain in `tokens.css`.
 **When:** When `tokens.css`, `.sb-pix`, or `.sb-pad.is-deep` CSS is next touched.
 **Source:** Session 0 tokens.css diff, 2026-05-29.
 
+### shellcheck in pre-commit hook — evaluate first
+
+Two `set -e` bugs in the BACKLOG drift reminder (grep exit 1, git log exit 128)
+reached commits before being caught. `shellcheck` is a standard linter that knows
+exactly this class of bug and would have flagged both at write time — an Ebene-1
+"make the error impossible" measure rather than relying on review.
+
+**Evaluate before adopting — do NOT just add it:**
+- Does it meaningfully slow the pre-commit hook? (The hook is already ~16s, near the
+  ~20s comfort threshold. Measure shellcheck's runtime on `.husky/*` before adding.)
+- Is the hook the right place, or should it be CI-only / an editor integration? A blocking
+  shellcheck gate that fires on style-nitpicks would be annoying; configure severity so it
+  catches real bugs (like the set -e traps) without noise.
+- It only covers shell scripts (`.husky/*` and `scripts/*.sh` if any) — small surface, but
+  the surface where the recent bugs lived.
+
+**Why deferred:** Meta-tooling; the CSS Class Discipline migration (Sessions 2–3) takes
+priority. Worth doing eventually because the set -e class bit us twice.
+**Source:** Conversation 2026-05-29 — "how to prevent things being overlooked."
+
+### Review checklist — evaluate, keep minimal
+
+During Session 1, most overlooked issues were caught by recurring review questions, not
+by a mechanism. Codifying those questions as a short checklist would make the catching
+less dependent on in-the-moment attentiveness. The recurring questions that actually
+caught bugs:
+- Was this number/claim measured, or estimated? (caught the 60–80 miscount)
+- Which file/source does this actually read? (caught sync:tokens wrong-file)
+- What happens in the error / edge case? (caught the set -e traps)
+- Will the thing we built actually be found/used? (caught the iPhone-checklist gap)
+- Does this only sound plausible, or is it backed by evidence? (the underlying pattern)
+
+**Evaluate before adopting — and keep it SHORT:**
+- A checklist only helps if it's used. A long one gets skipped. Five questions max; if it
+  grows, it has failed.
+- It must NOT become "always plan / always test everything" — selective vigilance is what
+  works; a reflexive checklist on every trivial edit dulls attention and defeats itself.
+- Decide where it lives: a short section in CLAUDE.md, or a standalone REVIEW_CHECKLIST.md
+  referenced from the slice-completion routine. (Note: it's a checklist for the human
+  reviewing plans, not for Claude Code — placement should reflect that.)
+
+**Why deferred:** Process improvement, not blocking. The questions already work informally;
+this just makes them durable. Low priority but cheap.
+**Source:** Conversation 2026-05-29 — "how to prevent things being overlooked."
+
 ---
 
 ## 5. CSS Class Discipline (multi-session plan)
