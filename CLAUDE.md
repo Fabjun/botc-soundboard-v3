@@ -260,6 +260,12 @@ fonts, or spacing.
   // Good — Path C: value is computed at runtime
   <div style={{ transform: `translateX(${dragOffset}px)` }}>
   ```
+- **Inline-style audit:** `npm run audit:inline-styles` reports all `style={}` blocks
+  classified against the four-path rule (pure-layout / structural / mixed / dynamic /
+  custom-setter / unclassified). Non-blocking; runs in CI as informational. Use it to
+  measure inline-style drift — before and after CSS Class Discipline Session 3 migration
+  work, or any time you want to check whether new violations crept in. Baseline (2026-05-29):
+  203 blocks, 177 Path-D violations.
 
 ---
 
@@ -381,6 +387,10 @@ Before committing a slice, also:
 4. Update CLAUDE.md "Slice progress" table with completion date
 5. **Update BACKLOG.md**: mark completed items `✅ Done (commit SHA)`, add any
    new deferred items surfaced during the slice.
+6. **For slices touching audio (`src/audio/`), IDB (`src/db/`), or file-handling
+   (import/export):** run through `docs/MANUAL_IPHONE_CHECKLIST.md` before the final
+   commit. These checks cannot be automated in Playwright and have caught iOS-only bugs
+   (audio playback, file picker, tab-switch lifecycle) that passed all automated tests.
 
 ---
 
