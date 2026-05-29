@@ -556,6 +556,27 @@ new classes.
    the sync:classes warning. Tune the threshold (commit count or days) during implementation.
    **Source:** Conversation 2026-05-29 — discussed alongside "should the backlog auto-update?"
 
+5. **Fix `sync:tokens` source — read from canonical file, verify all generators consistent:**
+   `sync:tokens` currently reads from `SoS_DESIGN_25052026/tokens.css` (the design handoff
+   origin, now explicitly marked non-canonical). As a result, `DESIGN_SYSTEM.md §A` — which
+   should be the source of truth — is generated from the wrong file: it is missing 9 tokens
+   added during V3 development (`--flame-soft`, `--flame-aura`, `--grid-cols/gap/rows`,
+   `--spark-duration/dx/dy`, `--undo-duration`) and still lists `--pix-bg-layer` which was
+   removed. This is exactly the class of documentation drift Session 0 was designed to
+   surface — one layer deeper into tooling.
+
+   **Concrete fix:** Change `scripts/sync-tokens-inventory.ts` to read from
+   `v3/src/styles/tokens.css` instead of `SoS_DESIGN_25052026/tokens.css`. Regenerate §A —
+   should show 9 new tokens and correctly exclude `--pix-bg-layer`.
+
+   **Broader verification (do at the same time):** Confirm that all `sync:*` generators read
+   from the same canonical source. `sync:classes` reads from `v3/src/styles/tokens.css`
+   (confirmed — `@inventory` comments live there and §6 reflects them correctly). The question
+   to answer: are all three generators (`sync:adr`, `sync:classes`, `sync:tokens`) consistent
+   in their canonical source, or is `sync:tokens` the only outlier? Report in the commit
+   message.
+   **Source:** Session 0 diff analysis, 2026-05-29.
+
 **Alignment note (pre-work for Session 1):** Before writing the new class-vs-inline rule in
 CLAUDE.md, verify that `DESIGN_SYSTEM_CHEATSHEET.md`'s decision tree (specifically the
 inline-style and class-creation branches) aligns with the Path A/B/C/D logic. If the existing
