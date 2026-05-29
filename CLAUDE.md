@@ -218,6 +218,48 @@ fonts, or spacing.
   legacy entries.
 - **Library entries**: always `{name, hash, size, peaks?}` shape in
   working memory. Never raw audio in working state.
+- **CSS class vs. inline style — four paths** (see also `DESIGN_SYSTEM_CHEATSHEET.md §Decision tree`):
+  Before adding `style={}` or a new `class=`, pick the right path:
+  - **Path A — use existing class:** Consult `DESIGN_SYSTEM.md §6` first. If an `sb-*` or
+    `is-*` class fits, use it. Checking §6 before creating any new class is mandatory — not
+    optional.
+  - **Path B — create new class:** No existing class fits **and** the value is structural or
+    reusable. Create a new `sb-*` class: follow naming conventions (ADR-0021), use design
+    tokens (ADR-0022), add `/* @inventory: … */`, register in §6 in the same commit. Check
+    §6 first for a class with similar function — extend (e.g., `is-*` variant) rather than
+    duplicate. If duplication risk is unclear, raise the question. Layout-only structures
+    (flex/gap/align-only wrappers) belong in named layout primitives (`sb-row`, `sb-stack`,
+    `sb-flex-1`, and variants), not inline exceptions; these primitives are created in
+    Session 3 of the CSS Class Discipline plan.
+  - **Path C — inline = dynamic only:** `style={}` is legitimate only for values computed at
+    runtime: animation coordinates, drag positions, data-driven dimensions, state-dependent
+    values. Test: "can this value be written as a CSS string literal without referencing
+    runtime data?" If yes → it belongs in a class, not inline.
+  - **Path D — forbidden:** Inline styles for static values. Covers three sub-cases:
+    - Token-using values: `style={{ color: 'var(--flame)' }}` is the same violation as
+      `style={{ color: '#F5A623' }}` — the token reference does not make it Path C.
+    - Static layout values: `style={{ display: 'flex', gap: 8 }}` — use a layout primitive
+      class (Path B), not an inline exception.
+    - Mixed blocks: `style={{ display: 'flex', color: 'var(--gold)' }}` — the whole block is
+      Path D; there is no loophole of attaching a structural property to a layout one.
+
+  **Canonical example** (`sb-creation-popover-section` drift case):
+  ```tsx
+  // Bad — Path D: static structural values; sb-creation-popover-section already exists
+  <div style={{ padding: '8px', borderTop: '1px solid var(--border-soft)' }}>
+
+  // Good — Path A: use the existing class
+  <div class="sb-creation-popover-section">
+
+  // Bad — Path D: static layout value (no inline exception for layout)
+  <div style={{ display: 'flex', gap: 6 }}>
+
+  // Good — Path B: use / create a layout primitive class
+  <div class="sb-row">
+
+  // Good — Path C: value is computed at runtime
+  <div style={{ transform: `translateX(${dragOffset}px)` }}>
+  ```
 
 ---
 

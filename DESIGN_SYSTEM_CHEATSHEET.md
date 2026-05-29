@@ -40,14 +40,20 @@ Need to style something.
 │     YES → sb-<block>-<variant> class
 │     NO  → continue
 │
-├── Is it pure layout (gap, flex, grid)?
-│     YES → inline style — do not invent utility classes
+├── Is it pure layout (flex/gap/align) on a wrapper with no semantic name?
+│     YES → Path B: layout primitive class (sb-row, sb-stack, sb-flex-1 …)
+│           Never inline for static layout. See Path D in CLAUDE.md.
 │     NO  → continue
 │
-└── Does it appear in ≥ 3 unrelated call sites?
-      YES → new Preact component + new sb-* class; register in §6
-      NO  → keep it inline. Wait for the third occurrence.
+└── Structural or reusable value?
+      YES → Does an existing sb-*/is-* class fit (check §6)?
+              YES → Path A: use it.
+              NO  → Path B: new sb-* class; extend a similar one if found;
+                    register in §6 same-commit. No occurrence threshold.
 ```
+
+> **Binding rule:** `CLAUDE.md §Permanent coding standards — CSS class vs. inline style (four paths)`.
+> When this tree and that rule disagree, CLAUDE.md wins.
 
 ---
 
