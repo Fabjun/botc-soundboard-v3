@@ -391,6 +391,14 @@ Before committing a slice, also:
    (import/export):** run through `docs/MANUAL_IPHONE_CHECKLIST.md` before the final
    commit. These checks cannot be automated in Playwright and have caught iOS-only bugs
    (audio playback, file picker, tab-switch lifecycle) that passed all automated tests.
+7. **Remind the user to push.** After the final commit of a slice or sub-session, output
+   a brief reminder: "N commits are unpushed — consider `git push` to back up work on
+   GitHub and (if app code changed) trigger the Pages deployment." Do NOT push
+   automatically — the user triggers the push after reviewing what's going out. Rationale:
+   this is a public repo with live deployment; pushes should be consciously initiated, not
+   automated. Committed work is not backed up until pushed.
+   _Applies equally to CSS Class Discipline sub-sessions and any other multi-commit
+   doc/tooling sessions._
 
 ---
 
