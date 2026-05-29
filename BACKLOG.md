@@ -23,8 +23,9 @@ during the slice. This is the only defence against backlog drift.
 2. [Documentation Debt](#2-documentation-debt)
 3. [Deferred Design Decisions](#3-deferred-design-decisions)
 4. [Deferred Infrastructure](#4-deferred-infrastructure)
-5. [Known Limitations](#5-known-limitations)
-6. [Manual Verification Reference](#6-manual-verification-reference)
+5. [CSS Class Discipline](#5-css-class-discipline-multi-session-plan)
+6. [Known Limitations](#6-known-limitations)
+7. [Manual Verification Reference](#7-manual-verification-reference)
 
 ---
 
@@ -465,7 +466,128 @@ with the class), or remove the CSS rule if the inline-style approach is kept.
 
 ---
 
-## 5. Known Limitations
+## 5. CSS Class Discipline (multi-session plan)
+_Plan authored: 2026-05-29_
+
+Four sequential sessions to establish and enforce stronger discipline around CSS class usage
+versus inline styles. Motivated by a pattern identified on 2026-05-29: inline styles are
+used for static structural values (e.g., `sb-creation-popover-section` bypassed in favour of
+`style={{ padding: '8px', borderTop: ... }}`), bypassing the design-system class system and
+creating drift that the `sync:classes` audit cannot detect.
+
+### Session 0 — Documentation organization
+_Purpose:_ Clarify the roles and hierarchy of all design-related documentation loci before
+any new convention rules are written. Without this, new rules risk landing in the wrong file
+and going unread.
+
+**Deliverables:**
+- Define the role of every design doc locus: `DESIGN_SYSTEM.md`, `DESIGN_SYSTEM_CHEATSHEET.md`,
+  `SoS_DESIGN_25052026/` (jsx files + tokens.css), `Responsive_Strategy_V3.html`,
+  `DESIGN_NOTES.md`. Each must have a one-sentence "this is for X, source of truth for Y"
+  definition.
+- Resolve the `tokens.css` duplication: `SoS_DESIGN_25052026/tokens.css` vs.
+  `v3/src/styles/tokens.css`. Pick one of three options deliberately: (a) both stay with
+  explicit headers explaining the split, (b) design snapshot moves to an archive location,
+  (c) design snapshot is removed entirely.
+- Define explicitly where workflow rules for code conventions live (so Session 1 knows where
+  to write the new class-vs-inline rule).
+- Expand the planned scope of `DESIGN_SYSTEM.md §1` from "Nomenclature (CSS)" to
+  "Naming Conventions (project-wide)" — covering CSS classes, tokens, components/files,
+  signals, ADRs, `data-testid`, etc. Include a TODO checklist of these sub-topics inside
+  the §1 placeholder.
+- Add a header note to `DESIGN_SYSTEM.md` at the top defining its hierarchy ("source of
+  truth; cheatsheet is the short form; conflicts → this file wins").
+- Add a header note to `DESIGN_SYSTEM_CHEATSHEET.md` referencing back to `DESIGN_SYSTEM.md`
+  as the long form.
+
+**When:** Next session, before any other CSS-discipline work.
+**Source:** Conversation 2026-05-29 — six gaps identified during critical review of the
+multi-session plan.
+
+---
+
+### Session 1 — Workflow rule + audit tooling + sync:classes warning
+_Purpose:_ Establish the rule that prevents inline-style drift, build the tooling that
+measures it, and tighten the existing `sync:classes` generator to warn on undocumented
+new classes.
+
+**Deliverables:**
+
+1. **Workflow rule** (location decided in Session 0) covering three paths:
+   - **Path A:** Use an existing `sb-*` class from `DESIGN_SYSTEM.md §6` whenever one fits.
+     Consulting §6 before adding a new class is mandatory.
+   - **Path B:** Create a new `sb-*` class if no existing one fits and the value is structural
+     and reusable. New class must follow naming conventions (per §1) and use design tokens.
+     Before creating: check §6 for similar function — if a similar class exists, extend it
+     (e.g., with `is-*` variant) instead of duplicating. If unsure whether duplication risk
+     exists, raise the question rather than silently creating.
+   - **Path C:** `style={}` is legitimate only for dynamic values (computed from data,
+     animations, drag positions, runtime calculations). Static values — including those using
+     `var(--token)` — belong in classes, not inline. Inline-with-token is just as much a
+     Path-D violation as inline-with-literal when the value is static.
+   - **Forbidden (Path D):** Inline styles for static structural values, with or without tokens.
+
+2. **Audit script** (`scripts/sync-inline-styles-audit.ts` or similar): scans
+   `v3/src/**/*.tsx`, finds all `style={}` props, classifies them heuristically as
+   "likely-static" (no template literals, no function calls, no variable references — just
+   object literals with string/number values) vs. "likely-dynamic". Reports counts per file
+   and a baseline total. Integrated into npm scripts (`audit:inline-styles`) and ideally
+   into CI as informational (not blocking).
+
+3. **`sync:classes` warning:** When `sync:classes` finds a class without `@inventory`, output
+   a warning (not an error). Distinct from `[unused-css]` markers — those are intentional.
+   The warning is for new classes that haven't been described yet.
+
+**When:** After Session 0 completes.
+**Source:** Conversation 2026-05-29.
+
+---
+
+### Session 2 — Stage-3 plan, scoped by Session 1 baseline measurement
+_Purpose:_ Decide the shape of the migration work based on actual measurement, not estimation.
+Avoids both under-planning and over-planning.
+
+**Deliverables:**
+- Read the inline-styles audit baseline from Session 1.
+- Categorize the findings: how many are Path-C-legitimate (dynamic) vs. Path-D-suspicious
+  (static). For the suspicious ones, group by component or file.
+- Decide whether the migration fits in one session, needs to be split (per slice, per
+  component), or needs design discussion for ambiguous cases.
+- Produce a concrete Session-3 plan with specific files in scope and a clear definition of done.
+
+**When:** Immediately after Session 1.
+**Source:** Conversation 2026-05-29.
+
+---
+
+### Session 3 (or sessions) — Migration of suspicious inline-styles to classes
+_Purpose:_ Convert Path-D inline-styles into proper class usage, creating new classes where
+genuinely needed (per Session 1 rules), with explicit anti-duplication discipline.
+
+**Deliverables:**
+- For each suspicious inline-style: decide Path A (existing class fits), Path B (new class
+  needed), or Path C (false alarm, was actually dynamic).
+- Path B work must explicitly consult `DESIGN_SYSTEM.md §6` for existing classes that could
+  be extended or used in variant form, before creating a new class. The reasoning is recorded
+  in the commit message.
+- Each new class gets an `@inventory` description in the same commit.
+- After migration, re-run the inline-styles audit — verify the suspicious count has dropped
+  meaningfully.
+
+**When:** Per the plan produced in Session 2.
+**Source:** Conversation 2026-05-29.
+
+---
+
+**Cross-references:**
+- `sb-creation-popover-section` (§4 Deferred Infrastructure — canonical example of
+  inline-style drift)
+- `sb-mode-toggle-sparks` (§3 Deferred Design Decisions — design-implementation divergence)
+- ADR-0021 (CSS naming), ADR-0022 (tokens), ADR-0027 (semantic pad-type colors)
+
+---
+
+## 6. Known Limitations
 
 Documented, accepted constraints. Will not be fixed until the triggering platform or slice
 changes.
@@ -502,7 +624,7 @@ sizes. See the infrastructure item above for the optimisation path.
 
 ---
 
-## 6. Manual Verification Reference
+## 7. Manual Verification Reference
 
 `docs/MANUAL_IPHONE_CHECKLIST.md` must be run before every release and after any commit
 that touches audio code (`src/audio/`), the IDB layer (`src/db/`), or file-handling
