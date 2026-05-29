@@ -437,6 +437,7 @@
 
 /* ── Type primitives ─────────────────────────────────────────────── */
 .sb-display {
+  /* @inventory: Hero title — Press Start 2P with gold glow; for page-level titles only. */
   font-family: var(--font-display);
   color: var(--gold-bright);
   text-shadow:
@@ -456,6 +457,7 @@
 /* A "vt" display class for medium headings that don't need the chunkiness
    of Press Start 2P. Same glow, different family.                         */
 .sb-display-vt {
+  /* @inventory: VT323 heading variant of sb-display for medium headings; same glow, less chunky pixels. */
   font-family: var(--font-ui);
   color: var(--gold-bright);
   text-shadow:
@@ -467,6 +469,7 @@
 }
 
 .sb-label {
+  /* @inventory: Uppercase tracking label in font-ui; field labels and section categories. */
   font-family: var(--font-ui);
   font-weight: 400;
   text-transform: uppercase;
@@ -475,6 +478,7 @@
 }
 
 .sb-mono {
+  /* @inventory: Mono body text in text-dim; descriptions, subtitles, filenames, body copy. */
   font-family: var(--font-mono);
   font-weight: 400;
   color: var(--text-dim);
@@ -487,6 +491,7 @@
 }
 
 .sb-caption {
+  /* @inventory: Smallest text style — xs mono in text-mute; filenames and metadata. */
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
   color: var(--text-mute);
@@ -532,7 +537,11 @@
 }
 
 /* ── Card ────────────────────────────────────────────────────────── */
+.sb-pix {
+  /* @inventory: Base pixel-frame shell — clip-path stepped corners and gradient-as-border trick. */
+}
 .sb-card {
+  /* @inventory: Pixel-frame container card with padding and drop-shadow elevation. */
   --pix-step: 6px;
   padding: var(--space-5);
   filter: var(--shadow-card);
@@ -550,6 +559,7 @@
 
 /* ── Menu row ──────────────────────────────────────────────────── */
 .sb-menu-row {
+  /* @inventory: Pixel-frame list row with icon, primary title, and subtitle slots. */
   --pix-step: 6px;
   display: flex;
   align-items: center;
@@ -592,6 +602,7 @@
 
 /* ── Button ──────────────────────────────────────────────────── */
 .sb-btn {
+  /* @inventory: Pixel-frame button base; all button variants extend this. */
   --pix-step: 4px;
   display: inline-flex;
   align-items: center;
@@ -612,25 +623,30 @@
   --pix-border: var(--border-gold);
 }
 .sb-btn-primary {
+  /* @inventory: Button variant — gold border and label; highlighted action. */
   --pix-border: var(--border-gold);
   color: var(--gold);
 }
 .sb-btn-filled {
+  /* @inventory: Button variant — solid gold fill and dark label; primary CTA. */
   --pix-bg: var(--gold);
   --pix-border: var(--gold);
   color: var(--text-on-gold);
 }
 .sb-btn-ghost {
+  /* @inventory: Button variant — transparent fill, dimmed border; low-emphasis. */
   --pix-bg: transparent;
   --pix-border: var(--border-soft);
   color: var(--text-dim);
 }
 .sb-btn-danger {
+  /* @inventory: Button variant for destructive actions; blood-red border and label. */
   --pix-bg: transparent;
   --pix-border: var(--border-blood);
   color: var(--danger);
 }
 .sb-btn-sm {
+  /* @inventory: Small-size modifier for .sb-btn; tighter padding and smaller font. */
   --pix-step: 3px;
   font-size: var(--fs-sm);
   padding: 3px var(--space-3);
@@ -641,6 +657,7 @@
    a thin left-edge bar, "hot" (playing) states bring the full border
    + a filter drop-shadow glow.                                       */
 .sb-pad {
+  /* @inventory: Base pad shell — pixel-frame, type-colour left spine, is-hot glow, is-setup dashed border. */
   --pix-step: 5px;
   --pad-color: var(--gold);
   --pad-glow: var(--pad-single-glow);
@@ -725,6 +742,7 @@
 
 /* ── Pill ───────────────────────────────────────────────────── */
 .sb-pill {
+  /* @inventory: Compact pixel-frame badge; type-colour variants via is-on, is-loop, is-playlist, is-combo. */
   --pix-step: 3px;
   display: inline-flex;
   align-items: center;
@@ -775,6 +793,7 @@
 
 /* ── Slider ───────────────────────────────────────────────── */
 .sb-slider {
+  /* @inventory: Horizontal range track bar for volume and trim controls (CSS-only, Slice 8+). */
   position: relative;
   height: 6px;
   background: var(--sunk);
@@ -782,11 +801,13 @@
   overflow: hidden;
 }
 .sb-slider-fill {
+  /* @inventory: Active filled portion of the slider track; width set by inline style. */
   position: absolute;
   inset: 0 auto 0 0;
   background: var(--gold);
 }
 .sb-slider-thumb {
+  /* @inventory: Draggable thumb on the slider track with gold glow. */
   position: absolute;
   top: 50%;
   width: 12px;
@@ -798,6 +819,7 @@
 
 /* ── Toggle ───────────────────────────────────────────────── */
 .sb-toggle {
+  /* @inventory: Binary on/off toggle switch (40×20px); is-on moves thumb right and adds gold glow. */
   width: 40px;
   height: 20px;
   background: var(--sunk);
@@ -827,11 +849,13 @@
 
 /* ── Tabs ─────────────────────────────────────────────────── */
 .sb-tabs {
+  /* @inventory: Tab bar container — flex row with bottom border separating tabs from content. */
   display: flex;
   gap: var(--space-1);
   border-bottom: 1px solid var(--border);
 }
 .sb-tab {
+  /* @inventory: Individual tab in a tab bar; is-active shows gold underline and label colour. */
   font-family: var(--font-ui);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -852,6 +876,7 @@
    Compact, tinted slightly above the panel surface, with an icon
    and an uppercase label. Click target for collapse if needed.   */
 .sb-panel-header {
+  /* @inventory: Compact 28px header strip on inspector panels (icon + uppercase label). */
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -876,6 +901,7 @@
 /* StatusBar — bottom strip on every workspace screen. Always-visible
    meta: current mode, current board, sample-rate, framerate-ish.    */
 .sb-status-bar {
+  /* @inventory: Bottom 24px strip showing mode, board name, and other metadata. */
   display: flex;
   align-items: center;
   gap: var(--space-4);
@@ -902,6 +928,7 @@
 /* Mode badge — sits in the top bar. Visually distinct between SETUP/GAME
    beyond colour: SETUP uses a hatched fill, GAME uses solid amber. */
 .sb-mode-badge {
+  /* @inventory: Compact inline SETUP/GAME badge for top-bar and status-bar surfaces. */
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -926,18 +953,21 @@
 /* Inspector — right-rail panel container used in editor screens.
    Densely packed; section dividers visible.                       */
 .sb-inspector {
+  /* @inventory: Generic right-rail inspector shell; V3 uses specific variants sb-pad-editor and sb-library-panel. */
   background: var(--surface);
   border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
 }
 .sb-inspector-section {
+  /* @inventory: Padded content section within an inspector panel, separated by bottom border. */
   padding: var(--space-3);
   border-bottom: 1px solid var(--border-soft);
 }
 
 /* Numeric input chip (Premiere-style scrubber) */
 .sb-num {
+  /* @inventory: Numeric scrubber chip — ew-resize cursor, sunk background; for PAD editor (CSS-only). */
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
@@ -957,6 +987,9 @@
 
 /* Faint scanline overlay — used selectively on the Start screen and the
    GAME-mode board to deepen the CRT atmosphere without obscuring text. */
+.sb-scanlines {
+  /* @inventory: CRT scanline overlay via ::after pseudo-element; StartScreen and GAME-mode board. */
+}
 .sb-scanlines::after {
   content: '';
   position: absolute;
@@ -972,6 +1005,7 @@
 
 /* Grid bg — used in SETUP mode on the board canvas to show the layout grid */
 .sb-grid-bg {
+  /* @inventory: Cross-hatch layout grid on the board canvas in SETUP mode. */
   background-image:
     linear-gradient(var(--border-soft) 1px, transparent 1px),
     linear-gradient(90deg, var(--border-soft) 1px, transparent 1px);
@@ -1015,6 +1049,7 @@
 
 /* ── Board TopBar V3 ── 3-column header replacing TopBarV2 on BoardScreen */
 .sb-board-topbar {
+  /* @inventory: 3-column grid header bar for BoardScreen (back + breadcrumb | mode-toggle | actions). */
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -1025,11 +1060,13 @@
   flex-shrink: 0;
 }
 .sb-board-topbar-left {
+  /* @inventory: Left column of the board top bar (flex row, back button + breadcrumb). */
   display: flex;
   align-items: center;
   gap: var(--space-2);
 }
 .sb-board-topbar-right {
+  /* @inventory: Right column of the board top bar (actions, right-aligned). */
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -1038,6 +1075,7 @@
 
 /* ── Mode Toggle ── SETUP | GAME interactive pill (v24) ─────────────── */
 .sb-mode-toggle {
+  /* @inventory: Interactive SETUP | GAME pill in the board top bar center (v24 design). */
   display: inline-flex;
   align-items: stretch;
   font-family: var(--font-ui);
@@ -1052,6 +1090,7 @@
   border: 1px solid var(--border);
 }
 .sb-mode-toggle-half {
+  /* @inventory: Left or right half-button of the mode toggle pill. */
   display: flex;
   align-items: center;
   padding: 0 var(--space-4);
@@ -1061,6 +1100,7 @@
     text-shadow 0.15s;
 }
 .sb-mode-toggle-sep {
+  /* @inventory: 1 px vertical separator between the two mode toggle halves. */
   width: 1px;
   background: var(--border);
   flex-shrink: 0;
@@ -1088,12 +1128,14 @@
 
 /* Spark layer — absolutely positioned sibling, not clipped by toggle */
 .sb-mode-toggle-sparks {
+  /* @inventory: Overflow container holding all spark particles during mode-switch animation. */
   position: absolute;
   inset: 0;
   pointer-events: none;
   overflow: visible;
 }
 .sb-mode-toggle-spark {
+  /* @inventory: Individual animated spark particle emitted on mode switch. */
   position: absolute;
   width: 4px;
   height: 4px;
@@ -1116,6 +1158,7 @@
     display: none;
   }
   .sb-mode-toggle-flash {
+    /* @inventory: Planned reduced-motion fallback for sb-mode-toggle (brightness flash); not yet applied in ModeToggle.tsx. [verify] */
     animation: sb-mode-flash 220ms ease-out;
   }
 }
@@ -1130,6 +1173,7 @@
 
 /* ── Scene Rail ── left 220px column ──────────────────────────────── */
 .sb-scene-rail {
+  /* @inventory: Left 220px scene navigation column on BoardScreen (fixed width, scrollable). */
   width: 220px;
   flex-shrink: 0;
   background: var(--deep);
@@ -1141,6 +1185,7 @@
   overscroll-behavior: contain;
 }
 .sb-scene-tab {
+  /* @inventory: Clickable scene entry in the scene rail; is-active highlights the current scene. */
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -1171,6 +1216,7 @@
   background: var(--raised);
 }
 .sb-scene-tab-actions {
+  /* @inventory: Action buttons (duplicate, delete) revealed on hover or on the active scene tab. */
   display: none;
   align-items: center;
   gap: 2px;
@@ -1184,6 +1230,7 @@
 
 /* ── Pad Grid ── center panel ─────────────────────────────────────── */
 .sb-pad-grid {
+  /* @inventory: CSS grid for the active scene's pads; col/row counts from --grid-cols/--grid-rows CSS vars. */
   display: grid;
   grid-template-columns: repeat(var(--grid-cols, 4), 1fr);
   grid-template-rows: repeat(var(--grid-rows, 4), 1fr);
@@ -1195,6 +1242,7 @@
 
 /* ── Pad Grid Cell ── Sub-element of .sb-pad-grid ─────────────────── */
 .sb-pad-grid-cell {
+  /* @inventory: Single cell wrapper in the pad grid; carries position, DnD states, and touch targets. */
   position: relative;
   min-height: 80px;
   min-width: 44px;
@@ -1233,6 +1281,7 @@
   color: var(--text-dim);
 }
 .sb-pad-cell-add {
+  /* @inventory: "+" symbol in empty grid cells; the tap-to-create affordance. */
   font-family: var(--font-ui);
   font-size: 28px;
   color: var(--border);
@@ -1263,6 +1312,7 @@
 
 /* ── Pad Editor Panel (right inspector) ──────────────────────────── */
 .sb-pad-editor {
+  /* @inventory: Right inspector panel shown when a pad is selected in SETUP mode (280px, scrolls). */
   width: 280px;
   flex-shrink: 0;
   display: flex;
@@ -1276,6 +1326,7 @@
 
 /* ── Library Panel (right inspector, library browse mode) ─────────── */
 .sb-library-panel {
+  /* @inventory: Library browse panel in the board right rail (280px, hides overflow). */
   width: 280px;
   flex-shrink: 0;
   display: flex;
@@ -1287,6 +1338,7 @@
 
 /* ── Creation Popover (Path A desktop) ───────────────────────────── */
 .sb-creation-popover {
+  /* @inventory: Fixed 300px popover for Path A (desktop) pad creation flow. */
   position: fixed;
   z-index: 400;
   width: 300px;
@@ -1313,6 +1365,7 @@
   );
 }
 .sb-creation-popover-section {
+  /* @inventory: Padded section divider within the creation popover. */
   padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--border-soft);
 }
@@ -1322,6 +1375,7 @@
 
 /* ── Creation Sheet (Path A mobile — bottom sheet) ────────────────── */
 .sb-creation-sheet {
+  /* @inventory: Mobile bottom sheet for Path A pad creation (slides up from bottom, max 85dvh). */
   position: fixed;
   bottom: 0;
   left: 0;
@@ -1339,6 +1393,7 @@
   -webkit-overflow-scrolling: touch;
 }
 .sb-creation-sheet-backdrop {
+  /* @inventory: Semi-opaque scrim behind the pad creation bottom sheet. */
   position: fixed;
   inset: 0;
   z-index: 399;
@@ -1347,6 +1402,7 @@
 
 /* ── Type Confirm Dialog ──────────────────────────────────────────── */
 .sb-type-confirm {
+  /* @inventory: Modal dialog for confirming a pad-type change (z-index 500, pixel corners). */
   position: fixed;
   z-index: 500;
   width: 320px;
@@ -1372,6 +1428,7 @@
   );
 }
 .sb-type-confirm-backdrop {
+  /* @inventory: Semi-opaque backdrop behind the pad type confirm dialog. */
   position: fixed;
   inset: 0;
   z-index: 499;
@@ -1380,6 +1437,7 @@
 
 /* ── Undo Toast ── anchored above status bar ─────────────────────── */
 .sb-undo-toast {
+  /* @inventory: Fixed notification toast above the status bar shown after scene deletion. */
   position: fixed;
   bottom: 28px; /* just above 24px StatusBar */
   left: 50%;
@@ -1399,6 +1457,7 @@
   overflow: hidden;
 }
 .sb-undo-toast-progress {
+  /* @inventory: Animated gold progress bar at the bottom of the undo toast (linear shrink). */
   position: absolute;
   bottom: 0;
   left: 0;

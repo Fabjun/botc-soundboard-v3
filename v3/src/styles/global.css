@@ -31,12 +31,14 @@ body.sb {
 /* ─── Scroll containers ──────────────────────────────────────── */
 /* Apply .sb-scroll to any overflow-y:auto element */
 .sb-scroll {
+  /* @inventory: iOS-momentum scroll container (touch scrolling without overscroll containment). */
   -webkit-overflow-scrolling: touch;
   overflow-y: auto;
 }
 
 /* Overlay/panel scrollers: no rubber-band bleed-through */
 .sb-overlay-scroll {
+  /* @inventory: Scroll container for overlays and panels; contains overscroll within the element. */
   -webkit-overflow-scrolling: touch;
   overflow-y: auto;
   overscroll-behavior: contain;
