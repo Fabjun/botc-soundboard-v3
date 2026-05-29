@@ -2,9 +2,14 @@
 /**
  * sync-tokens-inventory.ts
  *
- * Reads SoS_DESIGN_25052026/tokens.css, extracts all CSS custom properties
- * grouped by section, and writes a table between AUTO-GENERATED markers
- * in DESIGN_SYSTEM.md §A.
+ * Reads v3/src/styles/tokens.css (canonical — what the app loads), extracts all
+ * CSS custom properties from exclusive :root { } blocks, grouped by section, and
+ * writes a table between AUTO-GENERATED markers in DESIGN_SYSTEM.md §A.
+ *
+ * Only tokens inside an exclusive `:root { }` selector are included.
+ * Multi-selector blocks (`:root, .theme-verdant, ...`) and theme-override blocks
+ * (`.theme-verdant { }`) are skipped — they are not canonical token definitions.
+ * Legacy --sb-* aliases are excluded for the same reason.
  *
  * Run: npm run sync:tokens  (from v3/)
  */
@@ -15,7 +20,7 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
-const TOKENS_CSS = join(ROOT, 'SoS_DESIGN_25052026', 'tokens.css');
+const TOKENS_CSS = join(ROOT, 'v3', 'src', 'styles', 'tokens.css');
 const DESIGN_SYSTEM = join(ROOT, 'DESIGN_SYSTEM.md');
 
 const MARKER_START = '<!-- AUTO-GENERATED:tokens START — nicht manuell editieren -->';
@@ -33,34 +38,66 @@ function parseTokens(css: string): TokenEntry[] {
   let currentGroup = 'Allgemein';
   let inLegacyBlock = false;
 
-  // Detect legacy aliases block start
+  // Primary exclusion for legacy aliases: the comma-check on ':root, .theme-*' selectors.
+  // inLegacyBlock is belt-and-suspenders in case aliases end up inside a canonical :root block.
   const legacyMarker = 'LEGACY ALIASES';
+
+  // :root context tracking
+  let inRootContext = false;
+  let braceDepth = 0;
+  let pendingRoot = false; // saw exclusive ':root' selector, waiting for opening '{'
 
   const lines = css.split('\n');
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
 
-    // Detect legacy aliases block
+    // ── Section headers: track on ALL lines so grouping works between blocks ──
     if (line.includes(legacyMarker)) {
       inLegacyBlock = true;
       currentGroup = 'Legacy Aliases (--sb-*)';
+    } else {
+      const sectionMatch = line.match(/\/\*\s*──\s*([A-ZÄÖÜ][^─*]+?)\s*──/);
+      if (sectionMatch && !inLegacyBlock) {
+        currentGroup = sectionMatch[1].trim().replace(/\s+/g, ' ');
+      }
+    }
+
+    // ── Detect exclusive :root selector (not ':root,' multi-selector) ──
+    // A canonical token block has ':root' as the sole selector before '{'.
+    // The legacy alias block starts with ':root,' — the comma is the distinguishing mark.
+    if (!inRootContext && /^\s*:root\b/.test(line)) {
+      const afterRoot = line.slice(line.indexOf(':root') + 5).trim();
+      if (!afterRoot.startsWith(',') && !afterRoot.includes(',')) {
+        // No comma on this line → could be exclusive :root { or :root (brace next line)
+        pendingRoot = true;
+      }
+      // Has comma → ':root, .theme-*' multi-selector; pendingRoot stays false
+    }
+
+    // ── Count braces ──
+    const opens = (line.match(/\{/g) ?? []).length;
+    const closes = (line.match(/\}/g) ?? []).length;
+
+    // Activate :root context on the first '{' after an exclusive ':root' selector
+    if (pendingRoot && opens > 0) {
+      inRootContext = true;
+      pendingRoot = false;
+    }
+
+    braceDepth += opens - closes;
+
+    // Exit :root context when braceDepth returns to 0 (block fully closed)
+    if (inRootContext && braceDepth === 0) {
+      inRootContext = false;
+      inLegacyBlock = false; // reset on block exit
       continue;
     }
 
-    // Detect section headers: /* ── SECTION NAME ── ... */
-    // or /* ── SECTION NAME (multiline) */
-    const sectionMatch = line.match(/\/\*\s*──\s*([A-ZÄÖÜ][^─*]+?)\s*──/);
-    if (sectionMatch && !inLegacyBlock) {
-      const raw = sectionMatch[1].trim();
-      // Capitalize nicely, remove trailing dashes
-      currentGroup = raw.replace(/\s+/g, ' ');
-      continue;
-    }
+    // ── Skip tokens outside exclusive :root or inside legacy alias block ──
+    if (!inRootContext || inLegacyBlock) continue;
 
-    // Token line: --name: value; /* optional comment */
-    // The inline comment comes AFTER the semicolon, so we capture the
-    // entire line from the colon and split at the first semicolon.
+    // ── Token extraction ──
     const nameMatch = line.match(/^\s*(--[\w-]+)\s*:/);
     if (!nameMatch) continue;
 
@@ -70,7 +107,7 @@ function parseTokens(css: string): TokenEntry[] {
     const semicolonIdx = afterColon.indexOf(';');
     if (semicolonIdx === -1) continue; // no semicolon = not a declaration
 
-    let rawValue = afterColon.slice(0, semicolonIdx).trim();
+    const rawValue = afterColon.slice(0, semicolonIdx).trim();
     const afterSemicolon = afterColon.slice(semicolonIdx + 1).trim();
 
     // Extract single-line inline comment from after the semicolon
@@ -139,10 +176,10 @@ function run(): void {
   doc = `${before}\n${table}\n${after}`;
   writeFileSync(DESIGN_SYSTEM, doc, 'utf8');
 
-  console.log(`sync-tokens: wrote ${entries.length} tokens in ${groups(entries)} groups → §A`);
+  console.log(`sync-tokens: wrote ${entries.length} tokens in ${countGroups(entries)} groups → §A`);
 }
 
-function groups(entries: TokenEntry[]): number {
+function countGroups(entries: TokenEntry[]): number {
   return new Set(entries.map((e) => e.group)).size;
 }
 

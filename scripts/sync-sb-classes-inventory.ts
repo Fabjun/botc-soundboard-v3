@@ -157,6 +157,21 @@ function run(): void {
     });
   }
 
+  // Warn on CSS-defined classes that lack an @inventory description.
+  // [unused-css] / [verify] markers count as descriptions — warning is for genuinely blank entries.
+  const missingInventory = entries.filter(
+    (e) => e.description === '' && e.definedIn !== '',
+  );
+  if (missingInventory.length > 0) {
+    console.warn(
+      `sync-classes: WARN — ${missingInventory.length} sb-* class(es) missing @inventory description:`,
+    );
+    for (const e of missingInventory) {
+      console.warn(`  ${e.name}  (${e.definedIn})`);
+    }
+    console.warn('  Add /* @inventory: description */ at the CSS selector definition.');
+  }
+
   // Generate table
   const lines: string[] = [];
   lines.push('| Klasse | Beschreibung | Definiert in |');

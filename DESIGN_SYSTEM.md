@@ -186,11 +186,11 @@ Verbotene Muster in neuem V3-Code:
 
 | Token | Wert | Beschreibung |
 |-------|------|-------------|
-| `--night` | `#08081A` | — |
-| `--deep` | `#0E0E22` | — |
-| `--surface` | `#16162E` | — |
-| `--raised` | `#22224A` | — |
-| `--top` | `#2D2D60` | — |
+| `--night` | `#08081a` | — |
+| `--deep` | `#0e0e22` | — |
+| `--surface` | `#16162e` | — |
+| `--raised` | `#22224a` | — |
+| `--top` | `#2d2d60` | — |
 | `--sunk` | `#060614` | — |
 
 ### BORDERS
@@ -199,48 +199,50 @@ Verbotene Muster in neuem V3-Code:
 |-------|------|-------------|
 | `--border` | `#383868` | default 1px hairline · L* ~0.116 |
 | `--border-soft` | `#232348` | dividers inside dense lists |
-| `--border-strong` | `#5252A0` | drag handles, focused inputs |
-| `--border-gold` | `#C9A84C` | selected / active |
-| `--border-blood` | `#A02828` | destructive zones |
+| `--border-strong` | `#5252a0` | drag handles, focused inputs |
+| `--border-gold` | `#c9a84c` | selected / active |
+| `--border-blood` | `#a02828` | destructive zones |
 
 ### TEXT
 
 | Token | Wert | Beschreibung |
 |-------|------|-------------|
-| `--text` | `#F0E8D0` | — |
-| `--text-strong` | `#FFFFFF` | high emphasis · numbers, headings on raised |
-| `--text-dim` | `#B8B0C8` | secondary · descriptions |
-| `--text-mute` | `#7E7494` | tertiary · meta only, AA-large |
-| `--text-on-gold` | `#14100A` | — |
-| `--text-on-blood` | `#FFE8E0` | — |
+| `--text` | `#f0e8d0` | — |
+| `--text-strong` | `#ffffff` | high emphasis · numbers, headings on raised |
+| `--text-dim` | `#b8b0c8` | secondary · descriptions |
+| `--text-mute` | `#7e7494` | tertiary · meta only, AA-large |
+| `--text-on-gold` | `#14100a` | — |
+| `--text-on-blood` | `#ffe8e0` | — |
 
 ### BRAND ACCENTS
 
 | Token | Wert | Beschreibung |
 |-------|------|-------------|
-| `--gold` | `#D4B25C` | +9% L* over original — readable at 14px |
-| `--gold-bright` | `#F5D57A` | highlights, "now playing", focus rings |
-| `--gold-dim` | `#8A6E34` | muted gold — divider lines |
+| `--gold` | `#d4b25c` | +9% L* over original — readable at 14px |
+| `--gold-bright` | `#f5d57a` | highlights, "now playing", focus rings |
+| `--gold-dim` | `#8a6e34` | muted gold — divider lines |
 | `--gold-soft` | `rgba(212, 178, 92, 0.18)` | — |
-| `--flame` | `#E8821E` | the logo flame |
-| `--blood` | `#A02828` | +14% L* over #8b1a1a — readable on dark |
-| `--blood-bright` | `#EF7575` | — |
+| `--flame` | `#e8821e` | the logo flame |
+| `--flame-soft` | `rgba(232, 130, 30, 0.15)` | ambient bg wash (StartScreen radial) |
+| `--flame-aura` | `rgba(232, 130, 30, 0.32)` | mid-alpha glow ring |
+| `--blood` | `#a02828` | +14% L* over #8b1a1a — readable on dark |
+| `--blood-bright` | `#ef7575` | — |
 | `--blood-soft` | `rgba(160, 40, 40, 0.18)` | — |
 
 ### PAD TYPES
 
 | Token | Wert | Beschreibung |
 |-------|------|-------------|
-| `--pad-single` | `#D4B25C` | — |
+| `--pad-single` | `#d4b25c` | — |
 | `--pad-single-soft` | `rgba(212, 178, 92, 0.16)` | — |
 | `--pad-single-glow` | `rgba(245, 213, 122, 0.55)` | — |
-| `--pad-loop` | `#6DB5B8` | — |
+| `--pad-loop` | `#6db5b8` | — |
 | `--pad-loop-soft` | `rgba(109, 181, 184, 0.16)` | — |
 | `--pad-loop-glow` | `rgba(141, 213, 216, 0.55)` | — |
-| `--pad-playlist` | `#9D7FC7` | — |
+| `--pad-playlist` | `#9d7fc7` | — |
 | `--pad-playlist-soft` | `rgba(157, 127, 199, 0.16)` | — |
 | `--pad-playlist-glow` | `rgba(189, 159, 231, 0.55)` | — |
-| `--pad-combo` | `#C9529D` | — |
+| `--pad-combo` | `#c9529d` | — |
 | `--pad-combo-soft` | `rgba(201, 82, 157, 0.18)` | — |
 | `--pad-combo-glow` | `rgba(225, 110, 185, 0.55)` | — |
 
@@ -249,27 +251,27 @@ Verbotene Muster in neuem V3-Code:
 | Token | Wert | Beschreibung |
 |-------|------|-------------|
 | `--pad-edge-light` | `rgba(255, 255, 255, 0.12)` | — |
-| `--pad-edge-dark` | `rgba(0,   0,   0,   0.40)` | — |
-| `--fade` | `#6FA85F` | — |
+| `--pad-edge-dark` | `rgba(0, 0, 0, 0.4)` | — |
+| `--fade` | `#6fa85f` | — |
 | `--fade-soft` | `rgba(111, 168, 95, 0.18)` | — |
 
 ### SEMANTIC
 
 | Token | Wert | Beschreibung |
 |-------|------|-------------|
-| `--success` | `#6DB5B8` | — |
-| `--warning` | `#D4B25C` | gold doubles as caution |
+| `--success` | `#6db5b8` | — |
+| `--warning` | `#d4b25c` | gold doubles as caution |
 | `--danger` | `var(--blood-bright)` | — |
-| `--info` | `#9D7FC7` | violet for hints / metadata |
+| `--info` | `#9d7fc7` | violet for hints / metadata |
 
 ### MODE
 
 | Token | Wert | Beschreibung |
 |-------|------|-------------|
-| `--mode-setup` | `#6DB5B8` | — |
+| `--mode-setup` | `#6db5b8` | — |
 | `--mode-setup-soft` | `rgba(109, 181, 184, 0.06)` | — |
 | `--mode-setup-glow` | `rgba(141, 213, 216, 0.55)` | — |
-| `--mode-game` | `#D4B25C` | — |
+| `--mode-game` | `#d4b25c` | — |
 | `--mode-game-soft` | `rgba(212, 178, 92, 0.05)` | — |
 | `--mode-game-glow` | `rgba(245, 213, 122, 0.55)` | — |
 
@@ -277,7 +279,7 @@ Verbotene Muster in neuem V3-Code:
 
 | Token | Wert | Beschreibung |
 |-------|------|-------------|
-| `--glow-radial` | `#2C1F4A` | — |
+| `--glow-radial` | `#2c1f4a` | — |
 
 ### SPACING
 
@@ -308,18 +310,18 @@ Verbotene Muster in neuem V3-Code:
 
 | Token | Wert | Beschreibung |
 |-------|------|-------------|
-| `--shadow-card` | `drop-shadow(0 4px 8px rgba(0,0,0,.28))` | — |
-| `--shadow-pop` | `drop-shadow(0 8px 24px rgba(0,0,0,.45))` | — |
-| `--shadow-pad-lift` | `drop-shadow(3px 3px 0 rgba(0,0,0,.65))` | — |
-| `--glow-flame` | `drop-shadow(0 0 6px rgba(232,130,30,.55))` | — |
+| `--shadow-card` | `drop-shadow(0 4px 8px rgba(0, 0, 0, 0.28))` | — |
+| `--shadow-pop` | `drop-shadow(0 8px 24px rgba(0, 0, 0, 0.45))` | — |
+| `--shadow-pad-lift` | `drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.65))` | — |
+| `--glow-flame` | `drop-shadow(0 0 6px rgba(232, 130, 30, 0.55))` | — |
 
 ### TYPE
 
 | Token | Wert | Beschreibung |
 |-------|------|-------------|
-| `--font-display` | `"Press Start 2P", "VT323", monospace` | — |
-| `--font-ui` | `"VT323", "Share Tech Mono", monospace` | — |
-| `--font-mono` | `"Share Tech Mono", "VT323", monospace` | — |
+| `--font-display` | `'Press Start 2P', 'VT323', monospace` | — |
+| `--font-ui` | `'VT323', 'Share Tech Mono', monospace` | — |
+| `--font-mono` | `'Share Tech Mono', 'VT323', monospace` | — |
 | `--fs-xs` | `12px` | — |
 | `--fs-sm` | `14px` | — |
 | `--fs-md` | `16px` | — |
@@ -331,166 +333,4 @@ Verbotene Muster in neuem V3-Code:
 | `--fs-pixel-sm` | `22px` | — |
 | `--fs-pixel-md` | `32px` | — |
 | `--fs-pixel-lg` | `48px` | — |
-
-### Legacy Aliases (--sb-*)
-
-| Token | Wert | Beschreibung |
-|-------|------|-------------|
-| `--sb-bg-deep` | `var(--night)` | — |
-| `--sb-bg-base` | `var(--deep)` | — |
-| `--sb-bg-panel` | `var(--surface)` | — |
-| `--sb-bg-panel-2` | `var(--raised)` | — |
-| `--sb-bg-panel-sunk` | `var(--sunk)` | — |
-| `--sb-glow-radial` | `var(--glow-radial)` | — |
-| `--sb-border` | `var(--border)` | — |
-| `--sb-border-soft` | `var(--border-soft)` | — |
-| `--sb-border-active` | `var(--border-gold)` | — |
-| `--sb-border-danger` | `var(--border-blood)` | — |
-| `--sb-text` | `var(--text)` | — |
-| `--sb-text-dim` | `var(--text-dim)` | — |
-| `--sb-text-mute` | `var(--text-mute)` | — |
-| `--sb-text-on-accent` | `var(--text-on-gold)` | — |
-| `--sb-flame` | `var(--flame)` | — |
-| `--sb-amber` | `var(--gold)` | — |
-| `--sb-amber-glow` | `var(--gold-bright)` | — |
-| `--sb-accent-1` | `var(--gold)` | — |
-| `--sb-accent-1-soft` | `var(--gold-dim)` | — |
-| `--sb-danger` | `var(--blood-bright)` | — |
-| `--sb-warning` | `var(--warning)` | — |
-| `--sb-success` | `var(--success)` | — |
-| `--sb-info` | `var(--info)` | — |
-| `--sb-space-1` | `var(--space-1)` | — |
-| `--sb-space-2` | `var(--space-2)` | — |
-| `--sb-space-3` | `var(--space-3)` | — |
-| `--sb-space-4` | `var(--space-4)` | — |
-| `--sb-space-5` | `var(--space-5)` | — |
-| `--sb-space-6` | `var(--space-6)` | — |
-| `--sb-space-8` | `var(--space-8)` | — |
-| `--sb-space-10` | `var(--space-10)` | — |
-| `--sb-space-12` | `var(--space-12)` | — |
-| `--sb-space-16` | `var(--space-16)` | — |
-| `--sb-radius-sm` | `var(--radius-sm)` | — |
-| `--sb-radius-md` | `var(--radius-md)` | — |
-| `--sb-radius-lg` | `var(--radius-lg)` | — |
-| `--sb-radius-xl` | `var(--radius-xl)` | — |
-| `--sb-radius-pad` | `var(--radius-pad)` | — |
-| `--sb-shadow-card` | `var(--shadow-card)` | — |
-| `--sb-shadow-pop` | `var(--shadow-pop)` | — |
-| `--sb-glow-amber` | `var(--glow-gold)` | — |
-| `--sb-glow-flame` | `var(--glow-flame)` | — |
-| `--sb-font-display` | `var(--font-display)` | — |
-| `--sb-font-ui` | `var(--font-ui)` | — |
-| `--sb-font-mono` | `var(--font-mono)` | — |
-| `--sb-fs-xs` | `var(--fs-xs)` | — |
-| `--sb-fs-sm` | `var(--fs-sm)` | — |
-| `--sb-fs-md` | `var(--fs-md)` | — |
-| `--sb-fs-lg` | `var(--fs-lg)` | — |
-| `--sb-fs-xl` | `var(--fs-xl)` | — |
-| `--sb-fs-2xl` | `var(--fs-2xl)` | — |
-| `--sb-fs-3xl` | `var(--fs-3xl)` | — |
-| `--sb-fs-4xl` | `var(--fs-4xl)` | — |
-| `--sb-fs-pixel-sm` | `var(--fs-pixel-sm)` | — |
-| `--sb-fs-pixel-md` | `var(--fs-pixel-md)` | — |
-| `--sb-fs-pixel-lg` | `var(--fs-pixel-lg)` | — |
-| `--night` | `#07120D` | — |
-| `--deep` | `#0B1E16` | — |
-| `--surface` | `#102A20` | — |
-| `--raised` | `#18402F` | — |
-| `--top` | `#1F5240` | — |
-| `--sunk` | `#050E0A` | — |
-| `--border` | `#2A5640` | — |
-| `--border-soft` | `#1A382B` | — |
-| `--border-strong` | `#3A7A5C` | — |
-| `--border-gold` | `#C9A04F` | — |
-| `--text` | `#EFE6C8` | — |
-| `--text-dim` | `#ACB5A6` | — |
-| `--text-mute` | `#6F7E73` | — |
-| `--flame` | `#D8893A` | — |
-| `--gold` | `#C9A04F` | — |
-| `--gold-bright` | `#F2CC5C` | — |
-| `--pad-single` | `#C97D3A` | — |
-| `--pad-single-soft` | `rgba(201,125,58,.16)` | — |
-| `--pad-single-glow` | `rgba(232,158,80,.55)` | — |
-| `--pad-loop` | `#4FA67A` | — |
-| `--pad-loop-soft` | `rgba(79,166,122,.16)` | — |
-| `--pad-loop-glow` | `rgba(95,200,144,.55)` | — |
-| `--pad-playlist` | `#8A6FA0` | — |
-| `--pad-playlist-soft` | `rgba(138,111,160,.16)` | — |
-| `--pad-playlist-glow` | `rgba(176,144,202,.55)` | — |
-| `--glow-radial` | `#18402F` | — |
-| `--night` | `#050816` | — |
-| `--deep` | `#0A1228` | — |
-| `--surface` | `#111E40` | — |
-| `--raised` | `#1A2C5E` | — |
-| `--top` | `#233A7C` | — |
-| `--sunk` | `#050A18` | — |
-| `--border` | `#2B4382` | — |
-| `--border-soft` | `#1B2A52` | — |
-| `--border-strong` | `#4564B5` | — |
-| `--border-gold` | `#3DD4F0` | — |
-| `--text` | `#E2F0FF` | — |
-| `--text-dim` | `#9DB5D6` | — |
-| `--text-mute` | `#5F7AA2` | — |
-| `--flame` | `#FF3D8B` | — |
-| `--gold` | `#3DD4F0` | — |
-| `--gold-bright` | `#6EF0FF` | — |
-| `--pad-single` | `#FF5FA8` | — |
-| `--pad-single-glow` | `rgba(255,95,168,.55)` | — |
-| `--pad-loop` | `#3DD4F0` | — |
-| `--pad-loop-glow` | `rgba(61,212,240,.55)` | — |
-| `--pad-playlist` | `#B988FF` | — |
-| `--pad-playlist-glow` | `rgba(185,136,255,.55)` | — |
-| `--pad-combo` | `#FFD256` | — |
-| `--pad-combo-glow` | `rgba(255,210,86,.55)` | — |
-| `--glow-radial` | `#143052` | — |
-| `--night` | `#0A0606` | — |
-| `--deep` | `#16090A` | — |
-| `--surface` | `#20121A` | — |
-| `--raised` | `#2E1A22` | — |
-| `--top` | `#44232E` | — |
-| `--sunk` | `#0A0404` | — |
-| `--border` | `#523040` | — |
-| `--border-soft` | `#2E1820` | — |
-| `--border-strong` | `#804052` | — |
-| `--border-gold` | `#D63A3A` | — |
-| `--text` | `#F2DDD2` | — |
-| `--text-dim` | `#C09A95` | — |
-| `--text-mute` | `#835A55` | — |
-| `--flame` | `#B5302E` | — |
-| `--gold` | `#D63A3A` | — |
-| `--gold-bright` | `#F26666` | — |
-| `--pad-single` | `#C7B07A` | — |
-| `--pad-single-soft` | `rgba(199,176,122,.14)` | — |
-| `--pad-single-glow` | `rgba(225,205,150,.50)` | — |
-| `--pad-loop` | `#C04C75` | — |
-| `--pad-loop-glow` | `rgba(192,76,117,.55)` | — |
-| `--pad-playlist` | `#7A5295` | — |
-| `--pad-playlist-glow` | `rgba(122,82,149,.55)` | — |
-| `--pad-combo` | `#5A9FB0` | — |
-| `--pad-combo-soft` | `rgba(90,159,176,.16)` | — |
-| `--pad-combo-glow` | `rgba(120,195,212,.55)` | — |
-| `--glow-radial` | `#3A1416` | — |
-| `--pix-step` | `5px` | — |
-| `--pix-thick` | `2px` | — |
-| `--pix-bg` | `var(--surface)` | — |
-| `--pix-border` | `var(--border)` | — |
-| `--pix-step` | `6px` | — |
-| `--pix-step` | `6px` | — |
-| `--pix-step` | `4px` | — |
-| `--pix-bg` | `var(--blood-soft)` | — |
-| `--pix-border` | `var(--border-blood)` | — |
-| `--pix-border` | `var(--blood-bright)` | — |
-| `--pix-step` | `5px` | — |
-| `--pad-color` | `var(--gold)` | — |
-| `--pad-glow` | `var(--pad-single-glow)` | — |
-| `--pix-bg` | `var(--surface)` | — |
-| `--pix-border` | `var(--border)` | — |
-| `--pix-border` | `var(--pad-color)` | — |
-| `--pix-border` | `var(--border-strong)` | — |
-| `--pad-filter-base` | `var(--shadow-pad-lift)` | — |
-| `--pix-border` | `var(--border-strong)` | — |
-| `--pix-step` | `3px` | — |
-| `--pix-bg` | `var(--sunk)` | — |
-| `--pix-border` | `var(--border-soft)` | — |
-| `--pix-step` | `3px` | — |
 <!-- AUTO-GENERATED:tokens END -->
