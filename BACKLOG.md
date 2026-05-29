@@ -387,6 +387,21 @@ Pad-type inference defaults to SINGLE in the ambiguous 5–10 s band. Re-evaluat
 sets show many sub-loops in this zone.
 **Source:** DESIGN_NOTES.md §Slice 3 — A2 Path B.
 
+### ModeToggle sparks — design-implementation divergence
+The CSS class `sb-mode-toggle-sparks` was designed as a contained overflow element to hold
+spark particles during mode-toggle animation. However, `ModeToggle.tsx` appends spark elements
+directly to `document.body` instead of using this container.
+
+**Open question:** Is the body-direct approach deliberate (e.g., for z-index isolation above
+all overlays) or an oversight?
+- If **deliberate:** document the rationale (ADR or DESIGN_NOTES) and remove the unused
+  `.sb-mode-toggle-sparks` CSS.
+- If **oversight:** wire sparks through the contained element to match the design intent.
+
+**When:** Slice 8 (Polish), or earlier if mode-toggle animation needs revisiting for
+z-index/overlay issues.
+**Source:** Truth-check commit `e207a0b`; class marked `[unused-css]` in DESIGN_SYSTEM.md §6.
+
 ---
 
 ## 4. Deferred Infrastructure
@@ -424,6 +439,29 @@ Structure code so a future i18n pass is feasible (texts in named constants, not 
 JSX). Currently English-only; no timeline.
 **When:** Only if a localisation need is confirmed.
 **Source:** V3_CONCEPT_BRIEF.md §4.11, ADR-0041.
+
+### Reduced-motion fallback for ModeToggle — resolved, cleanup pending
+The `sb-mode-toggle-flash` class is CSS-defined as a brightness-flash fallback for users
+with `prefers-reduced-motion: reduce`, but `ModeToggle.tsx` skips the animation entirely
+rather than applying the fallback class. Behavior is correct (no animation = honoring
+reduced-motion), but the CSS rule for `.sb-mode-toggle-flash` is confirmed dead code.
+
+**Action:** Remove `.sb-mode-toggle-flash` from `v3/src/styles/tokens.css` when next
+touching that file (e.g., during Slice 8 polish).
+**When:** Slice 8, or opportunistically when tokens.css is edited.
+**Source:** Truth-check commit `e207a0b`; class marked `[unused-css]` in DESIGN_SYSTEM.md §6.
+
+### Dead CSS: `sb-creation-popover-section`
+The class was designed as a padded, bordered section divider inside the creation popover.
+`PadCreationPopover.tsx` was implemented using direct inline styles for every section instead
+(e.g., `padding: '8px', borderTop: '1px solid var(--border-soft)'`). The class and the
+inline styles are semantically equivalent — the class was bypassed at implementation time,
+not planned for later.
+
+**Action:** Either apply the class in a Slice 8 cleanup (replacing repetitive inline styles
+with the class), or remove the CSS rule if the inline-style approach is kept.
+**When:** Slice 8 (Polish), when the creation popover is next touched.
+**Source:** Truth-check commit `e207a0b`; class marked `[unused-css]` in DESIGN_SYSTEM.md §6.
 
 ---
 
