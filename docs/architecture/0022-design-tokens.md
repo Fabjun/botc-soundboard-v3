@@ -32,8 +32,14 @@ background: #1a1a2e;
 gap: 16px;
 ```
 
-`v3/src/styles/tokens.css` ist eine Kopie von `SoS_DESIGN_25052026/tokens.css`
-(gepflegt identisch). Theme-Overrides (`.theme-verdant`, `.theme-neon`,
+`v3/src/styles/tokens.css` started as a copy of `SoS_DESIGN_25052026/tokens.css`
+but has diverged during V3 development: 9 tokens were added (runtime animation
+variables, grid layout variables, new ambient glow tokens — `--flame-soft`,
+`--flame-aura`, `--grid-cols/gap/rows`, `--spark-duration/dx/dy`, `--undo-duration`),
+and `--pix-bg-layer` was removed. The design handoff origin
+(`SoS_DESIGN_25052026/tokens.css`) is kept as a reference only and is not loaded by
+the app. See `docs/DOCUMENTATION_MAP.md` for the full documentation structure.
+Theme-Overrides (`.theme-verdant`, `.theme-neon`,
 `.theme-crimson`) sind in `tokens.css` enthalten.
 
 **Verboten in neuem V3-Code (aus DESIGN_SYSTEM_CHEATSHEET.md):**

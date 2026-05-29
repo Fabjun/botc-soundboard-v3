@@ -1,3 +1,9 @@
+/* FILE ROLE: DESIGN HANDOFF ORIGIN — NOT THE LIVE FILE
+   This is the original token file from the design phase (2026-05-25).
+   It is kept as a design reference; the running app loads v3/src/styles/tokens.css,
+   which has diverged since handoff: 9 tokens added, 1 removed (--pix-bg-layer).
+   Documentation structure: docs/DOCUMENTATION_MAP.md */
+
 /* ════════════════════════════════════════════════════════════════════
    SOUNDBOARD OF STORYTELLING — DESIGN TOKENS  ·  v2 refinement
    ─────────────────────────────────────────────────────────────────────

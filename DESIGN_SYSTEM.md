@@ -1,19 +1,51 @@
 # Soundboard of Storytelling — Design System
 
-> **Source of truth.** `DESIGN_SYSTEM_CHEATSHEET.md` ist der Kurzauszug für
-> den Arbeitsalltag. Wenn Cheatsheet und dieses Dokument widersprüchlich sind,
-> gewinnt dieses Dokument.
+> **Source of truth.** `DESIGN_SYSTEM_CHEATSHEET.md` is the single-page quick reference
+> for daily use. When the cheatsheet and this document conflict, this document wins.
+> Documentation roles and relationships across all project docs: see `docs/DOCUMENTATION_MAP.md`.
 
 ---
 
-## §1 Nomenklatur
+## §1 Naming Conventions (project-wide)
 
-<!-- TODO: Ausschreiben — Kurzfassung in DESIGN_SYSTEM_CHEATSHEET.md §60-second contract -->
+<!-- TODO: Write out each sub-topic below. Short form in DESIGN_SYSTEM_CHEATSHEET.md. -->
 
-Klassen-Konventionen:
-- Block: `sb-<block>` (z. B. `sb-pad`, `sb-btn`)
-- Teil: `sb-<block>-<part>` (z. B. `sb-pad-title`, `sb-btn-sm`)
-- Zustand: `is-<state>` (z. B. `is-hot`, `is-setup`) — nie block-scoped
+### CSS class naming
+<!-- TODO: Write up fully. Conventions already followed:
+     Block: sb-<block> (e.g. sb-pad, sb-btn)
+     Part:  sb-<block>-<part> (e.g. sb-pad-title, sb-btn-sm)
+     State: is-<state> (e.g. is-hot, is-setup) — never block-scoped
+     Per ADR-0021. Short form in DESIGN_SYSTEM_CHEATSHEET.md §60-second contract. -->
+
+### Token naming
+<!-- TODO: Write up fully. --<name> conventions; grouping by section; when to use
+     --sb-* legacy aliases vs. canonical names. Per ADR-0022. Already followed
+     — needs writing up. -->
+
+### Component & file naming
+<!-- TODO: Write up fully. PascalCase components (e.g. AudioRow, ModeToggle,
+     PadCreationPopover). File name matches component name (AudioRow.tsx = AudioRow
+     component). Already followed — needs writing up. -->
+
+### Signal & state naming
+<!-- TODO: Write up fully. camelCase signals, no prefix/suffix (e.g. audioContextState,
+     currentScreen, libraryItems). Exported from src/state/store.ts. Already followed
+     — needs writing up. -->
+
+### Lib & helper function naming
+<!-- TODO: Write up fully. camelCase functions in camelCase files (padDnd.ts, libDnd.ts,
+     padUtils.ts, upload.ts, nanoid.ts). Already followed — needs writing up. -->
+
+### ADR file naming
+<!-- TODO: Write up fully. NNNN-kebab-slug.md in docs/architecture/; template at
+     docs/architecture/_template.md; index in docs/architecture/README.md.
+     Already followed — needs writing up. -->
+
+### data-testid naming
+<!-- TODO: Convention documented in TESTING.md — cross-reference, do not duplicate here. -->
+
+### Branch/commit conventions
+<!-- TODO: No formal convention established yet. Gap to document. -->
 
 ---
 

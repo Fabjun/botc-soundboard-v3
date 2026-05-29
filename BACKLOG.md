@@ -464,6 +464,17 @@ with the class), or remove the CSS rule if the inline-style approach is kept.
 **When:** Slice 8 (Polish), when the creation popover is next touched.
 **Source:** Truth-check commit `e207a0b`; class marked `[unused-css]` in DESIGN_SYSTEM.md §6.
 
+### Verify `--pix-bg-layer` removal in `.sb-pix` / `.sb-pad.is-deep`
+The token `--pix-bg-layer` was removed from `v3/src/styles/tokens.css` during V3 development.
+The `.sb-pix` rule uses it with a CSS fallback:
+`var(--pix-bg-layer, linear-gradient(var(--pix-bg), var(--pix-bg)) padding-box)`.
+The fallback likely makes the removal transparent for most cases, but `.sb-pad.is-deep` may
+reference `--pix-bg-layer` directly (without a fallback). Visually confirm that the `.is-deep`
+depth treatment renders correctly, and confirm no explicit `--pix-bg-layer` references without
+fallbacks remain in `tokens.css`.
+**When:** When `tokens.css`, `.sb-pix`, or `.sb-pad.is-deep` CSS is next touched.
+**Source:** Session 0 tokens.css diff, 2026-05-29.
+
 ---
 
 ## 5. CSS Class Discipline (multi-session plan)
@@ -537,6 +548,20 @@ new classes.
 3. **`sync:classes` warning:** When `sync:classes` finds a class without `@inventory`, output
    a warning (not an error). Distinct from `[unused-css]` markers — those are intentional.
    The warning is for new classes that haven't been described yet.
+
+4. **BACKLOG drift reminder** (non-blocking): a pre-commit or CI hint that surfaces when
+   BACKLOG.md hasn't been touched in a while despite ongoing commits — e.g. "Last BACKLOG
+   edit was N commits ago; consider updating." This is a reminder to reflect, NOT automatic
+   item-closing (semantic completion can't be reliably automated). Same mechanism family as
+   the sync:classes warning. Tune the threshold (commit count or days) during implementation.
+   **Source:** Conversation 2026-05-29 — discussed alongside "should the backlog auto-update?"
+
+**Alignment note (pre-work for Session 1):** Before writing the new class-vs-inline rule in
+CLAUDE.md, verify that `DESIGN_SYSTEM_CHEATSHEET.md`'s decision tree (specifically the
+inline-style and class-creation branches) aligns with the Path A/B/C/D logic. If the existing
+tree says something different, Session 1 must resolve the conflict — not just add a
+cross-reference sentence, but ensure both documents say the same thing.
+**Source:** Session 0 review, 2026-05-29.
 
 **When:** After Session 0 completes.
 **Source:** Conversation 2026-05-29.
