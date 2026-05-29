@@ -1,13 +1,18 @@
 # Soundboard of Storytelling — Design Notes
 
+> **Open backlog items live in `BACKLOG.md`** (repo root). This file documents
+> design-detail decisions, RESOLVED entries, and slice-specific notes — not the
+> living backlog of deferred work. When an item graduates from "design decision"
+> to "deferred feature or known limitation", move it to BACKLOG.md.
+
 > **Architektur-Entscheidungen** (Datenmodell, Persistenz, Cross-Cutting-Pattern,
 > Plattform-Annahmen) leben in `docs/architecture/` als ADRs. Diese Datei
 > dokumentiert Design-Detail-Entscheidungen, offene Slice-Fragen und
 > RESOLVED-Einträge zu konkreten Refactoring-Schritten.
 
 > Captured design ideas that came up during design sessions but were not
-> implemented in the explorations. Living backlog; entries get pulled into
-> V3 implementation when relevant.
+> implemented in the explorations. Entries get pulled into V3 implementation when
+> relevant.
 >
 > Not a system / not a spec — these are decisions still pending review.
 > Each entry: one-line summary, one short paragraph of detail. If something

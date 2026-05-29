@@ -272,6 +272,10 @@ fonts, or spacing.
     Neue sb-*-Klassen dokumentieren mit `/* @inventory: Beschreibung */`
     am CSS-Selektor. Neue Tokens bekommen ihre Beschreibung aus dem
     Inline-Kommentar nach dem Semikolon in `tokens.css`.
+14. **Open work items**: All deferred items and known limitations are tracked in
+    `BACKLOG.md` (repo root). Slice plans should consult and update it. At each
+    slice completion, before the final commit: mark completed items `✅ Done (commit SHA)`
+    and add any new deferred items surfaced during the slice.
 
 ### Pre-commit checklist (mandatory before ANY commit)
 
@@ -333,6 +337,8 @@ Before committing a slice, also:
    `src/lib/` or `src/state/` must have corresponding tests in
    `tests/unit/`. No coverage required for UI components or event handlers.
 4. Update CLAUDE.md "Slice progress" table with completion date
+5. **Update BACKLOG.md**: mark completed items `✅ Done (commit SHA)`, add any
+   new deferred items surfaced during the slice.
 
 ---
 
