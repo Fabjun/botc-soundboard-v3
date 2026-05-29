@@ -634,49 +634,96 @@ cross-reference sentence, but ensure both documents say the same thing.
 
 ---
 
-### Session 2 — Stage-3 plan, scoped by Session 1 baseline measurement
+### Session 2 — Stage-3 plan, scoped by Session 1 baseline measurement ✅ Done
 _Purpose:_ Decide the shape of the migration work based on actual measurement, not estimation.
-Avoids both under-planning and over-planning.
 
-**Baseline (from `npm run audit:inline-styles`, Session 1 Step 2):**
-- Total `style={}` blocks: **203**
-- ✅ pure-dynamic: 2 | custom-setter: 2 (legitimate, do not migrate)
-- ⚠ dynamic-with-static: 20 (partially dynamic; 106 static props still Path D)
-- ❌ Path D violations: **177 blocks** (13 pure-layout + 81 pure-structural + 83 mixed)
-- ❓ unclassified: 2 (1 ternary PadTypeConfirmDialog:75, 1 spread PixelIcon:1209)
-- Pure-layout patterns: 8 distinct → ~4 layout primitives needed in Session 3
-- Top files by violations: PadEditorPanel (25), LibraryScreen (23), StartScreen (19),
-  PadCreationPopover (18), BoardScreen (18), BoardListScreen (15)
-- Re-run baseline: `cd v3 && npm run audit:inline-styles`
+**Delivered (2026-05-29):** Concrete 3a–3h migration roadmap from the verified baseline.
+Per-file breakdown table (column sums exact: 177 violations, 13 pure-layout, 164 struct+mixed,
+20 dynamic-with-static, 2 unclassified). Layout primitive specification (5 classes). Gap
+normalization decision (6px → `var(--space-2)`). Sub-session sizing with audit-checkable DoDs.
 
-**Deliverables:**
-- Read the inline-styles audit baseline above (or re-run for fresh count).
-- Categorize the findings: how many are Path-C-legitimate (dynamic) vs. Path-D-suspicious
-  (static). For the suspicious ones, group by component or file.
-- Decide whether the migration fits in one session, needs to be split (per slice, per
-  component), or needs design discussion for ambiguous cases.
-- Produce a concrete Session-3 plan with specific files in scope and a clear definition of done.
-
-**When:** Immediately after Session 1.
 **Source:** Conversation 2026-05-29.
 
 ---
 
-### Session 3 (or sessions) — Migration of suspicious inline-styles to classes
-_Purpose:_ Convert Path-D inline-styles into proper class usage, creating new classes where
-genuinely needed (per Session 1 rules), with explicit anti-duplication discipline.
+### Session 3 — Migration of inline-styles to classes (8 sub-sessions)
 
-**Deliverables:**
-- For each suspicious inline-style: decide Path A (existing class fits), Path B (new class
-  needed), or Path C (false alarm, was actually dynamic).
-- Path B work must explicitly consult `DESIGN_SYSTEM.md §6` for existing classes that could
-  be extended or used in variant form, before creating a new class. The reasoning is recorded
-  in the commit message.
-- Each new class gets an `@inventory` description in the same commit.
-- After migration, re-run the inline-styles audit — verify the suspicious count has dropped
-  meaningfully.
+_Purpose:_ Convert all 177 Path-D violations + 20 dynamic-with-static + 2 unclassified blocks
+into proper class usage. New classes created per 4-path rule; explicit anti-duplication
+discipline throughout.
 
-**When:** Per the plan produced in Session 2.
+**Baseline to beat:** `cd v3 && npm run audit:inline-styles` → 177 violations / 20 d-w-s / 2 unclassified.  
+**Target:** all three reach 0. (The 4 legitimate blocks — 2 pure-dynamic, 2 custom-setter-only — remain.)
+
+---
+
+#### Layout Primitives (Session 3a creates these in `v3/src/styles/tokens.css`)
+
+| Class | CSS | Purpose |
+|-------|-----|---------|
+| `sb-row` | `display: flex; align-items: center; gap: var(--space-2)` | horizontal flex row, 8px gap |
+| `sb-row-sm` | `display: flex; align-items: center; gap: var(--space-1)` | horizontal flex row, 4px gap |
+| `sb-flex-1` | `flex: 1` | flex-fill spacer |
+| `sb-row-wrap` | `display: flex; flex-wrap: wrap; gap: var(--space-1)` | wrapping flex row |
+| `sb-row-fill` | `display: flex; flex: 1; align-items: center; justify-content: center` | fill + centered row |
+
+**Gap normalization:** `gap: 6` (5 blocks across the codebase) → `var(--space-2)` (8px).
+The token scale is deliberately coarse; 2px difference is visually imperceptible.
+If any block renders noticeably wrong after normalization, report before committing.
+
+---
+
+#### Sub-session Plan
+
+Violation counts are **post-3a** (after 3a removes the 13 pure-layout blocks).  
+DoD for each file session: `audit:inline-styles` → 0 violations for that file.
+
+| Session | Files | violations (post-3a) | d-w-s | unclassified | DoD |
+|---------|-------|----------------------|-------|--------------|-----|
+| **3a** | All files — pure-layout only; create 5 primitives | 13 of 177 resolved | 0 | 0 | audit → 0 pure-layout |
+| **3b** | `PadEditorPanel.tsx` | 23 | 4 | 0 | 0 violations, 0 d-w-s |
+| **3c** | `LibraryScreen.tsx` | 20 | 3 | 0 | 0 violations, 0 d-w-s |
+| **3d** | `PadCreationPopover.tsx` | 15 | 6 | 0 | 0 violations, 0 d-w-s |
+| **3e** | `StartScreen.tsx` | 19 | 0 | 0 | 0 violations |
+| **3f** | `BoardScreen.tsx` + `BoardListScreen.tsx` | 17 + 13 = 30 | 0 | 0 | 0 violations for both |
+| **3g** | `SceneRail.tsx` + `LibraryPanel.tsx` + `AudioRow.tsx` | 9 + 11 + 8 = 28 | 0+0+2 = 2 | 0 | 0 violations, 0 d-w-s |
+| **3h** | `PadTypeConfirmDialog.tsx` + `TopBarV2.tsx` + `BoardTopBarV3.tsx` + `PadGridCell.tsx` + `UndoToast.tsx` + `StatusBarV2.tsx` + `Waveform.tsx` + `PixelIcon.tsx` | 13+5+4+4+2+1+0+0 = 29 | 1+1+1+0+0+0+2+0 = 5 | 1(PTD)+1(Pix) = 2 | 0 violations, 0 d-w-s, unclassified resolved |
+
+**Arithmetic verification:** 13+23+20+15+19+30+28+29 = 177 ✓ | d-w-s: 4+3+6+0+0+2+5 = 20 ✓ | unclassified: 2 ✓
+
+**Ordering rationale (load-bearing):**
+- 3a first — layout primitives are a dependency for all subsequent sessions
+- 3b (PadEditorPanel) **before** 3d (PadCreationPopover) — both have form-section patterns;
+  3b establishes shared classes, 3d uses them as Path A. **Swapping this order risks duplicate classes.**
+- 3c (LibraryScreen) **before** 3g (LibraryPanel) — same reason: shared list/metadata patterns
+- 3e (StartScreen) anywhere in the middle — isolated, no structural sharing
+- 3g and 3h last — consume patterns from screen sessions; maximizes Path-A reuse
+
+---
+
+#### Per-sub-session required first step (mandatory for 3b–3h)
+
+At the start of each file session, **before touching any code:**
+
+1. **Read §6 in full** — run `npm run sync:classes` first to ensure it reflects the previous
+   session's new classes.
+2. **Batch-scan the file's violations by category** — categorize each block as pure-structural,
+   mixed, or dynamic-with-static. The global audit reports per-file totals, not per-file category
+   breakdown; derive this split locally, because it informs the migration approach: mixed blocks
+   require combining a layout primitive + structural class; pure-structural blocks need only one class.
+3. **Batch Path A/B decisions for every violation at once** — do not decide one-by-one while
+   editing. Context collapses when you alternate between reading and writing.
+4. **For each Path B class:** grep §6 for similar function before creating. If the same structural
+   need appears multiple times in the file, create ONE class used N times.
+
+**At sub-session end:**
+- Add `/* @inventory: … */` to all new classes → run `npm run sync:classes` → verify §6 updated
+- Report: Path A vs Path B split, new-class count
+- Commit before starting the next sub-session (so the next session inherits an up-to-date §6)
+
+---
+
+**When:** Per the 3a–3h ordering above.  
 **Source:** Conversation 2026-05-29.
 
 ---
