@@ -279,7 +279,7 @@ export function PadEditorPanel({
         >
           TYPE
         </label>
-        <div style={{ display: 'flex', gap: 4 }}>
+        <div class="sb-row-sm">
           {PAD_TYPES.map((t) => (
             <button
               key={t}
@@ -534,7 +534,7 @@ export function PadEditorPanel({
       </div>
 
       {/* Spacer */}
-      <div style={{ flex: 1 }} />
+      <div class="sb-flex-1" />
 
       {/* Delete */}
       <div class="sb-inspector-section">

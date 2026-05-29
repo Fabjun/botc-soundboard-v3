@@ -634,7 +634,7 @@ cross-reference sentence, but ensure both documents say the same thing.
 
 ---
 
-### Session 2 — Stage-3 plan, scoped by Session 1 baseline measurement ✅ Done
+### Session 2 — Stage-3 plan, scoped by Session 1 baseline measurement ✅ Done (eda7458)
 _Purpose:_ Decide the shape of the migration work based on actual measurement, not estimation.
 
 **Delivered (2026-05-29):** Concrete 3a–3h migration roadmap from the verified baseline.
@@ -680,16 +680,17 @@ DoD for each file session: `audit:inline-styles` → 0 violations for that file.
 
 | Session | Files | violations (post-3a) | d-w-s | unclassified | DoD |
 |---------|-------|----------------------|-------|--------------|-----|
-| **3a** | All files — pure-layout only; create 5 primitives | 13 of 177 resolved | 0 | 0 | audit → 0 pure-layout |
+| **3a** ✅ Done | All files — pure-layout only; create 5 primitives (+sb-hidden) | 12 of 13 fully resolved; 1 residual (see note) | 0 | 0 | audit → 1 pure-layout (BoardListScreen:237 `flexShrink:0` residual, assigned to 3f — roadmap prediction of "reclassify as d-w-s" was wrong, it stays pure-layout); 6 new classes (+5 primitives +sb-hidden); 63 total in §6 |
 | **3b** | `PadEditorPanel.tsx` | 23 | 4 | 0 | 0 violations, 0 d-w-s |
 | **3c** | `LibraryScreen.tsx` | 20 | 3 | 0 | 0 violations, 0 d-w-s |
 | **3d** | `PadCreationPopover.tsx` | 15 | 6 | 0 | 0 violations, 0 d-w-s |
 | **3e** | `StartScreen.tsx` | 19 | 0 | 0 | 0 violations |
-| **3f** | `BoardScreen.tsx` + `BoardListScreen.tsx` | 17 + 13 = 30 | 0 | 0 | 0 violations for both |
+| **3f** | `BoardScreen.tsx` + `BoardListScreen.tsx` | 17 + **14** = **31** | 0 | 0 | 0 violations + 0 d-w-s + 0 pure-layout for BoardListScreen. BoardListScreen has 14 (not 13) because the 3a residual `style={{ flexShrink: 0 }}` still counts as 1 violation. The action-row semantic class (created in 3f) absorbs it — reaching 0 pure-layout for that file. |
 | **3g** | `SceneRail.tsx` + `LibraryPanel.tsx` + `AudioRow.tsx` | 9 + 11 + 8 = 28 | 0+0+2 = 2 | 0 | 0 violations, 0 d-w-s |
 | **3h** | `PadTypeConfirmDialog.tsx` + `TopBarV2.tsx` + `BoardTopBarV3.tsx` + `PadGridCell.tsx` + `UndoToast.tsx` + `StatusBarV2.tsx` + `Waveform.tsx` + `PixelIcon.tsx` | 13+5+4+4+2+1+0+0 = 29 | 1+1+1+0+0+0+2+0 = 5 | 1(PTD)+1(Pix) = 2 | 0 violations, 0 d-w-s, unclassified resolved |
 
-**Arithmetic verification:** 13+23+20+15+19+30+28+29 = 177 ✓ | d-w-s: 4+3+6+0+0+2+5 = 20 ✓ | unclassified: 2 ✓
+**Arithmetic verification:** 12+23+20+15+19+31+28+29 = 177 ✓ | d-w-s: 4+3+6+0+0+2+5 = 20 ✓ | unclassified: 2 ✓
+_(3a resolves 12 fully + 1 residual deferred to 3f; 3f scope is 31 = 17+14. Total closes to 177.)_
 
 **Ordering rationale (load-bearing):**
 - 3a first — layout primitives are a dependency for all subsequent sessions

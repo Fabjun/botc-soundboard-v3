@@ -131,7 +131,9 @@ Verbotene Muster in neuem V3-Code:
 | `sb-creation-sheet-backdrop` | Mobile backdrop behind sb-creation-sheet; sb-type-confirm-backdrop is the desktop equivalent. | `v3/src/styles/tokens.css` |
 | `sb-display` | Hero title — Press Start 2P with gold glow; for page-level titles only. | `v3/src/styles/tokens.css` |
 | `sb-display-vt` | VT323 heading variant of sb-display for medium headings; same glow, less chunky pixels. | `v3/src/styles/tokens.css` |
+| `sb-flex-1` | Flex fill — takes all remaining space in a flex container. Use as a spacer or to push siblings to opposite ends. | `v3/src/styles/tokens.css` |
 | `sb-grid-bg` | Cross-hatch layout grid on the board canvas in SETUP mode. | `v3/src/styles/tokens.css` |
+| `sb-hidden` | Visibility utility — hides element from layout (display:none). For hidden file inputs and conditionally invisible nodes. | `v3/src/styles/tokens.css` |
 | `sb-inspector` | Generic right-rail inspector shell; V3 uses specific variants sb-pad-editor and sb-library-panel. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-inspector-section` | Padded content section within an inspector panel, separated by bottom border. | `v3/src/styles/tokens.css` |
 | `sb-label` | Uppercase VT323 label; intended for field labels and section headings. Currently no TSX usage. [unused-css] | `v3/src/styles/tokens.css` |
@@ -155,6 +157,10 @@ Verbotene Muster in neuem V3-Code:
 | `sb-panel-header` | Compact 28px header strip on inspector panels (icon + uppercase label). | `v3/src/styles/tokens.css` |
 | `sb-pill` | Compact pixel-frame badge; type-colour variants via is-on, is-loop, is-playlist, is-combo. | `v3/src/styles/tokens.css` |
 | `sb-pix` | Shared CSS base for card/btn/pad/pill/menu-row pixel-frame styling; never applied directly as a className. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-row` | Horizontal flex row; align-items center, 8px gap (--space-2). Standard row for icon+label or toolbar items. | `v3/src/styles/tokens.css` |
+| `sb-row-fill` | Centred fill row — fills flex parent (flex:1) and centres content both axes. Use for empty-state containers. | `v3/src/styles/tokens.css` |
+| `sb-row-sm` | Compact flex row; align-items center, 4px gap (--space-1). For tight action groups and button clusters. | `v3/src/styles/tokens.css` |
+| `sb-row-wrap` | Wrapping flex row; 4px gap (--space-1). For type-selector grids and wrapping button groups. | `v3/src/styles/tokens.css` |
 | `sb-scanlines` | CRT scanline overlay via ::after pseudo-element; currently applied to StartScreen only. | `v3/src/styles/tokens.css` |
 | `sb-scene-rail` | Left 220px scene navigation column on BoardScreen (fixed width, scrollable). | `v3/src/styles/tokens.css` |
 | `sb-scene-tab` | Clickable scene entry in the scene rail; is-active highlights the current scene. | `v3/src/styles/tokens.css` |

@@ -224,13 +224,7 @@ function FieldList({
       >
         {label}
       </div>
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 'var(--space-1)',
-        }}
-      >
+      <div class="sb-row-wrap">
         {items.map((item) => (
           <span
             key={item}

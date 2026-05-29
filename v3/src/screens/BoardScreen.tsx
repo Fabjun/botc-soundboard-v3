@@ -430,11 +430,7 @@ export function BoardScreen(): JSX.Element {
                 flexShrink: 0,
               }}
             >
-              <button
-                class="sb-btn sb-btn-sm sb-btn-primary"
-                onClick={handleAddPad}
-                style={{ gap: 6 }}
-              >
+              <button class="sb-btn sb-btn-sm sb-btn-primary" onClick={handleAddPad}>
                 <PixelIcon name="sparkle" size={11} />
                 ADD PAD
               </button>

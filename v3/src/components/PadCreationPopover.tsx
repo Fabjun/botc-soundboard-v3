@@ -261,7 +261,7 @@ export function PadCreationPopover({
             outline: 'none',
           }}
         />
-        <div style={{ display: 'flex', gap: 4 }}>
+        <div class="sb-row-sm">
           {PAD_TYPES.map((t) => (
             <button
               key={t}
@@ -307,7 +307,7 @@ export function PadCreationPopover({
         >
           More options →
         </button>
-        <div style={{ flex: 1 }} />
+        <div class="sb-flex-1" />
         <button
           class="sb-btn sb-btn-sm sb-btn-ghost"
           data-testid="creation-cancel"
@@ -434,13 +434,7 @@ function SourceItem({
         gap: 2,
       }}
     >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-        }}
-      >
+      <div class="sb-row">
         {selected ? (
           <PixelIcon name="play" size={10} color="var(--gold)" />
         ) : (

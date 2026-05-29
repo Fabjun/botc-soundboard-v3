@@ -212,7 +212,7 @@ export function LibraryScreen(): JSX.Element {
         type="file"
         multiple
         accept="audio/mpeg,audio/wav,audio/mp4,audio/aac,audio/x-m4a,audio/flac,audio/ogg,audio/opus,.mp3,.wav,.m4a,.aac,.flac,.ogg,.opus"
-        style={{ display: 'none' }}
+        class="sb-hidden"
         onChange={handleFileInputChange}
       />
 
@@ -221,7 +221,7 @@ export function LibraryScreen(): JSX.Element {
         title="Library"
         breadcrumb={breadcrumb}
         right={
-          <div style={{ display: 'flex', gap: '6px' }}>
+          <div class="sb-row">
             <button
               class="sb-btn sb-btn-sm sb-btn-primary"
               onClick={() => fileInputRef.current?.click()}
@@ -277,14 +277,7 @@ export function LibraryScreen(): JSX.Element {
 
       {/* Main content */}
       {activeTab !== 'AUDIO' ? (
-        <div
-          style={{
-            display: 'flex',
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        <div class="sb-row-fill">
           <EmptyState label="No items yet" />
         </div>
       ) : (

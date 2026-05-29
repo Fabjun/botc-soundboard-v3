@@ -63,7 +63,7 @@ export function BoardListScreen(): JSX.Element {
         title="Boards"
         breadcrumb={`${allBoards.length} board${allBoards.length !== 1 ? 's' : ''}`}
         right={
-          <div style={{ display: 'flex', gap: 6 }}>
+          <div class="sb-row">
             <button
               class="sb-btn sb-btn-sm sb-btn-primary"
               data-testid="new-board-button"
@@ -235,10 +235,7 @@ function BoardRow({ board, onOpen }: { board: Board; onOpen: () => void }): JSX.
 
       {/* Actions */}
       {!editing && (
-        <div
-          style={{ display: 'flex', gap: 4, flexShrink: 0 }}
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div class="sb-row-sm" style={{ flexShrink: 0 }} onClick={(e) => e.stopPropagation()}>
           <button
             class="sb-btn sb-btn-sm sb-btn-ghost"
             data-testid={`board-edit-${board.id}`}

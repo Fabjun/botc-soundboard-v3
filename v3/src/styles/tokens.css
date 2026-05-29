@@ -504,6 +504,41 @@
   letter-spacing: 0.04em;
 }
 
+/* ── Layout Primitives ───────────────────────────────────────────────── */
+.sb-row {
+  /* @inventory: Horizontal flex row; align-items center, 8px gap (--space-2). Standard row for icon+label or toolbar items. */
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.sb-row-sm {
+  /* @inventory: Compact flex row; align-items center, 4px gap (--space-1). For tight action groups and button clusters. */
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.sb-flex-1 {
+  /* @inventory: Flex fill — takes all remaining space in a flex container. Use as a spacer or to push siblings to opposite ends. */
+  flex: 1;
+}
+.sb-row-wrap {
+  /* @inventory: Wrapping flex row; 4px gap (--space-1). For type-selector grids and wrapping button groups. */
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+.sb-row-fill {
+  /* @inventory: Centred fill row — fills flex parent (flex:1) and centres content both axes. Use for empty-state containers. */
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+}
+.sb-hidden {
+  /* @inventory: Visibility utility — hides element from layout (display:none). For hidden file inputs and conditionally invisible nodes. */
+  display: none;
+}
+
 /* ════════════════════════════════════════════════════════════════════
    PIXEL FRAMES — the chunky stepped-corner look. Implementation:
    clip-path cuts a stepped silhouette; a `padding-box / border-box`

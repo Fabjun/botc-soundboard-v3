@@ -229,13 +229,7 @@ function LibraryPanelRow({ item, onLibDrop, onLongPress }: LibraryPanelRowProps)
         gap: 3,
       }}
     >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-        }}
-      >
+      <div class="sb-row">
         <PixelIcon name="play" size={10} color="var(--text-mute)" />
         <span
           style={{
