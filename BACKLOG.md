@@ -593,8 +593,19 @@ cross-reference sentence, but ensure both documents say the same thing.
 _Purpose:_ Decide the shape of the migration work based on actual measurement, not estimation.
 Avoids both under-planning and over-planning.
 
+**Baseline (from `npm run audit:inline-styles`, Session 1 Step 2):**
+- Total `style={}` blocks: **203**
+- ✅ pure-dynamic: 2 | custom-setter: 2 (legitimate, do not migrate)
+- ⚠ dynamic-with-static: 20 (partially dynamic; 106 static props still Path D)
+- ❌ Path D violations: **177 blocks** (13 pure-layout + 81 pure-structural + 83 mixed)
+- ❓ unclassified: 2 (1 ternary PadTypeConfirmDialog:75, 1 spread PixelIcon:1209)
+- Pure-layout patterns: 8 distinct → ~4 layout primitives needed in Session 3
+- Top files by violations: PadEditorPanel (25), LibraryScreen (23), StartScreen (19),
+  PadCreationPopover (18), BoardScreen (18), BoardListScreen (15)
+- Re-run baseline: `cd v3 && npm run audit:inline-styles`
+
 **Deliverables:**
-- Read the inline-styles audit baseline from Session 1.
+- Read the inline-styles audit baseline above (or re-run for fresh count).
 - Categorize the findings: how many are Path-C-legitimate (dynamic) vs. Path-D-suspicious
   (static). For the suspicious ones, group by component or file.
 - Decide whether the migration fits in one session, needs to be split (per slice, per
