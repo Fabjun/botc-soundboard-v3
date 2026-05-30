@@ -208,88 +208,36 @@ export function PadEditorPanel({
     <div class="sb-pad-editor" data-testid="pad-editor">
       {/* Header */}
       <div class="sb-panel-header is-active" style={{ borderBottom: `2px solid ${typeColor}` }}>
-        <span
-          style={{
-            width: 8,
-            height: 8,
-            background: typeColor,
-            flexShrink: 0,
-          }}
-        />
-        <span
-          style={{ flex: 1, color: 'var(--text)', fontFamily: 'var(--font-mono)', fontSize: 12 }}
-        >
-          Pad Editor
-        </span>
-        <button
-          class="sb-btn sb-btn-sm sb-btn-ghost"
-          style={{ minWidth: 28, minHeight: 28, padding: '0 4px', marginLeft: 'auto' }}
-          onClick={onClose}
-        >
+        <span class="sb-type-indicator" style={{ background: typeColor }} />
+        <span class="sb-panel-title">Pad Editor</span>
+        <button class="sb-btn sb-btn-icon sb-btn-ghost" onClick={onClose}>
           ×
         </button>
       </div>
 
       {/* Name */}
       <div class="sb-inspector-section">
-        <label
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '11px',
-            color: 'var(--text-mute)',
-            letterSpacing: '.08em',
-            display: 'block',
-            marginBottom: 4,
-          }}
-        >
-          NAME
-        </label>
+        <label class="sb-field-label">NAME</label>
         <input
+          class="sb-text-input"
           type="text"
           data-testid="editor-name-input"
           value={name}
           placeholder="Pad name…"
           onInput={(e) => handleNameChange((e.target as HTMLInputElement).value)}
-          style={{
-            width: '100%',
-            background: 'var(--sunk)',
-            border: '1px solid var(--border)',
-            color: 'var(--text)',
-            fontFamily: 'var(--font-ui)',
-            fontSize: 'var(--fs-md)',
-            letterSpacing: '.06em',
-            textTransform: 'uppercase',
-            padding: '6px 8px',
-            outline: 'none',
-          }}
         />
       </div>
 
       {/* Type selector */}
       <div class="sb-inspector-section">
-        <label
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '11px',
-            color: 'var(--text-mute)',
-            letterSpacing: '.08em',
-            display: 'block',
-            marginBottom: 6,
-          }}
-        >
-          TYPE
-        </label>
+        <label class="sb-field-label">TYPE</label>
         <div class="sb-row-sm">
           {PAD_TYPES.map((t) => (
             <button
               key={t}
-              class={`sb-btn sb-btn-sm ${type === t ? 'sb-btn-primary' : 'sb-btn-ghost'}`}
+              class={`sb-btn sb-type-btn ${type === t ? 'sb-btn-primary' : 'sb-btn-ghost'}`}
               data-testid={`editor-type-${t}`}
               style={{
-                flex: 1,
-                padding: '3px 4px',
-                fontSize: 'var(--fs-xs)',
-                letterSpacing: '.04em',
                 color: type === t ? padTypeColor(t) : 'var(--text-mute)',
                 borderColor: type === t ? padTypeColor(t) : undefined,
               }}
@@ -303,142 +251,51 @@ export function PadEditorPanel({
 
       {/* Library source */}
       <div class="sb-inspector-section">
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 6,
-          }}
-        >
-          <label
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '11px',
-              color: 'var(--text-mute)',
-              letterSpacing: '.08em',
-            }}
-          >
-            AUDIO SOURCE
-          </label>
-          <button
-            class="sb-btn sb-btn-sm sb-btn-ghost"
-            style={{ padding: '1px 6px', fontSize: 'var(--fs-xs)' }}
-            onClick={() => setLibPickerOpen((o) => !o)}
-          >
+        <div class="sb-section-header-row">
+          <label class="sb-field-label">AUDIO SOURCE</label>
+          <button class="sb-btn sb-btn-xs sb-btn-ghost" onClick={() => setLibPickerOpen((o) => !o)}>
             {libPickerOpen ? 'CLOSE' : 'BROWSE'}
           </button>
         </div>
 
         {/* Current source */}
         {selectedItem ? (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 4,
-              padding: '6px 8px',
-              background: 'var(--sunk)',
-              border: '1px solid var(--border)',
-            }}
-          >
-            <div
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '12px',
-                color: 'var(--text)',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {selectedItem.name}
-            </div>
+          <div class="sb-lib-browser">
+            <div class="sb-lib-browser-item-name">{selectedItem.name}</div>
             {selectedItem.peaks.length > 0 && <Waveform peaks={selectedItem.peaks} height={24} />}
           </div>
         ) : (
-          <div
-            style={{
-              padding: '10px 8px',
-              background: 'var(--sunk)',
-              border: '1px dashed var(--border)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '12px',
-              color: 'var(--text-mute)',
-              textAlign: 'center',
-            }}
-          >
-            No source selected
-          </div>
+          <div class="sb-lib-browser-empty">No source selected</div>
         )}
 
         {/* Inline library picker */}
         {libPickerOpen && (
-          <div
-            style={{
-              marginTop: 6,
-              border: '1px solid var(--border)',
-              background: 'var(--sunk)',
-              maxHeight: 160,
-              overflowY: 'auto',
-              WebkitOverflowScrolling: 'touch',
-            }}
-          >
-            <div
-              style={{
-                padding: '4px 6px',
-                borderBottom: '1px solid var(--border-soft)',
-              }}
-            >
+          <div class="sb-lib-browser-list">
+            <div class="sb-lib-browser-search">
               <input
+                class="sb-search-input"
                 type="text"
                 placeholder="Search…"
                 value={libSearch}
                 onInput={(e) => setLibSearch((e.target as HTMLInputElement).value)}
-                style={{
-                  width: '100%',
-                  background: 'none',
-                  border: 'none',
-                  outline: 'none',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
-                  color: 'var(--text)',
-                }}
                 autoFocus
               />
             </div>
             {filteredAudio.slice(0, 50).map((item) => (
               <div
                 key={item.id}
+                class="sb-lib-browser-item"
                 onClick={() => handleLibrarySelect(item.id)}
                 style={{
-                  padding: '5px 8px',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
                   color: libraryRef === item.id ? 'var(--gold)' : 'var(--text-dim)',
                   background: libraryRef === item.id ? 'var(--raised)' : 'none',
-                  borderBottom: '1px solid var(--border-soft)',
-                  cursor: 'pointer',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
                 }}
               >
                 {item.name}
               </div>
             ))}
             {filteredAudio.length === 0 && (
-              <div
-                style={{
-                  padding: '12px 8px',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
-                  color: 'var(--text-mute)',
-                  textAlign: 'center',
-                }}
-              >
-                No files found
-              </div>
+              <div class="sb-lib-browser-no-results">No files found</div>
             )}
           </div>
         )}
@@ -488,48 +345,16 @@ export function PadEditorPanel({
 
       {/* Hotkey (read-only; Key-Capture = Slice 8) */}
       <div class="sb-inspector-section">
-        <label
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '11px',
-            color: 'var(--text-mute)',
-            letterSpacing: '.08em',
-            display: 'block',
-            marginBottom: 4,
-          }}
-        >
-          HOTKEY
-        </label>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            padding: '4px 8px',
-            background: 'var(--sunk)',
-            border: '1px solid var(--border)',
-          }}
-        >
+        <label class="sb-field-label">HOTKEY</label>
+        <div class="sb-readonly-field">
           <PixelIcon name="keyboard" size={11} color="var(--text-mute)" />
           <span
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '12px',
-              color: pad.hotkey ? 'var(--text)' : 'var(--text-mute)',
-            }}
+            class="sb-hotkey-value sb-flex-1"
+            style={{ color: pad.hotkey ? 'var(--text)' : 'var(--text-mute)' }}
           >
             {pad.hotkey ?? '— not assigned —'}
           </span>
-          <span
-            style={{
-              marginLeft: 'auto',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '10px',
-              color: 'var(--text-mute)',
-            }}
-          >
-            Slice 8
-          </span>
+          <span class="sb-hint-text">Slice 8</span>
         </div>
       </div>
 
@@ -539,9 +364,8 @@ export function PadEditorPanel({
       {/* Delete */}
       <div class="sb-inspector-section">
         <button
-          class={`sb-btn sb-btn-danger`}
+          class="sb-btn sb-btn-danger sb-btn-block"
           data-testid="editor-delete-button"
-          style={{ width: '100%', justifyContent: 'center', minHeight: 44 }}
           onClick={handleDelete}
           onBlur={() => setDeleteConfirm(false)}
         >
@@ -586,36 +410,12 @@ function SliderRow({
 }): JSX.Element {
   return (
     <div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'baseline',
-          marginBottom: 6,
-        }}
-      >
-        <label
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '11px',
-            color: 'var(--text-mute)',
-            letterSpacing: '.08em',
-            textTransform: 'uppercase',
-          }}
-        >
-          {label}
-        </label>
-        <span
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '12px',
-            color: 'var(--gold)',
-          }}
-        >
-          {format(value)}
-        </span>
+      <div class="sb-section-header-row">
+        <label class="sb-field-label">{label}</label>
+        <span class="sb-value-text">{format(value)}</span>
       </div>
       <input
+        class="sb-range-input"
         type="range"
         data-testid={testid}
         min={min}
@@ -623,11 +423,6 @@ function SliderRow({
         step={step}
         value={value}
         onInput={(e) => onChange(parseFloat((e.target as HTMLInputElement).value))}
-        style={{
-          width: '100%',
-          accentColor: 'var(--gold)',
-          cursor: 'pointer',
-        }}
       />
     </div>
   );

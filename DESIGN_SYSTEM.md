@@ -118,11 +118,14 @@ Verbotene Muster in neuem V3-Code:
 | `sb-board-topbar-left` | Left column of the board top bar (flex row, back button + breadcrumb). | `v3/src/styles/tokens.css` |
 | `sb-board-topbar-right` | Right column of the board top bar (actions, right-aligned). | `v3/src/styles/tokens.css` |
 | `sb-btn` | Pixel-frame button base; all button variants extend this. | `v3/src/styles/tokens.css` |
+| `sb-btn-block` | Full-width block button modifier — 100% width, centered, 44px min touch target (iOS guideline). | `v3/src/styles/tokens.css` |
 | `sb-btn-danger` | Button variant for destructive actions; blood-red border and label. | `v3/src/styles/tokens.css` |
 | `sb-btn-filled` | Button variant — solid gold fill and dark label; primary CTA. Currently no TSX usage. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-btn-ghost` | Button variant — transparent fill, dimmed border; low-emphasis. | `v3/src/styles/tokens.css` |
+| `sb-btn-icon` | Icon-sized button modifier for sb-btn — 28×28px touch target, tight padding. | `v3/src/styles/tokens.css` |
 | `sb-btn-primary` | Button variant — gold border and label; highlighted action. | `v3/src/styles/tokens.css` |
 | `sb-btn-sm` | Small-size modifier for .sb-btn; tighter padding and smaller font. | `v3/src/styles/tokens.css` |
+| `sb-btn-xs` | Extra-small button modifier — smaller than sb-btn-sm; for tight button rows in inspector and type-confirm panels. | `v3/src/styles/tokens.css` |
 | `sb-caption` | Smallest text style — xs mono in text-mute; for filenames and metadata. Currently no TSX usage. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-card` | Pixel-frame container card with padding and drop-shadow elevation. Currently no TSX usage; V3 list items use sb-menu-row instead. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-creation-popover` | Fixed 300px popover for Path A (desktop) pad creation flow. | `v3/src/styles/tokens.css` |
@@ -131,12 +134,22 @@ Verbotene Muster in neuem V3-Code:
 | `sb-creation-sheet-backdrop` | Mobile backdrop behind sb-creation-sheet; sb-type-confirm-backdrop is the desktop equivalent. | `v3/src/styles/tokens.css` |
 | `sb-display` | Hero title — Press Start 2P with gold glow; for page-level titles only. | `v3/src/styles/tokens.css` |
 | `sb-display-vt` | VT323 heading variant of sb-display for medium headings; same glow, less chunky pixels. | `v3/src/styles/tokens.css` |
+| `sb-field-label` | Mono 11px field label for inspector sections — block display, bottom margin, uppercase. Used for NAME/TYPE/AUDIO SOURCE/HOTKEY/FADE labels. | `v3/src/styles/tokens.css` |
 | `sb-flex-1` | Flex fill — takes all remaining space in a flex container. Use as a spacer or to push siblings to opposite ends. | `v3/src/styles/tokens.css` |
 | `sb-grid-bg` | Cross-hatch layout grid on the board canvas in SETUP mode. | `v3/src/styles/tokens.css` |
 | `sb-hidden` | Visibility utility — hides element from layout (display:none). For hidden file inputs and conditionally invisible nodes. | `v3/src/styles/tokens.css` |
+| `sb-hint-text` | Secondary annotative text in inspector rows — mono 10px muted. Intentionally below --fs-xs; consider --fs-xxs token in Session 8. | `v3/src/styles/tokens.css` |
+| `sb-hotkey-value` | Hotkey binding value text in inspector — mono xs; color set inline for has/lacks-hotkey state. | `v3/src/styles/tokens.css` |
 | `sb-inspector` | Generic right-rail inspector shell; V3 uses specific variants sb-pad-editor and sb-library-panel. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-inspector-section` | Padded content section within an inspector panel, separated by bottom border. | `v3/src/styles/tokens.css` |
 | `sb-label` | Uppercase VT323 label; intended for field labels and section headings. Currently no TSX usage. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-lib-browser` | Compact library picker container in inspector — flex column, sunk background, bordered. | `v3/src/styles/tokens.css` |
+| `sb-lib-browser-empty` | Empty-state placeholder in library browser — dashed border, centered muted text. | `v3/src/styles/tokens.css` |
+| `sb-lib-browser-item` | Clickable row in library browser list — padded, truncated, pointer cursor; selection color/bg set inline. | `v3/src/styles/tokens.css` |
+| `sb-lib-browser-item-name` | Truncated filename in a library browser item row — ellipsis overflow, mono xs. | `v3/src/styles/tokens.css` |
+| `sb-lib-browser-list` | Scrollable item list inside library browser — capped height, sunk background, iOS-touch scroll. | `v3/src/styles/tokens.css` |
+| `sb-lib-browser-no-results` | "No results" message inside library browser list — centered, muted. | `v3/src/styles/tokens.css` |
+| `sb-lib-browser-search` | Search section wrapper inside library browser — padded with border-bottom divider. | `v3/src/styles/tokens.css` |
 | `sb-library-panel` | Library browse panel in the board right rail (280px, hides overflow). | `v3/src/styles/tokens.css` |
 | `sb-menu-row` | Pixel-frame list row with icon, primary title, and subtitle slots. | `v3/src/styles/tokens.css` |
 | `sb-mode-badge` | Compact inline SETUP/GAME badge for top-bar and status-bar surfaces. | `v3/src/styles/tokens.css` |
@@ -155,8 +168,11 @@ Verbotene Muster in neuem V3-Code:
 | `sb-pad-grid` | CSS grid for the active scene's pads; col/row counts from --grid-cols/--grid-rows CSS vars. | `v3/src/styles/tokens.css` |
 | `sb-pad-grid-cell` | Single cell wrapper in the pad grid; carries position, DnD states, and touch targets. | `v3/src/styles/tokens.css` |
 | `sb-panel-header` | Compact 28px header strip on inspector panels (icon + uppercase label). | `v3/src/styles/tokens.css` |
+| `sb-panel-title` | Flexible-fill title span inside a panel header — mono xs in normal text color. | `v3/src/styles/tokens.css` |
 | `sb-pill` | Compact pixel-frame badge; type-colour variants via is-on, is-loop, is-playlist, is-combo. | `v3/src/styles/tokens.css` |
 | `sb-pix` | Shared CSS base for card/btn/pad/pill/menu-row pixel-frame styling; never applied directly as a className. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-range-input` | Native <input type="range"> styled with design-system gold accent — full width, pointer cursor. | `v3/src/styles/tokens.css` |
+| `sb-readonly-field` | Read-only display row in inspector — flex, sunk background, bordered; for hotkey and value display. | `v3/src/styles/tokens.css` |
 | `sb-row` | Horizontal flex row; align-items center, 8px gap (--space-2). Standard row for icon+label or toolbar items. | `v3/src/styles/tokens.css` |
 | `sb-row-fill` | Centred fill row — fills flex parent (flex:1) and centres content both axes. Use for empty-state containers. | `v3/src/styles/tokens.css` |
 | `sb-row-sm` | Compact flex row; align-items center, 4px gap (--space-1). For tight action groups and button clusters. | `v3/src/styles/tokens.css` |
@@ -166,17 +182,23 @@ Verbotene Muster in neuem V3-Code:
 | `sb-scene-tab` | Clickable scene entry in the scene rail; is-active highlights the current scene. | `v3/src/styles/tokens.css` |
 | `sb-scene-tab-actions` | Action buttons (duplicate, delete) revealed on hover or on the active scene tab. | `v3/src/styles/tokens.css` |
 | `sb-scroll` | iOS-momentum scroll utility; touch scrolling without overscroll containment. Currently no TSX usage. [unused-css] | `v3/src/styles/global.css` |
+| `sb-search-input` | Transparent search input inside a bordered container — no background, no border, mono font. | `v3/src/styles/tokens.css` |
+| `sb-section-header-row` | Flex row for inspector section headers — label left, action right, space-between, 6px bottom margin. | `v3/src/styles/tokens.css` |
 | `sb-slider` | Horizontal range track bar for volume and trim controls; Slice 8+ feature. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-slider-fill` | Active filled portion of the slider track; width set by inline style. Slice 8+ feature. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-slider-thumb` | Draggable thumb on the slider track with gold glow. Slice 8+ feature. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-status-bar` | Bottom 24px strip showing mode, board name, and other metadata. | `v3/src/styles/tokens.css` |
 | `sb-tab` | Individual tab in a tab bar; is-active shows gold underline and label colour. | `v3/src/styles/tokens.css` |
 | `sb-tabs` | Tab bar container — flex row with bottom border separating tabs from content. | `v3/src/styles/tokens.css` |
+| `sb-text-input` | Pixel-style text input — sunk background, bordered, VT323 uppercase. For pad name and form fields. | `v3/src/styles/tokens.css` |
 | `sb-toggle` | Binary on/off toggle switch (40×20px); is-on moves thumb right and adds gold glow. Currently no TSX usage. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-type-btn` | Type-selector button in pad editor — fills row-wrap evenly, xs font, tight padding; color/border set inline for active state. | `v3/src/styles/tokens.css` |
 | `sb-type-confirm` | Desktop modal for confirming a pad-type change (z-index 500, pixel corners); sb-creation-sheet is used on mobile. | `v3/src/styles/tokens.css` |
 | `sb-type-confirm-backdrop` | Desktop backdrop for sb-type-confirm; sb-creation-sheet-backdrop is the mobile equivalent. | `v3/src/styles/tokens.css` |
+| `sb-type-indicator` | 8×8px colored dot indicating pad type in inspector header; color set inline by caller. | `v3/src/styles/tokens.css` |
 | `sb-undo-toast` | Fixed notification toast above the status bar shown after scene deletion. | `v3/src/styles/tokens.css` |
 | `sb-undo-toast-progress` | Animated gold progress bar at the bottom of the undo toast (linear shrink). | `v3/src/styles/tokens.css` |
+| `sb-value-text` | Numeric value display in inspector — mono xs gold; for fade/volume values next to sliders. | `v3/src/styles/tokens.css` |
 <!-- AUTO-GENERATED:sb-classes END -->
 
 ---

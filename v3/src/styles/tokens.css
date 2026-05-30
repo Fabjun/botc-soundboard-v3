@@ -1514,3 +1514,176 @@
     width: 0%;
   }
 }
+
+/* ── Inspector / PadEditor ─────────────────────────────────── */
+
+.sb-field-label {
+  /* @inventory: Mono 11px field label for inspector sections — block display, bottom margin, uppercase. Used for NAME/TYPE/AUDIO SOURCE/HOTKEY/FADE labels. */
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-mute);
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+.sb-panel-title {
+  /* @inventory: Flexible-fill title span inside a panel header — mono xs in normal text color. */
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text);
+}
+.sb-text-input {
+  /* @inventory: Pixel-style text input — sunk background, bordered, VT323 uppercase. For pad name and form fields. */
+  width: 100%;
+  background: var(--sunk);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 8px;
+  outline: none;
+}
+.sb-search-input {
+  /* @inventory: Transparent search input inside a bordered container — no background, no border, mono font. */
+  width: 100%;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text);
+}
+.sb-section-header-row {
+  /* @inventory: Flex row for inspector section headers — label left, action right, space-between, 6px bottom margin. */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.sb-lib-browser {
+  /* @inventory: Compact library picker container in inspector — flex column, sunk background, bordered. */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: 6px 8px;
+  background: var(--sunk);
+  border: 1px solid var(--border);
+}
+.sb-lib-browser-item-name {
+  /* @inventory: Truncated filename in a library browser item row — ellipsis overflow, mono xs. */
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sb-lib-browser-empty {
+  /* @inventory: Empty-state placeholder in library browser — dashed border, centered muted text. */
+  padding: 10px 8px;
+  background: var(--sunk);
+  border: 1px dashed var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-mute);
+  text-align: center;
+}
+.sb-lib-browser-list {
+  /* @inventory: Scrollable item list inside library browser — capped height, sunk background, iOS-touch scroll. */
+  margin-top: 6px;
+  border: 1px solid var(--border);
+  background: var(--sunk);
+  max-height: 160px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.sb-lib-browser-search {
+  /* @inventory: Search section wrapper inside library browser — padded with border-bottom divider. */
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.sb-lib-browser-item {
+  /* @inventory: Clickable row in library browser list — padded, truncated, pointer cursor; selection color/bg set inline. */
+  padding: 5px 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  border-bottom: 1px solid var(--border-soft);
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sb-lib-browser-no-results {
+  /* @inventory: "No results" message inside library browser list — centered, muted. */
+  padding: 12px 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-mute);
+  text-align: center;
+}
+.sb-readonly-field {
+  /* @inventory: Read-only display row in inspector — flex, sunk background, bordered; for hotkey and value display. */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: var(--sunk);
+  border: 1px solid var(--border);
+}
+.sb-hint-text {
+  /* @inventory: Secondary annotative text in inspector rows — mono 10px muted. Intentionally below --fs-xs; consider --fs-xxs token in Session 8. */
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-mute);
+}
+.sb-value-text {
+  /* @inventory: Numeric value display in inspector — mono xs gold; for fade/volume values next to sliders. */
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--gold);
+}
+.sb-range-input {
+  /* @inventory: Native <input type="range"> styled with design-system gold accent — full width, pointer cursor. */
+  width: 100%;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+.sb-btn-icon {
+  /* @inventory: Icon-sized button modifier for sb-btn — 28×28px touch target, tight padding. */
+  min-width: 28px;
+  min-height: 28px;
+  padding: 0 4px;
+}
+.sb-btn-xs {
+  /* @inventory: Extra-small button modifier — smaller than sb-btn-sm; for tight button rows in inspector and type-confirm panels. */
+  padding: 1px 6px;
+  font-size: var(--fs-xs);
+}
+.sb-btn-block {
+  /* @inventory: Full-width block button modifier — 100% width, centered, 44px min touch target (iOS guideline). */
+  width: 100%;
+  min-height: 44px;
+  justify-content: center;
+}
+.sb-type-indicator {
+  /* @inventory: 8×8px colored dot indicating pad type in inspector header; color set inline by caller. */
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+}
+.sb-type-btn {
+  /* @inventory: Type-selector button in pad editor — fills row-wrap evenly, xs font, tight padding; color/border set inline for active state. */
+  flex: 1;
+  padding: 3px 4px;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+}
+.sb-hotkey-value {
+  /* @inventory: Hotkey binding value text in inspector — mono xs; color set inline for has/lacks-hotkey state. */
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
