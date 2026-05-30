@@ -540,6 +540,13 @@
   flex-direction: column;
   min-height: 0;
 }
+.sb-scroll-fill {
+  /* @inventory: Scrollable flex-fill container — takes all remaining height in a flex column, scrolls content, iOS-touch scroll. Use for list/source areas that fill a panel. */
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+}
 .sb-hidden {
   /* @inventory: Visibility utility — hides element from layout (display:none). For hidden file inputs and conditionally invisible nodes. */
   display: none;
@@ -668,6 +675,10 @@
 }
 .sb-btn:hover {
   --pix-border: var(--border-gold);
+}
+.sb-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 .sb-btn-primary {
   /* @inventory: Button variant — gold border and label; highlighted action. */
@@ -918,6 +929,18 @@
 .sb-tab.is-active {
   color: var(--gold);
   border-bottom-color: var(--gold);
+}
+.sb-tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.sb-tab-sm {
+  /* @inventory: Compact size modifier for sb-tab — fills row evenly, 14px font, 0.08em letter-spacing, 6px 0 padding, 36px min-height. For tabs in panels and popovers (not full-screen tab bars). */
+  flex: 1;
+  font-size: var(--fs-sm);
+  letter-spacing: 0.08em;
+  padding: 6px 0;
+  min-height: 36px;
 }
 .sb-tab-bar {
   /* @inventory: Outer wrapper for the tab navigation row — screen chrome with deep background, bottom border, side padding. Wraps .sb-tabs. */
@@ -1427,13 +1450,35 @@
     0 calc(100% - 6px)
   );
 }
-.sb-creation-popover-section {
-  /* @inventory: Padded section divider within the creation popover. Not applied in current PadCreationPopover.tsx implementation. [unused-css] */
-  padding: var(--space-3) var(--space-4);
+.sb-source-tabs {
+  /* @inventory: Tab row container in creation popover source picker — flex row, soft bottom border, no-shrink. Wraps sb-tab sb-tab-sm source-picker tabs. */
+  display: flex;
   border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0;
 }
-.sb-creation-popover-section:last-child {
-  border-bottom: none;
+.sb-creation-popover-section {
+  /* @inventory: Section container in creation popover — column layout, var(--space-2) padding, top border separator (--border-soft), no-shrink. Used for the name+type form section. */
+  padding: var(--space-2);
+  border-top: 1px solid var(--border-soft);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+.sb-creation-popover-actions {
+  /* @inventory: Footer actions row in creation popover — padded flex row, top border separator, no-shrink. For CANCEL/ADD PAD action buttons. */
+  padding: var(--space-1) var(--space-2);
+  border-top: 1px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+.sb-creation-popover-backdrop {
+  /* @inventory: Fixed full-screen click-away backdrop for desktop creation popover — z-index 399 (below popover at 400). */
+  position: fixed;
+  inset: 0;
+  z-index: 399;
 }
 
 /* ── Creation Sheet (Path A mobile — bottom sheet) ────────────────── */
@@ -1454,6 +1499,23 @@
   max-height: 85dvh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+}
+.sb-creation-sheet.is-creation {
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  height: 80dvh;
+}
+.sb-sheet-header {
+  /* @inventory: Title header strip for mobile bottom sheets — spacious padding (12/16/8px), VT323 md font, uppercase, soft bottom border, no-shrink. Used for the "Add Pad" title in the creation sheet. */
+  padding: var(--space-3) var(--space-4) var(--space-2);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+  border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0;
 }
 .sb-creation-sheet-backdrop {
   /* @inventory: Mobile backdrop behind sb-creation-sheet; sb-type-confirm-backdrop is the desktop equivalent. */
@@ -1624,9 +1686,10 @@
   -webkit-overflow-scrolling: touch;
 }
 .sb-lib-browser-search {
-  /* @inventory: Search section wrapper inside library browser — padded with border-bottom divider. */
+  /* @inventory: Search section wrapper inside library browser — padded with border-bottom divider, no-shrink in flex-column parent. */
   padding: 4px 6px;
   border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0;
 }
 .sb-lib-browser-item {
   /* @inventory: Clickable row in library browser list — padded, truncated, pointer cursor; selection color/bg set inline. */
@@ -1640,12 +1703,21 @@
   white-space: nowrap;
 }
 .sb-lib-browser-no-results {
-  /* @inventory: "No results" message inside library browser list — centered, muted. */
-  padding: 12px 8px;
+  /* @inventory: "No results" / empty-state message in a library or source list — centered, muted. Spacious padding suits both capped inspector browsers and full-height source pickers. */
+  padding: var(--space-5) var(--space-3);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-mute);
   text-align: center;
+}
+.sb-source-item {
+  /* @inventory: Clickable column item in a source picker list — column layout, 5px/8px padding, soft bottom separator, pointer cursor, 2px gap between name row and waveform preview. Background (selection state) set inline. */
+  display: flex;
+  flex-direction: column;
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border-soft);
+  cursor: pointer;
+  gap: 2px;
 }
 .sb-readonly-field {
   /* @inventory: Read-only display row in inspector — flex, sunk background, bordered; for hotkey and value display. */
@@ -1685,6 +1757,12 @@
   padding: 1px 6px;
   font-size: var(--fs-xs);
 }
+.sb-btn-muted {
+  /* @inventory: Visually recessive action button — 11px font (deliberate off-ladder, see sub-token pattern note), text-mute color, 32px height. For de-emphasized secondary actions like "More options". */
+  font-size: 11px;
+  color: var(--text-mute);
+  min-height: 32px;
+}
 .sb-btn-block {
   /* @inventory: Full-width block button modifier — 100% width, centered, 44px min touch target (iOS guideline). */
   width: 100%;
@@ -1698,11 +1776,15 @@
   flex-shrink: 0;
 }
 .sb-type-btn {
-  /* @inventory: Type-selector button in pad editor — fills row-wrap evenly, xs font, tight padding; color/border set inline for active state. */
+  /* @inventory: Type-selector button (pad type pill) — fills row evenly, mono xs font, uppercase, tight padding, 28px min-height; color/border/background set inline for active pad-type state. */
   flex: 1;
   padding: 3px 4px;
+  font-family: var(--font-mono);
   font-size: var(--fs-xs);
   letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  min-height: 28px;
 }
 .sb-hotkey-value {
   /* @inventory: Hotkey binding value text in inspector — mono xs; color set inline for has/lacks-hotkey state. */

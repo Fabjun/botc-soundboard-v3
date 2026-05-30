@@ -124,6 +124,7 @@ Verbotene Muster in neuem V3-Code:
 | `sb-btn-filled` | Button variant — solid gold fill and dark label; primary CTA. Currently no TSX usage. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-btn-ghost` | Button variant — transparent fill, dimmed border; low-emphasis. | `v3/src/styles/tokens.css` |
 | `sb-btn-icon` | Icon-sized button modifier for sb-btn — 28×28px touch target, tight padding. | `v3/src/styles/tokens.css` |
+| `sb-btn-muted` | Visually recessive action button — 11px font (deliberate off-ladder, see sub-token pattern note), text-mute color, 32px height. For de-emphasized secondary actions like "More options". | `v3/src/styles/tokens.css` |
 | `sb-btn-primary` | Button variant — gold border and label; highlighted action. | `v3/src/styles/tokens.css` |
 | `sb-btn-sm` | Small-size modifier for .sb-btn; tighter padding and smaller font. | `v3/src/styles/tokens.css` |
 | `sb-btn-xs` | Extra-small button modifier — smaller than sb-btn-sm; for tight button rows in inspector and type-confirm panels. | `v3/src/styles/tokens.css` |
@@ -133,7 +134,9 @@ Verbotene Muster in neuem V3-Code:
 | `sb-col` | Flex-column layout primitive with min-height:0 — enables overflow scrolling in flex-column children. Use for column containers that scroll. | `v3/src/styles/tokens.css` |
 | `sb-count-text` | Inline count/quantity text — mono xs muted. Used in category rows and similar metadata contexts. | `v3/src/styles/tokens.css` |
 | `sb-creation-popover` | Fixed 300px popover for Path A (desktop) pad creation flow. | `v3/src/styles/tokens.css` |
-| `sb-creation-popover-section` | Padded section divider within the creation popover. Not applied in current PadCreationPopover.tsx implementation. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-creation-popover-actions` | Footer actions row in creation popover — padded flex row, top border separator, no-shrink. For CANCEL/ADD PAD action buttons. | `v3/src/styles/tokens.css` |
+| `sb-creation-popover-backdrop` | Fixed full-screen click-away backdrop for desktop creation popover — z-index 399 (below popover at 400). | `v3/src/styles/tokens.css` |
+| `sb-creation-popover-section` | Section container in creation popover — column layout, var(--space-2) padding, top border separator (--border-soft), no-shrink. Used for the name+type form section. | `v3/src/styles/tokens.css` |
 | `sb-creation-sheet` | Mobile bottom sheet for pad creation and pad-type confirmation (slides up from bottom, max 85dvh). | `v3/src/styles/tokens.css` |
 | `sb-creation-sheet-backdrop` | Mobile backdrop behind sb-creation-sheet; sb-type-confirm-backdrop is the desktop equivalent. | `v3/src/styles/tokens.css` |
 | `sb-display` | Hero title — Press Start 2P with gold glow; for page-level titles only. | `v3/src/styles/tokens.css` |
@@ -156,8 +159,8 @@ Verbotene Muster in neuem V3-Code:
 | `sb-lib-browser-item` | Clickable row in library browser list — padded, truncated, pointer cursor; selection color/bg set inline. | `v3/src/styles/tokens.css` |
 | `sb-lib-browser-item-name` | Truncated filename in a library browser item row — ellipsis overflow, mono xs. | `v3/src/styles/tokens.css` |
 | `sb-lib-browser-list` | Scrollable item list inside library browser — capped height, sunk background, iOS-touch scroll. | `v3/src/styles/tokens.css` |
-| `sb-lib-browser-no-results` | "No results" message inside library browser list — centered, muted. | `v3/src/styles/tokens.css` |
-| `sb-lib-browser-search` | Search section wrapper inside library browser — padded with border-bottom divider. | `v3/src/styles/tokens.css` |
+| `sb-lib-browser-no-results` | "No results" / empty-state message in a library or source list — centered, muted. Spacious padding suits both capped inspector browsers and full-height source pickers. | `v3/src/styles/tokens.css` |
+| `sb-lib-browser-search` | Search section wrapper inside library browser — padded with border-bottom divider, no-shrink in flex-column parent. | `v3/src/styles/tokens.css` |
 | `sb-library-panel` | Library browse panel in the board right rail (280px, hides overflow). | `v3/src/styles/tokens.css` |
 | `sb-menu-row` | Pixel-frame list row with icon, primary title, and subtitle slots. | `v3/src/styles/tokens.css` |
 | `sb-mode-badge` | Compact inline SETUP/GAME badge for top-bar and status-bar surfaces. | `v3/src/styles/tokens.css` |
@@ -195,22 +198,27 @@ Verbotene Muster in neuem V3-Code:
 | `sb-screen-empty` | Full-screen centered empty state — flex column, centered both axes, fills parent, mono xs text in text-mute. | `v3/src/styles/tokens.css` |
 | `sb-screen-layout` | 2-column content grid for LibraryScreen — 220px filter rail + 1fr content, fills parent, min-height:0 for scroll. | `v3/src/styles/tokens.css` |
 | `sb-scroll` | iOS-momentum scroll utility; touch scrolling without overscroll containment. Currently no TSX usage. [unused-css] | `v3/src/styles/global.css` |
+| `sb-scroll-fill` | Scrollable flex-fill container — takes all remaining height in a flex column, scrolls content, iOS-touch scroll. Use for list/source areas that fill a panel. | `v3/src/styles/tokens.css` |
 | `sb-search-bar` | Outer search section bar — deep background, bottom border, no-shrink. Wraps sb-search-field. | `v3/src/styles/tokens.css` |
 | `sb-search-field` | Inner search input row — flex, sunk background, bordered. Wraps icon + input + optional clear button. | `v3/src/styles/tokens.css` |
 | `sb-search-input` | Transparent search input inside a bordered container — no background, no border, mono xs font. Use with sb-flex-1 when input shares a flex row with other elements. | `v3/src/styles/tokens.css` |
 | `sb-section-header-row` | Flex row for inspector section headers — label left, action right, space-between, 6px bottom margin. | `v3/src/styles/tokens.css` |
+| `sb-sheet-header` | Title header strip for mobile bottom sheets — spacious padding (12/16/8px), VT323 md font, uppercase, soft bottom border, no-shrink. Used for the "Add Pad" title in the creation sheet. | `v3/src/styles/tokens.css` |
 | `sb-slider` | Horizontal range track bar for volume and trim controls; Slice 8+ feature. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-slider-fill` | Active filled portion of the slider track; width set by inline style. Slice 8+ feature. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-slider-thumb` | Draggable thumb on the slider track with gold glow. Slice 8+ feature. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-source-item` | Clickable column item in a source picker list — column layout, 5px/8px padding, soft bottom separator, pointer cursor, 2px gap between name row and waveform preview. Background (selection state) set inline. | `v3/src/styles/tokens.css` |
+| `sb-source-tabs` | Tab row container in creation popover source picker — flex row, soft bottom border, no-shrink. Wraps sb-tab sb-tab-sm source-picker tabs. | `v3/src/styles/tokens.css` |
 | `sb-status-bar` | Bottom 24px strip showing mode, board name, and other metadata. | `v3/src/styles/tokens.css` |
 | `sb-tab` | Individual tab in a tab bar; is-active shows gold underline and label colour. | `v3/src/styles/tokens.css` |
 | `sb-tab-badge` | Count badge inside a tab label — mono xs muted, left margin for separation from tab text. | `v3/src/styles/tokens.css` |
 | `sb-tab-bar` | Outer wrapper for the tab navigation row — screen chrome with deep background, bottom border, side padding. Wraps .sb-tabs. | `v3/src/styles/tokens.css` |
+| `sb-tab-sm` | Compact size modifier for sb-tab — fills row evenly, 14px font, 0.08em letter-spacing, 6px 0 padding, 36px min-height. For tabs in panels and popovers (not full-screen tab bars). | `v3/src/styles/tokens.css` |
 | `sb-tabs` | Tab bar container — flex row with bottom border separating tabs from content. | `v3/src/styles/tokens.css` |
 | `sb-tag-list` | Flex-wrap container for tag pills — padded with horizontal gutters. | `v3/src/styles/tokens.css` |
 | `sb-text-input` | Pixel-style text input — sunk background, bordered, VT323 uppercase. For pad name and form fields. | `v3/src/styles/tokens.css` |
 | `sb-toggle` | Binary on/off toggle switch (40×20px); is-on moves thumb right and adds gold glow. Currently no TSX usage. [unused-css] | `v3/src/styles/tokens.css` |
-| `sb-type-btn` | Type-selector button in pad editor — fills row-wrap evenly, xs font, tight padding; color/border set inline for active state. | `v3/src/styles/tokens.css` |
+| `sb-type-btn` | Type-selector button (pad type pill) — fills row evenly, mono xs font, uppercase, tight padding, 28px min-height; color/border/background set inline for active pad-type state. | `v3/src/styles/tokens.css` |
 | `sb-type-confirm` | Desktop modal for confirming a pad-type change (z-index 500, pixel corners); sb-creation-sheet is used on mobile. | `v3/src/styles/tokens.css` |
 | `sb-type-confirm-backdrop` | Desktop backdrop for sb-type-confirm; sb-creation-sheet-backdrop is the mobile equivalent. | `v3/src/styles/tokens.css` |
 | `sb-type-indicator` | 8×8px colored dot indicating pad type in inspector header; color set inline by caller. | `v3/src/styles/tokens.css` |

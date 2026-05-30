@@ -111,65 +111,24 @@ export function PadCreationPopover({
   const content = (
     <>
       {/* Source tabs */}
-      <div
-        style={{
-          display: 'flex',
-          borderBottom: '1px solid var(--border-soft)',
-          flexShrink: 0,
-        }}
-      >
+      <div class="sb-source-tabs">
         {(['RECENT', 'BROWSE'] as SourceTab[]).map((tab) => (
           <button
             key={tab}
             data-testid={`creation-tab-${tab.toLowerCase()}`}
             onClick={() => setSourceTab(tab)}
-            style={{
-              flex: 1,
-              padding: '6px 0',
-              background: 'none',
-              border: 'none',
-              fontFamily: 'var(--font-ui)',
-              fontSize: 'var(--fs-sm)',
-              letterSpacing: '.08em',
-              textTransform: 'uppercase',
-              color: sourceTab === tab ? 'var(--gold)' : 'var(--text-mute)',
-              borderBottom: sourceTab === tab ? '2px solid var(--gold)' : '2px solid transparent',
-              cursor: 'pointer',
-              minHeight: 36,
-            }}
+            class={`sb-tab sb-tab-sm${sourceTab === tab ? ' is-active' : ''}`}
           >
             {tab}
           </button>
         ))}
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: 'var(--font-ui)',
-            fontSize: 'var(--fs-sm)',
-            letterSpacing: '.08em',
-            color: 'var(--text-mute)',
-            opacity: 0.5,
-            cursor: 'not-allowed',
-            borderBottom: '2px solid transparent',
-          }}
-          title="Drop Here — Slice 8"
-        >
+        <button disabled class="sb-tab sb-tab-sm" title="Drop Here — Slice 8">
           DROP
-        </div>
+        </button>
       </div>
 
       {/* Source list */}
-      <div
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          WebkitOverflowScrolling: 'touch',
-          minHeight: 0,
-        }}
-      >
+      <div class="sb-scroll-fill">
         {sourceTab === 'RECENT' && (
           <>
             {recentAudio.length === 0 ? (
@@ -189,27 +148,13 @@ export function PadCreationPopover({
 
         {sourceTab === 'BROWSE' && (
           <>
-            <div
-              style={{
-                padding: '4px 6px',
-                borderBottom: '1px solid var(--border-soft)',
-                flexShrink: 0,
-              }}
-            >
+            <div class="sb-lib-browser-search">
               <input
                 type="text"
                 placeholder={`Search ${allAudio.length} files…`}
                 value={search}
                 onInput={(e) => setSearch((e.target as HTMLInputElement).value)}
-                style={{
-                  width: '100%',
-                  background: 'none',
-                  border: 'none',
-                  outline: 'none',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '12px',
-                  color: 'var(--text)',
-                }}
+                class="sb-search-input"
                 autoFocus
               />
             </div>
@@ -232,55 +177,28 @@ export function PadCreationPopover({
       </div>
 
       {/* Name + type row */}
-      <div
-        style={{
-          padding: '8px',
-          borderTop: '1px solid var(--border-soft)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 6,
-          flexShrink: 0,
-        }}
-      >
+      <div class="sb-creation-popover-section">
         <input
           type="text"
           data-testid="creation-pad-name-input"
           value={padName}
           placeholder={selectedItem?.name ?? 'Pad name…'}
           onInput={(e) => setPadName((e.target as HTMLInputElement).value)}
-          style={{
-            width: '100%',
-            background: 'var(--sunk)',
-            border: '1px solid var(--border)',
-            color: 'var(--text)',
-            fontFamily: 'var(--font-ui)',
-            fontSize: 'var(--fs-md)',
-            letterSpacing: '.06em',
-            textTransform: 'uppercase',
-            padding: '5px 8px',
-            outline: 'none',
-          }}
+          class="sb-text-input"
         />
         <div class="sb-row-sm">
           {PAD_TYPES.map((t) => (
             <button
               key={t}
               onClick={() => setPadType(t)}
+              class="sb-type-btn"
               style={{
-                flex: 1,
-                padding: '2px 0',
                 background:
                   padType === t
                     ? `color-mix(in srgb, ${padTypeColor(t)}, transparent 80%)`
                     : 'var(--sunk)',
                 border: `1px solid ${padType === t ? padTypeColor(t) : 'var(--border-soft)'}`,
                 color: padType === t ? padTypeColor(t) : 'var(--text-mute)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '10px',
-                letterSpacing: '.04em',
-                textTransform: 'uppercase',
-                cursor: 'pointer',
-                minHeight: 28,
               }}
             >
               {padTypeLabel(t)}
@@ -290,21 +208,8 @@ export function PadCreationPopover({
       </div>
 
       {/* Actions */}
-      <div
-        style={{
-          padding: '6px 8px',
-          borderTop: '1px solid var(--border-soft)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          flexShrink: 0,
-        }}
-      >
-        <button
-          class="sb-btn sb-btn-sm sb-btn-ghost"
-          style={{ fontSize: '11px', color: 'var(--text-mute)', minHeight: 32 }}
-          onClick={handleMoreOptions}
-        >
+      <div class="sb-creation-popover-actions">
+        <button class="sb-btn sb-btn-sm sb-btn-ghost sb-btn-muted" onClick={handleMoreOptions}>
           More options →
         </button>
         <div class="sb-flex-1" />
@@ -312,7 +217,6 @@ export function PadCreationPopover({
           class="sb-btn sb-btn-sm sb-btn-ghost"
           data-testid="creation-cancel"
           onClick={() => onResult({ action: 'cancel' })}
-          style={{ minHeight: 36 }}
         >
           CANCEL
         </button>
@@ -321,11 +225,6 @@ export function PadCreationPopover({
           data-testid="creation-add-pad"
           onClick={handleCreate}
           disabled={!selectedItemId}
-          style={{
-            minHeight: 36,
-            opacity: selectedItemId ? 1 : 0.4,
-            cursor: selectedItemId ? 'pointer' : 'default',
-          }}
         >
           ADD PAD
         </button>
@@ -337,28 +236,8 @@ export function PadCreationPopover({
     return (
       <>
         <div class="sb-creation-sheet-backdrop" onClick={() => onResult({ action: 'cancel' })} />
-        <div
-          class="sb-creation-sheet"
-          data-testid="pad-creation-popover"
-          style={{
-            padding: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            height: '80dvh',
-          }}
-        >
-          <div
-            style={{
-              padding: '12px 16px 8px',
-              fontFamily: 'var(--font-ui)',
-              fontSize: 'var(--fs-md)',
-              letterSpacing: '.08em',
-              textTransform: 'uppercase',
-              color: 'var(--text)',
-              borderBottom: '1px solid var(--border-soft)',
-              flexShrink: 0,
-            }}
-          >
+        <div class="sb-creation-sheet is-creation" data-testid="pad-creation-popover">
+          <div class="sb-sheet-header">
             Add Pad — {String.fromCharCode(64 + (position.row * 4 + position.col + 1))}
             {position.row * 4 + position.col + 1}
           </div>
@@ -377,24 +256,14 @@ export function PadCreationPopover({
   return (
     <>
       <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 399,
-        }}
+        class="sb-creation-popover-backdrop"
         onClick={() => onResult({ action: 'cancel' })}
         aria-hidden="true"
       />
       <div
         class="sb-creation-popover"
         data-testid="pad-creation-popover"
-        style={{
-          top,
-          left,
-          height: popoverHeight,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
+        style={{ top, left, height: popoverHeight }}
         onClick={(e) => e.stopPropagation()}
       >
         {content}
@@ -424,15 +293,8 @@ function SourceItem({
     <div
       data-testid={`creation-source-item-${item.id}`}
       onClick={onSelect}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '5px 8px',
-        borderBottom: '1px solid var(--border-soft)',
-        cursor: 'pointer',
-        background: selected ? 'var(--raised)' : 'none',
-        gap: 2,
-      }}
+      class="sb-source-item"
+      style={{ background: selected ? 'var(--raised)' : 'none' }}
     >
       <div class="sb-row">
         {selected ? (
@@ -441,27 +303,12 @@ function SourceItem({
           <PixelIcon name="play" size={10} color="var(--text-mute)" />
         )}
         <span
-          style={{
-            flex: 1,
-            fontFamily: 'var(--font-mono)',
-            fontSize: '12px',
-            color: selected ? 'var(--gold)' : 'var(--text)',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
+          class="sb-lib-browser-item-name sb-flex-1"
+          style={{ color: selected ? 'var(--gold)' : 'var(--text)' }}
         >
           {item.name}
         </span>
-        <span
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '10px',
-            color: 'var(--text-mute)',
-          }}
-        >
-          {item.duration > 0 ? fmt(item.duration) : ''}
-        </span>
+        <span class="sb-hint-text">{item.duration > 0 ? fmt(item.duration) : ''}</span>
       </div>
       {selected && item.peaks.length > 0 && <Waveform peaks={item.peaks} height={18} />}
     </div>
@@ -469,17 +316,5 @@ function SourceItem({
 }
 
 function EmptyHint({ text }: { text: string }): JSX.Element {
-  return (
-    <div
-      style={{
-        padding: '20px 12px',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '12px',
-        color: 'var(--text-mute)',
-        textAlign: 'center',
-      }}
-    >
-      {text}
-    </div>
-  );
+  return <div class="sb-lib-browser-no-results">{text}</div>;
 }
