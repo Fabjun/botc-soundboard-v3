@@ -534,6 +534,12 @@
   align-items: center;
   justify-content: center;
 }
+.sb-col {
+  /* @inventory: Flex-column layout primitive with min-height:0 — enables overflow scrolling in flex-column children. Use for column containers that scroll. */
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
 .sb-hidden {
   /* @inventory: Visibility utility — hides element from layout (display:none). For hidden file inputs and conditionally invisible nodes. */
   display: none;
@@ -897,6 +903,8 @@
 }
 .sb-tab {
   /* @inventory: Individual tab in a tab bar; is-active shows gold underline and label colour. */
+  background: none;
+  border: none;
   font-family: var(--font-ui);
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -910,6 +918,20 @@
 .sb-tab.is-active {
   color: var(--gold);
   border-bottom-color: var(--gold);
+}
+.sb-tab-bar {
+  /* @inventory: Outer wrapper for the tab navigation row — screen chrome with deep background, bottom border, side padding. Wraps .sb-tabs. */
+  padding: 0 var(--space-4);
+  background: var(--deep);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sb-tab-badge {
+  /* @inventory: Count badge inside a tab label — mono xs muted, left margin for separation from tab text. */
+  margin-left: 6px;
+  color: var(--text-mute);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
 }
 
 /* ── Pro-tool panel chrome ────────────────────────────────
@@ -1548,13 +1570,13 @@
   outline: none;
 }
 .sb-search-input {
-  /* @inventory: Transparent search input inside a bordered container — no background, no border, mono font. */
+  /* @inventory: Transparent search input inside a bordered container — no background, no border, mono xs font. Use with sb-flex-1 when input shares a flex row with other elements. */
   width: 100%;
   background: none;
   border: none;
   outline: none;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text);
 }
 .sb-section-header-row {
@@ -1686,4 +1708,153 @@
   /* @inventory: Hotkey binding value text in inspector — mono xs; color set inline for has/lacks-hotkey state. */
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
+}
+
+/* ── LibraryScreen / Screen-level ─────────────────────────── */
+
+.sb-screen {
+  /* @inventory: Full-height screen root container — flex column, 100dvh, surface background, positioned; outline-offset for inset drag indicators. */
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: var(--surface);
+  position: relative;
+  outline-offset: -2px;
+}
+.sb-screen-empty {
+  /* @inventory: Full-screen centered empty state — flex column, centered both axes, fills parent, mono xs text in text-mute. */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: var(--space-10) var(--space-6);
+  color: var(--text-mute);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  text-align: center;
+  gap: var(--space-3);
+}
+.sb-upload-bar {
+  /* @inventory: Upload status notification bar — flex row, raised background, top border, mono xs text. Color set inline for error/normal state. */
+  padding: 6px var(--space-3);
+  background: var(--raised);
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+.sb-error-label {
+  /* @inventory: Inline error/warning label — blood red, help cursor, left margin for inline placement. */
+  color: var(--blood);
+  cursor: help;
+  margin-left: 4px;
+}
+.sb-screen-layout {
+  /* @inventory: 2-column content grid for LibraryScreen — 220px filter rail + 1fr content, fills parent, min-height:0 for scroll. */
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  flex: 1;
+  min-height: 0;
+}
+.sb-filter-rail {
+  /* @inventory: Left sidebar filter column — deep background, right border, flex column, iOS-touch scroll. */
+  background: var(--deep);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+}
+.sb-rail-section {
+  /* @inventory: Padded section container in a sidebar rail. Add .has-divider for a bottom border separator. */
+  padding: 10px var(--space-2);
+}
+.sb-rail-section.has-divider {
+  border-bottom: 1px solid var(--border-soft);
+}
+.sb-rail-label {
+  /* @inventory: Section label inside a sidebar rail — VT323 11px muted, letterSpacing, padded. For CATEGORY/TAGS headers. */
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--text-mute);
+  letter-spacing: 0.1em;
+  padding: 4px 10px 8px;
+}
+.sb-category-item {
+  /* @inventory: Active category row in filter rail — gold left border indicator, flex space-between, VT323 font. Slice 3 has only "All"; gains more uses in Slice 5+. */
+  padding: 6px 10px;
+  border-left: 2px solid var(--gold);
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  color: var(--gold);
+  display: flex;
+  justify-content: space-between;
+  letter-spacing: 0.04em;
+}
+.sb-count-text {
+  /* @inventory: Inline count/quantity text — mono xs muted. Used in category rows and similar metadata contexts. */
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-mute);
+}
+.sb-tag-list {
+  /* @inventory: Flex-wrap container for tag pills — padded with horizontal gutters. */
+  padding: 0 var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+.sb-drop-hint {
+  /* @inventory: Drag-over drop zone hint text — padded, mono xs, transition on color/border. border and color set inline by drag state. */
+  margin: var(--space-3) var(--space-2);
+  padding: var(--space-4) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-align: center;
+  line-height: 1.6;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+.sb-search-bar {
+  /* @inventory: Outer search section bar — deep background, bottom border, no-shrink. Wraps sb-search-field. */
+  padding: 10px 14px;
+  background: var(--deep);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sb-search-field {
+  /* @inventory: Inner search input row — flex, sunk background, bordered. Wraps icon + input + optional clear button. */
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  background: var(--sunk);
+  border: 1px solid var(--border);
+}
+.sb-btn-clear {
+  /* @inventory: Bare inline clear/dismiss button — no pixel frame, mono xs text in text-mute, pointer cursor. */
+  background: none;
+  border: none;
+  color: var(--text-mute);
+  cursor: pointer;
+  padding: 2px var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+.sb-item-list {
+  /* @inventory: Scrollable flex-column item list — fills remaining height, iOS-touch scroll, padded, 4px gap. */
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }

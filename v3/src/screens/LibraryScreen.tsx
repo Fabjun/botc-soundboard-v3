@@ -40,21 +40,7 @@ const TABS: LibTab[] = ['AUDIO', 'ICONS', 'PADS', 'BOARDS'];
 
 function EmptyState({ label }: { label: string }): JSX.Element {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flex: 1,
-        padding: '40px 24px',
-        color: 'var(--text-mute)',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '13px',
-        textAlign: 'center',
-        gap: '12px',
-      }}
-    >
+    <div class="sb-screen-empty">
       <PixelIcon name="scroll" size={32} color="var(--border)" />
       {label}
     </div>
@@ -76,26 +62,13 @@ function UploadStatusBar(): JSX.Element | null {
 
   return (
     <div
-      style={{
-        padding: '6px 12px',
-        background: 'var(--raised)',
-        borderTop: '1px solid var(--border)',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '12px',
-        color: status.errors.length > 0 ? 'var(--blood-bright)' : 'var(--text-dim)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        flexShrink: 0,
-      }}
+      class="sb-upload-bar"
+      style={{ color: status.errors.length > 0 ? 'var(--blood-bright)' : 'var(--text-dim)' }}
     >
       <PixelIcon name={status.errors.length > 0 ? 'skull' : 'save'} size={11} />
       {parts.join(' · ')}
       {status.errors.length > 0 && (
-        <span
-          title={status.errors.join('\n')}
-          style={{ color: 'var(--blood)', cursor: 'help', marginLeft: '4px' }}
-        >
+        <span title={status.errors.join('\n')} class="sb-error-label">
           [details]
         </span>
       )}
@@ -192,19 +165,11 @@ export function LibraryScreen(): JSX.Element {
 
   return (
     <div
+      class="sb-screen"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100dvh',
-        background: 'var(--surface)',
-        position: 'relative',
-        // Drop zone visual feedback: subtle border when dragging
-        outline: isDragOver ? '2px solid var(--gold)' : '2px solid transparent',
-        outlineOffset: '-2px',
-      }}
+      style={{ outline: isDragOver ? '2px solid var(--gold)' : '2px solid transparent' }}
     >
       {/* Hidden file input — triggered by IMPORT button */}
       <input
@@ -243,33 +208,16 @@ export function LibraryScreen(): JSX.Element {
       />
 
       {/* Tabs */}
-      <div
-        style={{
-          padding: '0 16px',
-          background: 'var(--deep)',
-          borderBottom: '1px solid var(--border)',
-          flexShrink: 0,
-        }}
-      >
+      <div class="sb-tab-bar">
         <div class="sb-tabs">
           {TABS.map((tab) => (
             <button
               key={tab}
               class={'sb-tab' + (activeTab === tab ? ' is-active' : '')}
               onClick={() => setActiveTab(tab)}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
             >
               {tab}
-              <span
-                style={{
-                  marginLeft: '6px',
-                  color: 'var(--text-mute)',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
-                }}
-              >
-                {tab === 'AUDIO' ? items.length : 0}
-              </span>
+              <span class="sb-tab-badge">{tab === 'AUDIO' ? items.length : 0}</span>
             </button>
           ))}
         </div>
@@ -281,91 +229,23 @@ export function LibraryScreen(): JSX.Element {
           <EmptyState label="No items yet" />
         </div>
       ) : (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '220px 1fr',
-            flex: 1,
-            minHeight: 0,
-          }}
-        >
+        <div class="sb-screen-layout">
           {/* Left rail — filter */}
-          <aside
-            style={{
-              background: 'var(--deep)',
-              borderRight: '1px solid var(--border)',
-              display: 'flex',
-              flexDirection: 'column',
-              overflowY: 'auto',
-              WebkitOverflowScrolling: 'touch',
-              overscrollBehavior: 'none',
-            }}
-          >
+          <aside class="sb-filter-rail">
             {/* Category: only "All" in Slice 2 */}
-            <div
-              style={{
-                padding: '10px 8px',
-                borderBottom: '1px solid var(--border-soft)',
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: 'var(--font-ui)',
-                  fontSize: '11px',
-                  color: 'var(--text-mute)',
-                  letterSpacing: '.1em',
-                  padding: '4px 10px 8px',
-                }}
-              >
-                CATEGORY
-              </div>
-              <div
-                style={{
-                  padding: '6px 10px',
-                  borderLeft: '2px solid var(--gold)',
-                  fontFamily: 'var(--font-ui)',
-                  fontSize: '14px',
-                  color: 'var(--gold)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  letterSpacing: '.04em',
-                }}
-              >
+            <div class="sb-rail-section has-divider">
+              <div class="sb-rail-label">CATEGORY</div>
+              <div class="sb-category-item">
                 <span>All</span>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '11px',
-                    color: 'var(--text-mute)',
-                  }}
-                >
-                  {items.length}
-                </span>
+                <span class="sb-count-text">{items.length}</span>
               </div>
             </div>
 
             {/* Tags — read-only, shown if any item has tags */}
             {items.some((m) => m.tags.length > 0) && (
-              <div style={{ padding: '10px 8px' }}>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-ui)',
-                    fontSize: '11px',
-                    color: 'var(--text-mute)',
-                    letterSpacing: '.1em',
-                    padding: '4px 10px 8px',
-                  }}
-                >
-                  TAGS
-                </div>
-                <div
-                  style={{
-                    padding: '0 8px',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '4px',
-                  }}
-                >
+              <div class="sb-rail-section">
+                <div class="sb-rail-label">TAGS</div>
+                <div class="sb-tag-list">
                   {[...new globalThis.Set(items.flatMap((m) => m.tags))].map((tag) => (
                     <span key={tag} class="sb-pill">
                       {tag}
@@ -378,16 +258,10 @@ export function LibraryScreen(): JSX.Element {
             {/* Drop zone hint — shown when no files or when dragging */}
             {(items.length === 0 || isDragOver) && (
               <div
+                class="sb-drop-hint"
                 style={{
-                  margin: '12px 8px',
-                  padding: '16px 12px',
                   border: `2px dashed ${isDragOver ? 'var(--gold)' : 'var(--border)'}`,
                   color: isDragOver ? 'var(--gold)' : 'var(--text-mute)',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
-                  textAlign: 'center',
-                  lineHeight: 1.6,
-                  transition: 'color .15s, border-color .15s',
                 }}
               >
                 {isDragOver ? 'DROP FILES' : 'Drop audio files\nanywhere on screen'}
@@ -396,61 +270,20 @@ export function LibraryScreen(): JSX.Element {
           </aside>
 
           {/* Center — list */}
-          <main
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              minHeight: 0,
-            }}
-          >
+          <main class="sb-col">
             {/* Search bar */}
-            <div
-              style={{
-                padding: '10px 14px',
-                background: 'var(--deep)',
-                borderBottom: '1px solid var(--border)',
-                flexShrink: 0,
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '6px 10px',
-                  background: 'var(--sunk)',
-                  border: '1px solid var(--border)',
-                }}
-              >
+            <div class="sb-search-bar">
+              <div class="sb-search-field">
                 <PixelIcon name="search" size={12} color="var(--text-mute)" />
                 <input
+                  class="sb-search-input sb-flex-1"
                   type="text"
                   placeholder={`Search ${items.length} files…`}
                   value={search}
                   onInput={(e) => setSearch((e.target as HTMLInputElement).value)}
-                  style={{
-                    flex: 1,
-                    background: 'none',
-                    border: 'none',
-                    outline: 'none',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '13px',
-                    color: 'var(--text)',
-                  }}
                 />
                 {search && (
-                  <button
-                    onClick={() => setSearch('')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: 'var(--text-mute)',
-                      cursor: 'pointer',
-                      padding: '2px 4px',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '12px',
-                    }}
-                  >
+                  <button class="sb-btn-clear" onClick={() => setSearch('')}>
                     ×
                   </button>
                 )}
@@ -458,18 +291,7 @@ export function LibraryScreen(): JSX.Element {
             </div>
 
             {/* Audio list */}
-            <div
-              style={{
-                flex: 1,
-                overflowY: 'auto',
-                WebkitOverflowScrolling: 'touch',
-                overscrollBehavior: 'none',
-                padding: '8px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '4px',
-              }}
-            >
+            <div class="sb-item-list">
               {filtered.length === 0 ? (
                 items.length === 0 ? (
                   <EmptyState
