@@ -1,0 +1,25 @@
+#!/bin/sh
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT/v3" || exit 1
+
+printf '\n📦 Pre-push: bundle size check...\n'
+npm run size || {
+  printf '\n❌ Bundle size check FAILED — Push abgebrochen.\n'
+  printf '   Bundle-Limit überschritten. Diff prüfen: was wurde hinzugefügt?\n'
+  printf '   Bewusst überspringen: git push --no-verify\n\n'
+  exit 1
+}
+printf '✅ Bundle size OK.\n\n'
+
+printf '🎭 Pre-push: full E2E suite (smoke + full + mobile) for CI parity...\n'
+printf '   Estimated: ~2-3 min. Bypass with: git push --no-verify\n\n'
+
+npm run test:e2e:all || {
+  printf '\n❌ Full E2E suite FAILED — Push abgebrochen.\n'
+  printf '   Playwright-Report: v3/playwright-report/index.html\n'
+  printf '   Falls Browser fehlen: cd v3 && npx playwright install chromium webkit\n'
+  printf '   Bewusst überspringen: git push --no-verify\n\n'
+  exit 1
+}
+
+printf '\n✅ Full E2E suite PASSED — Push freigegeben.\n\n'
