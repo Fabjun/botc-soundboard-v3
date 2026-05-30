@@ -865,6 +865,85 @@ or a new `sb-scene-action-btn` class).
 
 ---
 
+### Single-source design values + descriptive/prescriptive split (Session 8 — design-system consolidation)
+
+**Background:** During Session 3d, a planned `sb-btn-sm` `min-height:36px` addition was
+rejected after measurement showed it would silently push 20 buttons across 9 files from
+44px to 36px — violating the 44px iOS touch-target guideline in CLAUDE.md. The change was
+only recognizable as a regression because that guideline existed. This surfaced a layered
+architectural question: where should design values and design rules live?
+
+The diagnosis has three layers:
+
+**Value layer:** `min-height: 44px` appears as a bare literal in `global.css` AND as
+"44px" in CLAUDE.md's guideline — the same value for the same reason written
+independently in two places. If one changes, the other silently doesn't. The token ladder
+already solves this for font-sizes (`--fs-xs` instead of `12px`); heights and touch-targets
+do not yet have consistent token discipline.
+
+**Description layer:** Any prose in CLAUDE.md that repeats a class value (e.g.
+"sb-btn-sm is 36px") duplicates §6 (generated from the classes). Duplication that can
+drift. Prescriptive rules ("primary touch targets ≥44px because iOS; secondary may be
+smaller") belong in prose — they live nowhere else. Descriptive repetitions do not.
+
+**Rule layer:** A guideline is prescriptive — the criterion classes should meet. The
+3d decision was possible only because the rule existed. Well-placed prescriptive rules
+earn their place; descriptive repetition does not.
+
+---
+
+**Part A — token-ify recurring height/touch-target values (INVESTIGATE first):**
+
+Check whether recurring height values already have tokens in `tokens.css`. They may simply
+not be referenced consistently. Verify before tokenizing.
+
+If values like 44px (iOS primary touch-target floor) are still scattered literals used
+across multiple classes/files: lift them into a token (e.g. `--touch-target-min`, name
+TBD) so the global `button { min-height }` and the CLAUDE.md guideline reference the same
+single source and cannot silently diverge.
+
+Guardrail — do not tokenize everything:
+- One-offs (e.g. `sb-source-item gap: 2px` — single consumer, no general concept) stay
+  as literals. The test is "does this number mean a concept used in more than one place?"
+- Only values that carry a recurring concept warrant a token.
+
+**Part B — descriptive-vs-prescriptive audit of CLAUDE.md (INVESTIGATE first):**
+
+Classify each design-related statement: does it DESCRIBE a class value ("sb-btn-sm is
+36px") or PRESCRIBE a criterion ("primary touch targets ≥44px")?
+- Descriptive repetitions of class values → remove (single source of truth is the
+  class/token; generated view is §6)
+- Prescriptive rules → keep (they live nowhere else)
+
+Not verified that CLAUDE.md contains descriptive duplications — check, don't assume.
+If it is already cleanly prescriptive, nothing needs removing.
+
+**Part C — evaluate making prescriptive rules checkable (open question, NOT a committed build):**
+
+Where a rule can be operationalized, consider converting it from prose into an executable
+check — e.g. a touch-target lint asserting no button class sets `min-height` below
+`--touch-target-min` except those explicitly marked compact (like sb-btn-icon). Same idea
+as the inline-style audit operationalizing the four-path rule.
+
+Dependency: this only becomes clean if Part A is done first. A lint that asserts `44`
+hardcoded just relocates the drift. Session 8 decides whether to build Part C; do not
+build it because it is listed.
+
+**The coherent goal of A+B+C:** each design fact lives in exactly one place, referenced
+everywhere else, never repeated as a literal that can drift.
+
+**Action:** Investigate Parts A and B during Session 8 (design-system / polish). Part C
+is an open question — evaluate and decide in the same session.
+
+**When:** Session 8 (design-system consolidation).
+**Cross-reference:** sb-btn-sm touch-target question, Session 3d (the 36px addition was
+rejected because of the 44px guideline; the full-radius grep revealed 20 buttons across
+9 files would have been affected). 3d decision is closed; this is the architectural
+follow-up.
+**Source:** Session 3d, 2026-05-30.
+
+---
+
 ## 6. Known Limitations
 
 Documented, accepted constraints. Will not be fixed until the triggering platform or slice
