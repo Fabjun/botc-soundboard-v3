@@ -727,6 +727,41 @@ At the start of each file session, **before touching any code:**
 - Report: Path A vs Path B split, new-class count
 - Commit before starting the next sub-session (so the next session inherits an up-to-date §6)
 
+#### Class-quality rules (apply in every sub-session 3d–3h)
+
+The user's criterion (clarified during 3c): class COUNT is not a concern. §6 growing
+to 150+ classes is fine **provided** every class is individual, duplication-free, and
+serves a specialized function. The metric that matters is not "how many classes" but
+"how many class-pairs are too similar." Two rules operationalize this:
+
+**Rule 1 — No duplication (the near-miss test):**
+When a proposed new class has similar CSS to an existing class, decide:
+- Is the difference a genuine semantic role? → both classes are correct, keep both.
+  (Example from 3c: sb-search-field "active search entry" vs sb-readonly-field
+  "read-only display" — same structure, different function, both kept.)
+- Is the difference just drift / off-token values? → it's ONE function with drift,
+  not two. Unify them.
+  (Example from 3c: sb-search-input 11px vs sb-search-input-lg 13px — neither value
+  on the token ladder (--fs-xs=12, --fs-sm=14), so both were ±1px drift from the same
+  target. Unified to var(--fs-xs); the second class eliminated.)
+The decisive check: do the two classes' differences land on token-ladder values? If
+not, it's drift to unify, not a distinction to preserve.
+
+**Rule 2 — No over-splitting (modifier before full class):**
+When a proposed class overlaps ~80%+ with an existing class and the rest is a variation,
+check whether a modifier (`is-*` / `has-*`) on the existing class is cleaner than a new
+full class. Prevents the `sb-row` / `sb-row-bordered` / `sb-row-tight` proliferation.
+(Example from 3c: sb-rail-section + .has-divider, not two separate section classes.)
+
+**Per-sub-session application:** in the anti-duplication self-check, for each new class
+ask explicitly: (a) does an existing class serve a similar function — if so, semantic
+role (keep both) or drift (unify)? (b) is this a variation that a modifier would express
+better than a new full class? Report the answer in the self-check.
+
+**After 3d:** brief check — did these two rules hold? 3d is the first real test of the
+load-bearing strategy (it inherits 3b's 11 flagged classes). Not a count check — a
+duplication check: did 3d reuse 3b's classes as Path A, or duplicate them?
+
 ---
 
 **When:** Per the 3a–3h ordering above.  
