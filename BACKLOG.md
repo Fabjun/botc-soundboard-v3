@@ -681,7 +681,7 @@ DoD for each file session: `audit:inline-styles` → 0 violations for that file.
 | Session | Files | violations (post-3a) | d-w-s | unclassified | DoD |
 |---------|-------|----------------------|-------|--------------|-----|
 | **3a** ✅ Done | All files — pure-layout only; create 5 primitives (+sb-hidden) | 12 of 13 fully resolved; 1 residual (see note) | 0 | 0 | audit → 1 pure-layout (BoardListScreen:237 `flexShrink:0` residual, assigned to 3f — roadmap prediction of "reclassify as d-w-s" was wrong, it stays pure-layout); 6 new classes (+5 primitives +sb-hidden); 63 total in §6 |
-| **3b** | `PadEditorPanel.tsx` | 23 | 4 | 0 | 0 violations, 0 d-w-s |
+| **3b** ✅ Done (172c695) | `PadEditorPanel.tsx` | 23 | 4 | 0 | 0 violations, 0 d-w-s. 22 new classes (§6: 63→85). 11 flagged for 3d Path A. 3 Sorte-2 bets (see note below). sb-range-input: native `<input type="range">`, distinct from sb-slider custom div-track, 3 DOM renders — confirmed ≥2 uses. |
 | **3c** | `LibraryScreen.tsx` | 20 | 3 | 0 | 0 violations, 0 d-w-s |
 | **3d** | `PadCreationPopover.tsx` | 15 | 6 | 0 | 0 violations, 0 d-w-s |
 | **3e** | `StartScreen.tsx` | 19 | 0 | 0 | 0 violations |
@@ -691,6 +691,11 @@ DoD for each file session: `audit:inline-styles` → 0 violations for that file.
 
 **Arithmetic verification:** 12+23+20+15+19+31+28+29 = 177 ✓ | d-w-s: 4+3+6+0+0+2+5 = 20 ✓ | unclassified: 2 ✓
 _(3a resolves 12 fully + 1 residual deferred to 3f; 3f scope is 31 = 17+14. Total closes to 177.)_
+
+**3b Sorte-2 bets** (created on expectation of 3d/3c reuse; cleanup candidates if not used as Path A):
+- `sb-type-btn` — bet: 3d (PadCreationPopover) has a type selector with xs-btn in row-wrap. Verify in 3d; if not used → merge into sb-btn-xs or drop.
+- `sb-section-header-row` — bet: 3d or 3c has a space-between section header with margin-bottom. 2 uses in 3b already (minimum threshold met); still watch for 3d Path A confirmation.
+- `sb-panel-title` — bet: LibraryPanel (3g) or another inspector has a flex-fill mono title span in its header. Check during 3c/3g; cleanup candidate if isolated to PadEditorPanel.
 
 **Ordering rationale (load-bearing):**
 - 3a first — layout primitives are a dependency for all subsequent sessions
