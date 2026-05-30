@@ -452,17 +452,14 @@ touching that file (e.g., during Slice 8 polish).
 **When:** Slice 8, or opportunistically when tokens.css is edited.
 **Source:** Truth-check commit `e207a0b`; class marked `[unused-css]` in DESIGN_SYSTEM.md §6.
 
-### Dead CSS: `sb-creation-popover-section`
-The class was designed as a padded, bordered section divider inside the creation popover.
-`PadCreationPopover.tsx` was implemented using direct inline styles for every section instead
-(e.g., `padding: '8px', borderTop: '1px solid var(--border-soft)'`). The class and the
-inline styles are semantically equivalent — the class was bypassed at implementation time,
-not planned for later.
+### ✅ Dead CSS: `sb-creation-popover-section` — Resolved (4210405)
+~~The class was designed as a padded, bordered section divider inside the creation popover.
+`PadCreationPopover.tsx` was implemented using direct inline styles for every section instead.~~
 
-**Action:** Either apply the class in a Slice 8 cleanup (replacing repetitive inline styles
-with the class), or remove the CSS rule if the inline-style approach is kept.
-**When:** Slice 8 (Polish), when the creation popover is next touched.
-**Source:** Truth-check commit `e207a0b`; class marked `[unused-css]` in DESIGN_SYSTEM.md §6.
+**Resolved in Session 3d** (commit 4210405): Class was redefined (border-top instead of
+border-bottom, column layout added, padding corrected to var(--space-2)) and applied to
+the name+type section. The [unused-css] marker was removed. See cross-reference in
+§5 CSS Class Discipline sub-session plan.
 
 ### Verify `--pix-bg-layer` removal in `.sb-pix` / `.sb-pad.is-deep`
 The token `--pix-bg-layer` was removed from `v3/src/styles/tokens.css` during V3 development.
@@ -683,7 +680,7 @@ DoD for each file session: `audit:inline-styles` → 0 violations for that file.
 | **3a** ✅ Done | All files — pure-layout only; create 5 primitives (+sb-hidden) | 12 of 13 fully resolved; 1 residual (see note) | 0 | 0 | audit → 1 pure-layout (BoardListScreen:237 `flexShrink:0` residual, assigned to 3f — roadmap prediction of "reclassify as d-w-s" was wrong, it stays pure-layout); 6 new classes (+5 primitives +sb-hidden); 63 total in §6 |
 | **3b** ✅ Done (172c695) | `PadEditorPanel.tsx` | 23 | 4 | 0 | 0 violations, 0 d-w-s. 22 new classes (§6: 63→85). 11 flagged for 3d Path A. 3 Sorte-2 bets (see note below). sb-range-input: native `<input type="range">`, distinct from sb-slider custom div-track, 3 DOM renders — confirmed ≥2 uses. |
 | **3c** ✅ Done (24b6977) | `LibraryScreen.tsx` | 20 | 3 | 0 | 0 violations, 0 d-w-s. 19 new classes + 2 existing-class fixes (sb-tab button resets, sb-search-input 11px→var(--fs-xs) drift). §6: 85→104. Path A rate 5% (expected: LibraryScreen structurally distinct from PadEditorPanel). 0 Sorte-2 bets from 3b resolved. 7 Sorte-2 bets created for 3g/3e (see note below). sb-col added as new layout primitive. |
-| **3d** | `PadCreationPopover.tsx` | 15 | 6 | 0 | 0 violations, 0 d-w-s |
+| **3d** ✅ Done (4210405) | `PadCreationPopover.tsx` | 15 | 6 | 0 | 0 violations, 0 d-w-s. 8 new classes (sb-source-tabs, sb-tab-sm, sb-scroll-fill, sb-creation-popover-actions, sb-btn-muted, sb-sheet-header, sb-creation-popover-backdrop, sb-source-item). §6: 104→112. Resolution: 3 delete / 1 compose / 3 path-A unchanged / 4 path-A updated / 1 modifier / 9 new-class entries = 8 unique new classes. Reuse rate 45% (5/11 of 3b's flagged classes; leaf-level classes generalize, container-structure classes are component-specific — no re-planning of 3e–3h). 3b bet sb-type-btn WON. Plan deviation: planned sb-btn-sm min-height:36px rejected at spot-check — sb-btn-sm is used across 9 files including navigation buttons; 44px iOS touch-target floor via global rule is correct there. §4 Dead CSS sb-creation-popover-section resolved. |
 | **3e** | `StartScreen.tsx` | 19 | 0 | 0 | 0 violations |
 | **3f** | `BoardScreen.tsx` + `BoardListScreen.tsx` | 17 + **14** = **31** | 0 | 0 | 0 violations + 0 d-w-s + 0 pure-layout for BoardListScreen. BoardListScreen has 14 (not 13) because the 3a residual `style={{ flexShrink: 0 }}` still counts as 1 violation. The action-row semantic class (created in 3f) absorbs it — reaching 0 pure-layout for that file. |
 | **3g** | `SceneRail.tsx` + `LibraryPanel.tsx` + `AudioRow.tsx` | 9 + 11 + 8 = 28 | 0+0+2 = 2 | 0 | 0 violations, 0 d-w-s |
@@ -693,9 +690,9 @@ DoD for each file session: `audit:inline-styles` → 0 violations for that file.
 _(3a resolves 12 fully + 1 residual deferred to 3f; 3f scope is 31 = 17+14. Total closes to 177.)_
 
 **3b Sorte-2 bets** (created on expectation of 3d/3c reuse; cleanup candidates if not used as Path A):
-- `sb-type-btn` — bet: 3d (PadCreationPopover) has a type selector with xs-btn in row-wrap. Verify in 3d; if not used → merge into sb-btn-xs or drop.
-- `sb-section-header-row` — bet: 3d or 3c has a space-between section header with margin-bottom. 2 uses in 3b already (minimum threshold met); still watch for 3d Path A confirmation.
-- `sb-panel-title` — bet: LibraryPanel (3g) or another inspector has a flex-fill mono title span in its header. Check during 3c/3g; cleanup candidate if isolated to PadEditorPanel.
+- `sb-type-btn` — **WON (3d)**: PadCreationPopover type pills use it directly. Class updated (added fontFamily, textTransform, cursor, minHeight:28px).
+- `sb-section-header-row` — **PENDING** (not used in 3d; still no space-between section header found). Verify in 3e/3f/3g; cleanup if no Path A use found by end of 3h.
+- `sb-panel-title` — **PENDING** (not used in 3d; mobile header is a container `sb-sheet-header`, not a title span). Main hope: 3g (LibraryPanel). Cleanup candidate if isolated to PadEditorPanel.
 
 **3c Sorte-2 bets** (1-use in 3c, created on expectation of 3g/3e reuse; cleanup candidates if not used as Path A):
 High-confidence (3g is LibraryPanel — same library surface):
@@ -708,6 +705,14 @@ Moderate-confidence:
 - `sb-screen` — bet: every screen (3e StartScreen, 3f BoardScreen) uses a 100dvh flex-column root. 3e confirms or denies.
 - `sb-tab-bar` — bet: 3e or another screen has a tab bar wrapper. Cleanup if isolated to LibraryScreen.
 - `sb-filter-rail` — bet: 3g (LibraryPanel) or a future filter view has a sidebar rail. Cleanup if not used.
+
+**3d Sorte-2 bets** (created on expectation of 3e–3h reuse; cleanup candidates if not confirmed):
+- `sb-scroll-fill` — **HIGH confidence (3g)**: SceneRail list and LibraryPanel list are the same fill-and-scroll pattern. Cleanup if neither 3g file uses it.
+- `sb-sheet-header` — **moderate (3h)**: PadTypeConfirmDialog mobile path likely has a similar sheet title header. Cleanup if 3h doesn't use it.
+- `sb-creation-popover-actions` — **moderate (3h)**: PadTypeConfirmDialog likely has an action button footer row. Cleanup or merge if 3h doesn't use it.
+- `sb-btn-muted` — **moderate (3h)**: Recessive secondary actions in PadTypeConfirmDialog or other creation flows. Cleanup if 3h doesn't use it.
+- `sb-tab-sm` — **lower confidence (3g/3h)**: Compact tab modifier. Confirm in any compact tab context; cleanup if not reused outside PadCreationPopover.
+- `sb-source-tabs` — **1-use flag**: Only used in PadCreationPopover source picker. Cleanup candidate by end of 3h if no second creation flow reuses it (or merge with sb-tabs at standardization time).
 
 **Ordering rationale (load-bearing):**
 - 3a first — layout primitives are a dependency for all subsequent sessions
@@ -810,6 +815,53 @@ Sessions 1–3) takes priority. Color-token discipline appears largely followed 
 **When:** After CSS Class Discipline Sessions 1–3 are complete. Low priority.
 
 **Source:** Conversation 2026-05-29 — "should we use audit scripts elsewhere?"
+
+---
+
+### Sub-token font-size pattern: off-ladder sizes below `--fs-xs`
+
+Two classes now deliberately use font-sizes below `--fs-xs` (12px):
+- `sb-hint-text`: `10px` — added in Session 3b; annotated "consider --fs-xxs in Session 8"
+- `sb-btn-muted`: `11px` — added in Session 3d (recessive secondary-action button)
+
+These are **not independent drift** but a design pattern for recessive UI text.
+Rule 1 check: do 10px and 11px land on a token-ladder step? No — no sub-xs token exists.
+Both stay as literals for now (consistent with how sb-hint-text was handled in 3b).
+
+**Action:** Session 8 must decide: one `--fs-xxs` token (one value for both?), two tokens
+(`--fs-xxs` + `--fs-xxxs`?), or keep as named literals. Do not add further literal
+sub-xs font-sizes without consulting this note first — the next literal would make
+three separate values and force a decision anyway.
+
+**When:** Session 8 (typography/polish). **Source:** Session 3d, 2026-05-30.
+
+---
+
+### UI text inconsistency: `EmptyHint` in BROWSE tab vs RECENT tab
+
+When the audio library is empty, the BROWSE tab shows "No matches." while the RECENT tab
+shows "No audio in library yet." — both correct by code logic, but inconsistent in tone.
+Both use `EmptyHint` with different message strings; a user with no library sees
+"No matches." in BROWSE even without typing a search query.
+
+**Action:** Decide whether to unify ("No audio in library yet." for empty-library state
+regardless of tab) or deliberately differentiate (BROWSE is always search-mode, so
+"No matches." is acceptable). Small fix in `PadCreationPopover.tsx`.
+
+**When:** Session 8+ or opportunistically. Pre-existing; not introduced by 3d.
+
+---
+
+### SceneRail action buttons: pre-existing Path D violation (`minHeight:28`)
+
+`SceneRail.tsx` lines 286/298/310 have `style={{ minWidth: 28, minHeight: 28, padding: '0 4px' }}`
+on the rename/duplicate/delete icon buttons (class `sb-btn sb-btn-sm sb-btn-ghost`).
+These were shielded from the 3d `sb-btn-sm` change (inline style overrides class).
+The inline values should migrate to a dedicated class (likely `sb-btn-icon`-style sizing
+or a new `sb-scene-action-btn` class).
+
+**Action:** Migrate in Session 3g when SceneRail.tsx is in scope.
+**When:** Session 3g. **Source:** Observed during 3d spot-check, 2026-05-30.
 
 ---
 
