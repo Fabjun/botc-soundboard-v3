@@ -114,6 +114,12 @@ Verbotene Muster in neuem V3-Code:
 <!-- AUTO-GENERATED:sb-classes START — nicht manuell editieren -->
 | Klasse | Beschreibung | Definiert in |
 |--------|-------------|-------------|
+| `sb-audio-col-duration` | Duration metadata column in AudioRow — mono xs, text-dim, centered. For the 70px duration column. | `v3/src/styles/tokens.css` |
+| `sb-audio-col-size` | File-size metadata column in AudioRow — mono xs, text-dim. For the 90px file-size column (not centered, unlike duration). | `v3/src/styles/tokens.css` |
+| `sb-audio-row` | Main container grid for AudioRow — 5-column table layout (name 160px | waveform 1fr | duration 70px | size 90px | delete 44px). Cursor + userSelect for row click; background and borderLeft set inline for selected state. NOTE: fixed columns (364px) + gaps (48px) = 412px min — overflows 390px mobile viewport; pre-existing design, deferred to Slice 8 responsive pass. | `v3/src/styles/tokens.css` |
+| `sb-audio-row-delete-btn` | Bare 44×44px delete button in AudioRow — centered flex icon container, no background, pointer cursor. Border and color set inline for deleteStep confirm state (2-tap confirmation pattern). | `v3/src/styles/tokens.css` |
+| `sb-audio-row-name` | Display-state name span in RenameField within AudioRow — font-ui fs-sm, click-to-edit cursor, block display with ellipsis truncation. Truncation is context-bound (inseparable from the element's function), not a utility add-on. | `v3/src/styles/tokens.css` |
+| `sb-audio-row-rename` | Editing-state input in RenameField within AudioRow — font-ui fs-sm (14px), sunk background, strong border. Distinct from sb-row-rename-input (fs-lg/18px, uppercase for board names). | `v3/src/styles/tokens.css` |
 | `sb-board-body` | 3-column content row in BoardScreen — fills space between TopBar and StatusBar, flex row with overflow containment. | `v3/src/styles/tokens.css` |
 | `sb-board-list-area` | Scrollable board list container in BoardListScreen — flex column fill with iOS-touch scroll and overscroll containment. | `v3/src/styles/tokens.css` |
 | `sb-board-main` | Center column of BoardScreen 3-col layout — flex column fill with min-width:0 (allows inner content to shrink) and overflow containment. | `v3/src/styles/tokens.css` |
@@ -144,7 +150,7 @@ Verbotene Muster in neuem V3-Code:
 | `sb-changelog-items` | <ul> list reset for changelog items — flex-column layout with small gap and no default margins. | `v3/src/styles/tokens.css` |
 | `sb-changelog-version` | Version number label inside a changelog entry — large VT323 in gold. | `v3/src/styles/tokens.css` |
 | `sb-col` | Flex-column layout primitive with min-height:0 — enables overflow scrolling in flex-column children. Use for column containers that scroll. | `v3/src/styles/tokens.css` |
-| `sb-count-text` | Inline count/quantity text — mono xs muted. Used in category rows and similar metadata contexts. | `v3/src/styles/tokens.css` |
+| `sb-count-text` | Inline count/quantity text — mono xs muted, no flex-shrink. Used in category rows and similar metadata contexts. | `v3/src/styles/tokens.css` |
 | `sb-creation-popover` | Fixed 300px popover for Path A (desktop) pad creation flow. | `v3/src/styles/tokens.css` |
 | `sb-creation-popover-actions` | Footer actions row in creation popover — padded flex row, top border separator, no-shrink. For CANCEL/ADD PAD action buttons. | `v3/src/styles/tokens.css` |
 | `sb-creation-popover-backdrop` | Fixed full-screen click-away backdrop for desktop creation popover — z-index 399 (below popover at 400). | `v3/src/styles/tokens.css` |
@@ -163,9 +169,10 @@ Verbotene Muster in neuem V3-Code:
 | `sb-flame-well` | Fixed 200×200 centered icon well for the StartScreen flame logo — position:relative anchors sb-flame-aura. 1-use. | `v3/src/styles/tokens.css` |
 | `sb-flex-1` | Flex fill — takes all remaining space in a flex container. Use as a spacer or to push siblings to opposite ends. | `v3/src/styles/tokens.css` |
 | `sb-flex-min` | Text-fill layout primitive — flex:1 + min-width:0. Use for flex containers that hold truncatable text. Distinct from sb-flex-1 (spacer): min-width:0 is the defining property. | `v3/src/styles/tokens.css` |
+| `sb-flex-trunc` | Truncating flex-fill primitive — flex:1 + min-width:0 + ellipsis. For text spans that fill available flex space and truncate at their boundary. Distinct from sb-flex-min (no truncation) and sb-flex-1 (no min-width or truncation). | `v3/src/styles/tokens.css` |
 | `sb-grid-bg` | Cross-hatch layout grid on the board canvas in SETUP mode. | `v3/src/styles/tokens.css` |
 | `sb-hidden` | Visibility utility — hides element from layout (display:none). For hidden file inputs and conditionally invisible nodes. | `v3/src/styles/tokens.css` |
-| `sb-hint-text` | Secondary annotative text in inspector rows — mono 10px muted. Intentionally below --fs-xs; consider --fs-xxs token in Session 8. | `v3/src/styles/tokens.css` |
+| `sb-hint-text` | Secondary annotative text in inspector rows — mono 10px muted, truncates to one line. Intentionally below --fs-xs; consider --fs-xxs token in Session 8. | `v3/src/styles/tokens.css` |
 | `sb-hotkey-value` | Hotkey binding value text in inspector — mono xs; color set inline for has/lacks-hotkey state. | `v3/src/styles/tokens.css` |
 | `sb-inspector` | Generic right-rail inspector shell; V3 uses specific variants sb-pad-editor and sb-library-panel. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-inspector-section` | Padded content section within an inspector panel, separated by bottom border. | `v3/src/styles/tokens.css` |
@@ -179,6 +186,9 @@ Verbotene Muster in neuem V3-Code:
 | `sb-lib-browser-list` | Scrollable item list inside library browser — capped height, sunk background, iOS-touch scroll. | `v3/src/styles/tokens.css` |
 | `sb-lib-browser-no-results` | "No results" / empty-state message in a library or source list — centered, muted. Spacious padding suits both capped inspector browsers and full-height source pickers. | `v3/src/styles/tokens.css` |
 | `sb-lib-browser-search` | Search section wrapper inside library browser — padded with border-bottom divider, no-shrink in flex-column parent. | `v3/src/styles/tokens.css` |
+| `sb-lib-panel-drag-hint` | Drag-instructions hint bar below the LibraryPanel search section — mono 10px muted, deep background, soft bottom border, no-shrink. Combines structural bar + text styling for this component-specific element. 1-use (LibraryPanel). | `v3/src/styles/tokens.css` |
+| `sb-lib-panel-row` | Draggable library item row in LibraryPanel — flex column layout, padded, soft border-bottom separator, grab cursor with DnD-ready pointer-events (NOT sb-source-item which uses pointer cursor for click, not drag). | `v3/src/styles/tokens.css` |
+| `sb-lib-panel-search-bar` | Outer search section bar in LibraryPanel — compact padding (6/8px), deep background, soft bottom border, no-shrink. Sibling of sb-search-bar (same structural role, smaller dimensions for a 280px panel). 1-use (LibraryPanel). | `v3/src/styles/tokens.css` |
 | `sb-library-panel` | Library browse panel in the board right rail (280px, hides overflow). | `v3/src/styles/tokens.css` |
 | `sb-menu-row` | Pixel-frame list row with icon, primary title, and subtitle slots. | `v3/src/styles/tokens.css` |
 | `sb-mode-badge` | Compact inline SETUP/GAME badge for top-bar and status-bar surfaces. | `v3/src/styles/tokens.css` |
@@ -200,6 +210,7 @@ Verbotene Muster in neuem V3-Code:
 | `sb-pad-editor` | Right inspector panel shown when a pad is selected in SETUP mode (280px, scrolls). | `v3/src/styles/tokens.css` |
 | `sb-pad-grid` | CSS grid for the active scene's pads; col/row counts from --grid-cols/--grid-rows CSS vars. | `v3/src/styles/tokens.css` |
 | `sb-pad-grid-cell` | Single cell wrapper in the pad grid; carries position, DnD states, and touch targets. | `v3/src/styles/tokens.css` |
+| `sb-panel-empty` | Empty-state text message inside a scrollable panel or rail — centered, padded, mono xs muted, relaxed line-height. Used in SceneRail (no scenes) and LibraryPanel (no results). | `v3/src/styles/tokens.css` |
 | `sb-panel-header` | Compact 28px header strip on inspector panels (icon + uppercase label). | `v3/src/styles/tokens.css` |
 | `sb-panel-title` | Flexible-fill title span inside a panel header — mono xs in normal text color. | `v3/src/styles/tokens.css` |
 | `sb-pill` | Compact pixel-frame badge; type-colour variants via is-on, is-loop, is-playlist, is-combo. | `v3/src/styles/tokens.css` |
@@ -210,21 +221,24 @@ Verbotene Muster in neuem V3-Code:
 | `sb-rail-section` | Padded section container in a sidebar rail. Add .has-divider for a bottom border separator. | `v3/src/styles/tokens.css` |
 | `sb-range-input` | Native <input type="range"> styled with design-system gold accent — full width, pointer cursor. | `v3/src/styles/tokens.css` |
 | `sb-readonly-field` | Read-only display row in inspector — flex, sunk background, bordered; for hotkey and value display. | `v3/src/styles/tokens.css` |
-| `sb-row` | Horizontal flex row; align-items center, 8px gap (--space-2). Standard row for icon+label or toolbar items. | `v3/src/styles/tokens.css` |
+| `sb-row` | Horizontal flex row; align-items center, 8px gap (--space-2). Standard row for icon+label or toolbar items. min-width:0 enables truncation inside grid cells. | `v3/src/styles/tokens.css` |
 | `sb-row-actions` | Non-shrinking compact action-button group — flex row, 4px gap, flex-shrink:0. For icon-button clusters at the trailing end of list rows. Bet for 3g reuse (AudioRow action group). | `v3/src/styles/tokens.css` |
 | `sb-row-fill` | Centred fill row — fills flex parent (flex:1) and centres content both axes. Use for empty-state containers. | `v3/src/styles/tokens.css` |
 | `sb-row-rename-input` | Inline rename input in a list row — matches row-title typography (font-ui, fs-lg, uppercase), sunk background, strong border, no outline. Bet for 3g reuse (AudioRow). | `v3/src/styles/tokens.css` |
 | `sb-row-sm` | Compact flex row; align-items center, 4px gap (--space-1). For tight action groups and button clusters. | `v3/src/styles/tokens.css` |
 | `sb-row-wrap` | Wrapping flex row; 4px gap (--space-1). For type-selector grids and wrapping button groups. | `v3/src/styles/tokens.css` |
 | `sb-scanlines` | CRT scanline overlay via ::after pseudo-element; currently applied to StartScreen only. | `v3/src/styles/tokens.css` |
+| `sb-scene-add-btn` | Full-width inset button at the bottom of the scene rail — 8px margins, calc(100% − 16px) width, 44px touch target, centered flex with 6px gap. Modifies sb-btn layout for the rail context. 1-use (SceneRail). | `v3/src/styles/tokens.css` |
+| `sb-scene-num-badge` | Scene-number indicator badge in scene rail tabs — mono xs muted, 16px minimum width for numeral alignment, no flex-shrink. 1-use (SceneRail). | `v3/src/styles/tokens.css` |
 | `sb-scene-rail` | Left 220px scene navigation column on BoardScreen (fixed width, scrollable). | `v3/src/styles/tokens.css` |
+| `sb-scene-rename-input` | Inline rename input for scene tabs — font-ui fs-md 0.06em uppercase, matching sb-scene-tab's own font scale. Distinct from sb-row-rename-input (fs-lg/0.08em for board names). 1-use (SceneRail). | `v3/src/styles/tokens.css` |
 | `sb-scene-tab` | Clickable scene entry in the scene rail; is-active highlights the current scene. | `v3/src/styles/tokens.css` |
 | `sb-scene-tab-actions` | Action buttons (duplicate, delete) revealed on hover or on the active scene tab. | `v3/src/styles/tokens.css` |
 | `sb-screen` | Full-height screen root container — flex column, 100dvh, surface background, positioned, overflow hidden; outline-offset for inset drag indicators. | `v3/src/styles/tokens.css` |
 | `sb-screen-empty` | Full-screen centered empty state — flex column, centered both axes, fills parent, mono xs text in text-mute. | `v3/src/styles/tokens.css` |
 | `sb-screen-layout` | 2-column content grid for LibraryScreen — 220px filter rail + 1fr content, fills parent, min-height:0 for scroll. | `v3/src/styles/tokens.css` |
 | `sb-scroll` | iOS-momentum scroll utility; touch scrolling without overscroll containment. Currently no TSX usage. [unused-css] | `v3/src/styles/global.css` |
-| `sb-scroll-fill` | Scrollable flex-fill container — takes all remaining height in a flex column, scrolls content, iOS-touch scroll. Use for list/source areas that fill a panel. | `v3/src/styles/tokens.css` |
+| `sb-scroll-fill` | Scrollable flex-fill container — takes all remaining height in a flex column, scrolls content, iOS-touch scroll, contained overscroll. Use for list/source areas that fill a panel. | `v3/src/styles/tokens.css` |
 | `sb-search-bar` | Outer search section bar — deep background, bottom border, no-shrink. Wraps sb-search-field. | `v3/src/styles/tokens.css` |
 | `sb-search-field` | Inner search input row — flex, sunk background, bordered. Wraps icon + input + optional clear button. | `v3/src/styles/tokens.css` |
 | `sb-search-input` | Transparent search input inside a bordered container — no background, no border, mono xs font. Use with sb-flex-1 when input shares a flex row with other elements. | `v3/src/styles/tokens.css` |

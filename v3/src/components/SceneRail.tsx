@@ -169,16 +169,7 @@ export function SceneRail({ board, activeSceneId, onSceneSelect }: SceneRailProp
   return (
     <div class="sb-scene-rail">
       {scenes.length === 0 ? (
-        <div
-          style={{
-            padding: '24px 12px',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '12px',
-            color: 'var(--text-mute)',
-            textAlign: 'center',
-            lineHeight: 1.6,
-          }}
-        >
+        <div class="sb-panel-empty">
           No scenes yet.
           <br />
           Add one below.
@@ -203,17 +194,7 @@ export function SceneRail({ board, activeSceneId, onSceneSelect }: SceneRailProp
             onDblClick={() => startRename(scene)}
           >
             {/* Scene number badge */}
-            <span
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: '11px',
-                color: 'var(--text-mute)',
-                minWidth: '16px',
-                flexShrink: 0,
-              }}
-            >
-              {scene.order + 1}
-            </span>
+            <span class="sb-scene-num-badge">{scene.order + 1}</span>
 
             {/* Name or inline edit input */}
             {editingId === scene.id ? (
@@ -234,56 +215,22 @@ export function SceneRail({ board, activeSceneId, onSceneSelect }: SceneRailProp
                 }}
                 onBlur={() => commitRename(scene.id)}
                 onClick={(e) => e.stopPropagation()}
-                style={{
-                  flex: 1,
-                  minWidth: 0,
-                  background: 'var(--sunk)',
-                  border: '1px solid var(--border-strong)',
-                  color: 'var(--text)',
-                  fontFamily: 'var(--font-ui)',
-                  fontSize: 'var(--fs-md)',
-                  letterSpacing: '.06em',
-                  textTransform: 'uppercase',
-                  padding: '2px 6px',
-                  outline: 'none',
-                }}
+                class="sb-scene-rename-input"
                 autoFocus
               />
             ) : (
-              <span
-                style={{
-                  flex: 1,
-                  minWidth: 0,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {scene.name}
-              </span>
+              <span class="sb-flex-trunc">{scene.name}</span>
             )}
 
             {/* Pad count */}
-            {editingId !== scene.id && (
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
-                  color: 'var(--text-mute)',
-                  flexShrink: 0,
-                }}
-              >
-                {scene.pads.length}
-              </span>
-            )}
+            {editingId !== scene.id && <span class="sb-count-text">{scene.pads.length}</span>}
 
             {/* Action chips (visible on hover / active) */}
             {editingId !== scene.id && (
               <div class="sb-scene-tab-actions">
                 <button
-                  class="sb-btn sb-btn-sm sb-btn-ghost"
+                  class="sb-btn sb-btn-sm sb-btn-ghost sb-btn-icon"
                   data-testid={`scene-rename-${scene.id}`}
-                  style={{ minWidth: 28, minHeight: 28, padding: '0 4px' }}
                   title="Rename scene"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -293,9 +240,8 @@ export function SceneRail({ board, activeSceneId, onSceneSelect }: SceneRailProp
                   <PixelIcon name="edit" size={11} />
                 </button>
                 <button
-                  class="sb-btn sb-btn-sm sb-btn-ghost"
+                  class="sb-btn sb-btn-sm sb-btn-ghost sb-btn-icon"
                   data-testid={`scene-copy-${scene.id}`}
-                  style={{ minWidth: 28, minHeight: 28, padding: '0 4px' }}
                   title="Duplicate scene"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -305,9 +251,8 @@ export function SceneRail({ board, activeSceneId, onSceneSelect }: SceneRailProp
                   <PixelIcon name="save" size={11} />
                 </button>
                 <button
-                  class={`sb-btn sb-btn-sm ${pendingDeleteId === scene.id ? 'sb-btn-danger' : 'sb-btn-ghost'}`}
+                  class={`sb-btn sb-btn-sm sb-btn-icon ${pendingDeleteId === scene.id ? 'sb-btn-danger' : 'sb-btn-ghost'}`}
                   data-testid={`scene-delete-${scene.id}`}
-                  style={{ minWidth: 28, minHeight: 28, padding: '0 4px' }}
                   title={
                     pendingDeleteId === scene.id ? 'Click again to confirm delete' : 'Delete scene'
                   }
@@ -326,15 +271,8 @@ export function SceneRail({ board, activeSceneId, onSceneSelect }: SceneRailProp
 
       {/* Add scene button */}
       <button
-        class="sb-btn sb-btn-ghost"
+        class="sb-btn sb-btn-ghost sb-scene-add-btn"
         data-testid="new-scene-button"
-        style={{
-          margin: '8px',
-          width: 'calc(100% - 16px)',
-          minHeight: 44,
-          justifyContent: 'center',
-          gap: 6,
-        }}
         onClick={addScene}
       >
         <PixelIcon name="sparkle" size={12} />+ NEW SCENE

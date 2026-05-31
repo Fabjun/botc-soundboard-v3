@@ -510,10 +510,11 @@
 
 /* ── Layout Primitives ───────────────────────────────────────────────── */
 .sb-row {
-  /* @inventory: Horizontal flex row; align-items center, 8px gap (--space-2). Standard row for icon+label or toolbar items. */
+  /* @inventory: Horizontal flex row; align-items center, 8px gap (--space-2). Standard row for icon+label or toolbar items. min-width:0 enables truncation inside grid cells. */
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  min-width: 0;
 }
 .sb-row-sm {
   /* @inventory: Compact flex row; align-items center, 4px gap (--space-1). For tight action groups and button clusters. */
@@ -545,10 +546,11 @@
   min-height: 0;
 }
 .sb-scroll-fill {
-  /* @inventory: Scrollable flex-fill container — takes all remaining height in a flex column, scrolls content, iOS-touch scroll. Use for list/source areas that fill a panel. */
+  /* @inventory: Scrollable flex-fill container — takes all remaining height in a flex column, scrolls content, iOS-touch scroll, contained overscroll. Use for list/source areas that fill a panel. */
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   min-height: 0;
 }
 .sb-hidden {
@@ -1877,10 +1879,13 @@
   border: 1px solid var(--border);
 }
 .sb-hint-text {
-  /* @inventory: Secondary annotative text in inspector rows — mono 10px muted. Intentionally below --fs-xs; consider --fs-xxs token in Session 8. */
+  /* @inventory: Secondary annotative text in inspector rows — mono 10px muted, truncates to one line. Intentionally below --fs-xs; consider --fs-xxs token in Session 8. */
   font-family: var(--font-mono);
   font-size: 10px;
   color: var(--text-mute);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .sb-value-text {
   /* @inventory: Numeric value display in inspector — mono xs gold; for fade/volume values next to sliders. */
@@ -2046,10 +2051,11 @@
   letter-spacing: 0.04em;
 }
 .sb-count-text {
-  /* @inventory: Inline count/quantity text — mono xs muted. Used in category rows and similar metadata contexts. */
+  /* @inventory: Inline count/quantity text — mono xs muted, no flex-shrink. Used in category rows and similar metadata contexts. */
   font-family: var(--font-mono);
   font-size: 11px;
   color: var(--text-mute);
+  flex-shrink: 0;
 }
 .sb-tag-list {
   /* @inventory: Flex-wrap container for tag pills — padded with horizontal gutters. */
@@ -2235,4 +2241,149 @@
   padding: 3px var(--space-2);
   outline: none;
   width: 100%;
+}
+
+/* ── Layout primitives (Session 3g) ──────────────────────────────── */
+
+.sb-flex-trunc {
+  /* @inventory: Truncating flex-fill primitive — flex:1 + min-width:0 + ellipsis. For text spans that fill available flex space and truncate at their boundary. Distinct from sb-flex-min (no truncation) and sb-flex-1 (no min-width or truncation). */
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── SceneRail (Session 3g) ──────────────────────────────────────── */
+
+.sb-panel-empty {
+  /* @inventory: Empty-state text message inside a scrollable panel or rail — centered, padded, mono xs muted, relaxed line-height. Used in SceneRail (no scenes) and LibraryPanel (no results). */
+  padding: var(--space-6) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-mute);
+  text-align: center;
+  line-height: 1.6;
+}
+.sb-scene-num-badge {
+  /* @inventory: Scene-number indicator badge in scene rail tabs — mono xs muted, 16px minimum width for numeral alignment, no flex-shrink. 1-use (SceneRail). */
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-mute);
+  min-width: 16px;
+  flex-shrink: 0;
+}
+.sb-scene-rename-input {
+  /* @inventory: Inline rename input for scene tabs — font-ui fs-md 0.06em uppercase, matching sb-scene-tab's own font scale. Distinct from sb-row-rename-input (fs-lg/0.08em for board names). 1-use (SceneRail). */
+  flex: 1;
+  min-width: 0;
+  background: var(--sunk);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  outline: none;
+}
+.sb-scene-add-btn {
+  /* @inventory: Full-width inset button at the bottom of the scene rail — 8px margins, calc(100% − 16px) width, 44px touch target, centered flex with 6px gap. Modifies sb-btn layout for the rail context. 1-use (SceneRail). */
+  margin: var(--space-2);
+  width: calc(100% - 2 * var(--space-2));
+  min-height: 44px;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* ── LibraryPanel (Session 3g) ───────────────────────────────────── */
+
+.sb-lib-panel-search-bar {
+  /* @inventory: Outer search section bar in LibraryPanel — compact padding (6/8px), deep background, soft bottom border, no-shrink. Sibling of sb-search-bar (same structural role, smaller dimensions for a 280px panel). 1-use (LibraryPanel). */
+  padding: 6px var(--space-2);
+  background: var(--deep);
+  border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+.sb-lib-panel-drag-hint {
+  /* @inventory: Drag-instructions hint bar below the LibraryPanel search section — mono 10px muted, deep background, soft bottom border, no-shrink. Combines structural bar + text styling for this component-specific element. 1-use (LibraryPanel). */
+  padding: var(--space-1) var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-mute);
+  background: var(--deep);
+  border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+.sb-lib-panel-row {
+  /* @inventory: Draggable library item row in LibraryPanel — flex column layout, padded, soft border-bottom separator, grab cursor with DnD-ready pointer-events (NOT sb-source-item which uses pointer cursor for click, not drag). */
+  display: flex;
+  flex-direction: column;
+  padding: 6px var(--space-2);
+  border-bottom: 1px solid var(--border-soft);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  gap: 3px;
+}
+
+/* ── AudioRow (Session 3g) ───────────────────────────────────────── */
+
+.sb-audio-row {
+  /* @inventory: Main container grid for AudioRow — 5-column table layout (name 160px | waveform 1fr | duration 70px | size 90px | delete 44px). Cursor + userSelect for row click; background and borderLeft set inline for selected state. NOTE: fixed columns (364px) + gaps (48px) = 412px min — overflows 390px mobile viewport; pre-existing design, deferred to Slice 8 responsive pass. */
+  display: grid;
+  grid-template-columns: 160px 1fr 70px 90px 44px;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  min-height: 44px;
+  cursor: pointer;
+  user-select: none;
+}
+.sb-audio-row-rename {
+  /* @inventory: Editing-state input in RenameField within AudioRow — font-ui fs-sm (14px), sunk background, strong border. Distinct from sb-row-rename-input (fs-lg/18px, uppercase for board names). */
+  background: var(--sunk);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  padding: 2px 6px;
+  width: 100%;
+  outline: none;
+  min-height: 28px;
+}
+.sb-audio-row-name {
+  /* @inventory: Display-state name span in RenameField within AudioRow — font-ui fs-sm, click-to-edit cursor, block display with ellipsis truncation. Truncation is context-bound (inseparable from the element's function), not a utility add-on. */
+  font-family: var(--font-ui);
+  font-size: var(--fs-sm);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: text;
+  display: block;
+}
+.sb-audio-col-duration {
+  /* @inventory: Duration metadata column in AudioRow — mono xs, text-dim, centered. For the 70px duration column. */
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  text-align: center;
+}
+.sb-audio-col-size {
+  /* @inventory: File-size metadata column in AudioRow — mono xs, text-dim. For the 90px file-size column (not centered, unlike duration). */
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+.sb-audio-row-delete-btn {
+  /* @inventory: Bare 44×44px delete button in AudioRow — centered flex icon container, no background, pointer cursor. Border and color set inline for deleteStep confirm state (2-tap confirmation pattern). */
+  background: none;
+  cursor: pointer;
+  padding: 6px;
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

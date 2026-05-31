@@ -61,17 +61,7 @@ function RenameField({ name, onCommit }: RenameFieldProps) {
         ref={inputRef}
         type="text"
         value={draft}
-        style={{
-          fontFamily: 'var(--font-ui)',
-          fontSize: '14px',
-          color: 'var(--text)',
-          background: 'var(--sunk)',
-          border: '1px solid var(--border-strong)',
-          padding: '2px 6px',
-          width: '100%',
-          outline: 'none',
-          minHeight: '28px',
-        }}
+        class="sb-audio-row-rename"
         onInput={(e) => setDraft((e.target as HTMLInputElement).value)}
         onBlur={commit}
         onKeyDown={(e) => {
@@ -91,19 +81,10 @@ function RenameField({ name, onCommit }: RenameFieldProps) {
   return (
     <span
       title="Click to rename"
+      class="sb-audio-row-name"
       onClick={(e) => {
         e.stopPropagation();
         setEditing(true);
-      }}
-      style={{
-        fontFamily: 'var(--font-ui)',
-        fontSize: '14px',
-        color: 'var(--text)',
-        whiteSpace: 'nowrap',
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        cursor: 'text',
-        display: 'block',
       }}
     >
       {name}
@@ -133,40 +114,20 @@ export function AudioRow({ meta, selected, onSelect, onDelete, onRename }: Audio
 
   return (
     <div
+      class="sb-audio-row"
       onClick={onSelect}
       onMouseLeave={resetDelete}
       style={{
-        display: 'grid',
-        gridTemplateColumns: '160px 1fr 70px 90px 44px',
-        gap: '12px',
-        alignItems: 'center',
-        padding: '8px 12px',
-        minHeight: '44px',
         background: selected ? 'var(--top)' : 'var(--raised)',
         borderLeft: selected ? '2px solid var(--gold)' : '2px solid transparent',
-        cursor: 'pointer',
-        userSelect: 'none',
       }}
     >
       {/* Col 1: type icon + name + filename */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-        <div style={{ flexShrink: 0, color: 'var(--gold)' }}>
-          <PixelIcon name="play" size={14} />
-        </div>
-        <div style={{ minWidth: 0, flex: 1 }}>
+      <div class="sb-row">
+        <PixelIcon name="play" size={14} color="var(--gold)" />
+        <div class="sb-flex-min">
           <RenameField name={meta.name} onCommit={onRename} />
-          <div
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '10px',
-              color: 'var(--text-mute)',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {meta.id.slice(0, 8)}…
-          </div>
+          <div class="sb-hint-text">{meta.id.slice(0, 8)}…</div>
         </div>
       </div>
 
@@ -174,44 +135,20 @@ export function AudioRow({ meta, selected, onSelect, onDelete, onRename }: Audio
       <Waveform peaks={meta.peaks} height={28} dim={!selected} />
 
       {/* Col 3: duration */}
-      <span
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: '12px',
-          color: 'var(--text-dim)',
-          textAlign: 'center',
-        }}
-      >
-        {formatDuration(meta.duration)}
-      </span>
+      <span class="sb-audio-col-duration">{formatDuration(meta.duration)}</span>
 
       {/* Col 4: file size */}
-      <span
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: '11px',
-          color: 'var(--text-dim)',
-        }}
-      >
-        {formatBytes(meta.size)}
-      </span>
+      <span class="sb-audio-col-size">{formatBytes(meta.size)}</span>
 
       {/* Col 5: delete (2-tap confirm) */}
       <button
+        class="sb-audio-row-delete-btn"
         title={deleteStep === 'idle' ? 'Delete' : 'Confirm delete'}
         onClick={handleDeleteClick}
         onBlur={resetDelete}
         style={{
-          background: 'none',
           border: deleteStep === 'confirm' ? '1px solid var(--blood)' : 'none',
           color: deleteStep === 'confirm' ? 'var(--blood-bright)' : 'var(--text-mute)',
-          cursor: 'pointer',
-          padding: '6px',
-          minHeight: '44px',
-          minWidth: '44px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
         }}
       >
         <PixelIcon name="skull" size={12} />

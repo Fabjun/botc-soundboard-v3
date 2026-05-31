@@ -52,15 +52,9 @@ export function LibraryPanel({
       {/* Header */}
       <div class="sb-panel-header is-active">
         <PixelIcon name="book" size={12} />
-        <span>Library</span>
+        <span class="sb-panel-title">Library</span>
         <button
-          class="sb-btn sb-btn-sm sb-btn-ghost"
-          style={{
-            marginLeft: 'auto',
-            minWidth: 28,
-            minHeight: 28,
-            padding: '0 4px',
-          }}
+          class="sb-btn sb-btn-sm sb-btn-ghost sb-btn-icon"
           onClick={onClose}
           title="Close library panel"
         >
@@ -69,53 +63,18 @@ export function LibraryPanel({
       </div>
 
       {/* Search */}
-      <div
-        style={{
-          padding: '6px 8px',
-          borderBottom: '1px solid var(--border-soft)',
-          background: 'var(--deep)',
-          flexShrink: 0,
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            padding: '4px 8px',
-            background: 'var(--sunk)',
-            border: '1px solid var(--border)',
-          }}
-        >
+      <div class="sb-lib-panel-search-bar">
+        <div class="sb-search-field">
           <PixelIcon name="search" size={11} color="var(--text-mute)" />
           <input
             type="text"
             placeholder={`${items.length} files…`}
             value={search}
             onInput={(e) => setSearch((e.target as HTMLInputElement).value)}
-            style={{
-              flex: 1,
-              background: 'none',
-              border: 'none',
-              outline: 'none',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '12px',
-              color: 'var(--text)',
-            }}
+            class="sb-flex-1 sb-search-input"
           />
           {search && (
-            <button
-              onClick={() => setSearch('')}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--text-mute)',
-                cursor: 'pointer',
-                padding: '1px 3px',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '12px',
-              }}
-            >
+            <button onClick={() => setSearch('')} class="sb-btn-clear">
               ×
             </button>
           )}
@@ -123,39 +82,12 @@ export function LibraryPanel({
       </div>
 
       {/* Drag hint */}
-      <div
-        style={{
-          padding: '4px 8px',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '10px',
-          color: 'var(--text-mute)',
-          background: 'var(--deep)',
-          borderBottom: '1px solid var(--border-soft)',
-          flexShrink: 0,
-        }}
-      >
-        Drag onto a grid slot to create a pad
-      </div>
+      <div class="sb-lib-panel-drag-hint">Drag onto a grid slot to create a pad</div>
 
       {/* Item list */}
-      <div
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          WebkitOverflowScrolling: 'touch',
-          overscrollBehavior: 'contain',
-        }}
-      >
+      <div class="sb-scroll-fill">
         {sorted.length === 0 ? (
-          <div
-            style={{
-              padding: '24px 12px',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '12px',
-              color: 'var(--text-mute)',
-              textAlign: 'center',
-            }}
-          >
+          <div class="sb-panel-empty">
             {items.length === 0 ? 'No audio files in library.' : `No files matching "${search}"`}
           </div>
         ) : (
@@ -201,6 +133,7 @@ function LibraryPanelRow({ item, onLibDrop, onLongPress }: LibraryPanelRowProps)
   return (
     <div
       // Pointer Events drag (NOT HTML5 DnD — see file header)
+      class="sb-lib-panel-row"
       onPointerDown={(e) => {
         const rowEl = e.currentTarget as HTMLElement;
 
@@ -218,44 +151,11 @@ function LibraryPanelRow({ item, onLibDrop, onLongPress }: LibraryPanelRowProps)
       }}
       onPointerUp={cancelLongPress}
       onPointerCancel={cancelLongPress}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '6px 8px',
-        borderBottom: '1px solid var(--border-soft)',
-        cursor: 'grab',
-        userSelect: 'none',
-        touchAction: 'none', // Required: prevents scroll from capturing the pointer
-        gap: 3,
-      }}
     >
       <div class="sb-row">
         <PixelIcon name="play" size={10} color="var(--text-mute)" />
-        <span
-          style={{
-            flex: 1,
-            fontFamily: 'var(--font-mono)',
-            fontSize: '12px',
-            color: 'var(--text)',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {item.name}
-        </span>
-        {item.duration > 0 && (
-          <span
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '10px',
-              color: 'var(--text-mute)',
-              flexShrink: 0,
-            }}
-          >
-            {formatDuration(item.duration)}
-          </span>
-        )}
+        <span class="sb-lib-browser-item-name sb-flex-1">{item.name}</span>
+        {item.duration > 0 && <span class="sb-hint-text">{formatDuration(item.duration)}</span>}
       </div>
       {item.peaks && item.peaks.length > 0 && <Waveform peaks={item.peaks} height={20} />}
     </div>
