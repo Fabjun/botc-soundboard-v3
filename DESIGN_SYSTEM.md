@@ -182,6 +182,7 @@ Verbotene Muster in neuem V3-Code:
 | `sb-hidden` | Visibility utility — hides element from layout (display:none). For hidden file inputs and conditionally invisible nodes. | `v3/src/styles/tokens.css` |
 | `sb-hint-text` | Secondary annotative text in inspector rows — mono 10px muted, truncates to one line. Intentionally below --fs-xs; consider --fs-xxs token in Session 8. | `v3/src/styles/tokens.css` |
 | `sb-hotkey-value` | Hotkey binding value text in inspector — mono xs; color set inline for has/lacks-hotkey state. | `v3/src/styles/tokens.css` |
+| `sb-icon` | Icon slot in a board-list menu row — fixed 28px width, gold colour. | `v3/src/styles/tokens.css` |
 | `sb-inspector` | Generic right-rail inspector shell; V3 uses specific variants sb-pad-editor and sb-library-panel. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-inspector-section` | Padded content section within an inspector panel, separated by bottom border. | `v3/src/styles/tokens.css` |
 | `sb-item-list` | Scrollable flex-column item list — fills remaining height, iOS-touch scroll, padded, 4px gap. | `v3/src/styles/tokens.css` |
@@ -198,7 +199,7 @@ Verbotene Muster in neuem V3-Code:
 | `sb-lib-panel-row` | Draggable library item row in LibraryPanel — flex column layout, padded, soft border-bottom separator, grab cursor with DnD-ready pointer-events (NOT sb-source-item which uses pointer cursor for click, not drag). | `v3/src/styles/tokens.css` |
 | `sb-lib-panel-search-bar` | Outer search section bar in LibraryPanel — compact padding (6/8px), deep background, soft bottom border, no-shrink. Sibling of sb-search-bar (same structural role, smaller dimensions for a 280px panel). 1-use (LibraryPanel). | `v3/src/styles/tokens.css` |
 | `sb-library-panel` | Library browse panel in the board right rail (280px, hides overflow). | `v3/src/styles/tokens.css` |
-| `sb-menu-row` | Pixel-frame list row with icon, primary title, and subtitle slots. | `v3/src/styles/tokens.css` |
+| `sb-menu-row` | Pixel-frame list row base — flex row, space-4 gap, space-4/5 padding. Child slots styled via flat .sb-icon / .sb-row-title / .sb-row-sub classes. | `v3/src/styles/tokens.css` |
 | `sb-mode-badge` | Compact inline SETUP/GAME badge for top-bar surfaces — flex-shrink:0 prevents badge from shrinking in flex topbar context. | `v3/src/styles/tokens.css` |
 | `sb-mode-toggle` | Interactive SETUP | GAME pill in the board top bar center (v24 design). | `v3/src/styles/tokens.css` |
 | `sb-mode-toggle-flash` | Reduced-motion fallback for sb-mode-toggle (brightness flash instead of sparks). ModeToggle.tsx skips animation entirely rather than applying this class. [unused-css] | `v3/src/styles/tokens.css` |
@@ -235,6 +236,8 @@ Verbotene Muster in neuem V3-Code:
 | `sb-row-fill` | Centred fill row — fills flex parent (flex:1) and centres content both axes. Use for empty-state containers. | `v3/src/styles/tokens.css` |
 | `sb-row-rename-input` | Inline rename input in a list row — matches row-title typography (font-ui, fs-lg, uppercase), sunk background, strong border, no outline. Bet for 3g reuse (AudioRow). | `v3/src/styles/tokens.css` |
 | `sb-row-sm` | Compact flex row; align-items center, 4px gap (--space-1). For tight action groups and button clusters. | `v3/src/styles/tokens.css` |
+| `sb-row-sub` | Secondary subtitle in a board-list menu row — mono sm dim, relaxed line-height. | `v3/src/styles/tokens.css` |
+| `sb-row-title` | Primary title in a board-list menu row — UI font lg, uppercase, gold, truncating. | `v3/src/styles/tokens.css` |
 | `sb-row-wrap` | Wrapping flex row; 4px gap (--space-1). For type-selector grids and wrapping button groups. | `v3/src/styles/tokens.css` |
 | `sb-scanlines` | CRT scanline overlay via ::after pseudo-element; currently applied to StartScreen only. | `v3/src/styles/tokens.css` |
 | `sb-scene-add-btn` | Full-width inset button at the bottom of the scene rail — 8px margins, calc(100% − 16px) width, 44px touch target, centered flex with 6px gap. Modifies sb-btn layout for the rail context. 1-use (SceneRail). | `v3/src/styles/tokens.css` |

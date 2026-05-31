@@ -382,7 +382,7 @@ Token-drift normalizations (3e/3f/3g/3h sub-token literals) correctly reflected 
 comments with "sub-token: deliberate" justification notes.
 
 **Outstanding (separate sessions):**
-- sb-menu-row pre-flat family restructuring — dedicated session, different work mode
+- ~~sb-menu-row pre-flat family restructuring~~ → ✅ Done (see consolidation-pass-part-2 commit)
 - Slice 8 items: CLAUDE.md phrasing (tasks 2), sub-token tokenisation, sb-overlay family (#18–20)
 
 **Source:** CLAUDE.md §13; Sorte-2 Bet Index; Sessions 3d–3h.
@@ -1043,21 +1043,23 @@ session after consolidation pass, structural work mode.
 
 ---
 
-### Flat CSS model invariant (established Session 3f)
+### Flat CSS model invariant (established Session 3f, completed Session 3 consolidation pass)
 
-All sb-* classes added from Session 3a onward follow a **flat model**: one class per
-element, composition via multiple classes on the same element. No new descendant
-selectors inside any new class.
+All sb-* classes follow a **flat model**: one class per element, composition via multiple
+classes on the same element. No descendant selectors inside any class.
 
-**Exception: sb-menu-row family (pre-flat legacy)** — `sb-menu-row` predates this
-invariant and carries existing descendant rules (`.sb-menu-row .sb-icon`,
-`.sb-menu-row .sb-row-title`). Sessions 3f–3h do not touch these. Flattening
-sb-menu-row's descendant structure belongs in a dedicated consolidation pass
-(post-3h or Slice 8), not inline in a migration sub-session.
+**Exception resolved:** `sb-menu-row` pre-flat legacy descendant rules (`.sb-menu-row .sb-icon`,
+`.sb-menu-row .sb-row-title`, `.sb-menu-row .sb-row-sub`) flattened in consolidation pass.
+The three child classes are now standalone flat rules. `is-active` + `is-active::after` removed
+(dead code — kein TSX hat je `is-active` gesetzt; `currentBoardId` dient nur der Navigation,
+nicht der Aktiv-Hervorhebung in der BoardRow). §6 = 187. **No pre-flat families remain.**
 
-**Rule:** When adding new classes in 3g, 3h, or beyond — no new descendant selectors.
-If you want context-specific behavior, apply a flat modifier class at the element.
-**When:** Ongoing. **Source:** Session 3f, 2026-05-31.
+**Note:** No active-board highlight exists in BoardListScreen (the row that was last opened has
+no visual indicator). If this feature is wanted in a future slice, `is-active` + `currentBoardId`
+comparison in BoardRow JSX is the natural implementation point.
+
+**Rule:** No new descendant selectors. Context-specific behavior via flat modifier at the element.
+**Source:** Session 3f 2026-05-31; flattened consolidation pass 2026-05-31.
 
 ---
 

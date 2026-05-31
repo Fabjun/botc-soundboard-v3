@@ -619,7 +619,7 @@
 
 /* ── Menu row ──────────────────────────────────────────────────── */
 .sb-menu-row {
-  /* @inventory: Pixel-frame list row with icon, primary title, and subtitle slots. */
+  /* @inventory: Pixel-frame list row base — flex row, space-4 gap, space-4/5 padding. Child slots styled via flat .sb-icon / .sb-row-title / .sb-row-sub classes. */
   --pix-step: 6px;
   display: flex;
   align-items: center;
@@ -627,24 +627,13 @@
   padding: var(--space-4) var(--space-5);
   position: relative;
 }
-.sb-menu-row.is-active {
-  --pix-border: var(--border-gold);
-}
-.sb-menu-row.is-active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--gold);
-  opacity: 0.55;
-}
-.sb-menu-row .sb-icon {
+.sb-icon {
+  /* @inventory: Icon slot in a board-list menu row — fixed 28px width, gold colour. */
   flex: 0 0 28px;
   color: var(--gold);
 }
-.sb-menu-row .sb-row-title {
+.sb-row-title {
+  /* @inventory: Primary title in a board-list menu row — UI font lg, uppercase, gold, truncating. */
   font-family: var(--font-ui);
   font-size: var(--fs-lg);
   letter-spacing: 0.12em;
@@ -656,7 +645,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.sb-menu-row .sb-row-sub {
+.sb-row-sub {
+  /* @inventory: Secondary subtitle in a board-list menu row — mono sm dim, relaxed line-height. */
   font-family: var(--font-mono);
   font-size: var(--fs-sm);
   color: var(--text-dim);
@@ -2322,10 +2312,10 @@
 }
 
 /* ── Board screens (BoardScreen + BoardListScreen) ─────────────────
-   sb-menu-row is pre-flat legacy with existing descendant rules
-   (.sb-menu-row .sb-icon, .sb-menu-row .sb-row-title). 3f extends
-   those existing rules but adds no new descendant rules. The flat
-   invariant applies to all new classes in this section.            */
+   All classes in this section follow the flat model. sb-menu-row
+   descendant rules (.sb-icon, .sb-row-title, .sb-row-sub) were
+   flattened in the Session 3 consolidation pass. Flat invariant
+   holds project-wide from this point.                              */
 
 .sb-board-body {
   /* @inventory: 3-column content row in BoardScreen — fills space between TopBar and StatusBar, flex row with overflow containment. */
