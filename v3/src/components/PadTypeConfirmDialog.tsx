@@ -84,48 +84,13 @@ export function PadTypeConfirmDialog({
       }
     >
       {/* Header */}
-      <div
-        style={{
-          padding: 'var(--space-3) var(--space-4)',
-          borderBottom: '1px solid var(--border-soft)',
-        }}
-      >
-        <div
-          style={{
-            fontFamily: 'var(--font-ui)',
-            fontSize: 'var(--fs-md)',
-            letterSpacing: '.10em',
-            textTransform: 'uppercase',
-            color: 'var(--text)',
-            marginBottom: 'var(--space-2)',
-          }}
-        >
-          Change pad type?
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 'var(--space-3)',
-            fontFamily: 'var(--font-ui)',
-            fontSize: 'var(--fs-md)',
-          }}
-        >
-          <span style={{ color: 'var(--text-dim)' }}>{TYPE_LABELS[fromType]}</span>
-          <span style={{ color: 'var(--text-mute)' }}>→</span>
-          <span style={{ color: 'var(--text)' }}>{TYPE_LABELS[toType]}</span>
-          <span
-            style={{
-              marginLeft: 'auto',
-              padding: '2px 10px',
-              background: VERDICT_COLORS[verdict],
-              color: 'var(--night)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: 'var(--fs-xs)',
-              fontWeight: 'bold',
-              letterSpacing: '.06em',
-            }}
-          >
+      <div class="sb-dialog-header">
+        <div class="sb-dialog-title">Change pad type?</div>
+        <div class="sb-type-change-row">
+          <span class="sb-type-change-from">{TYPE_LABELS[fromType]}</span>
+          <span class="sb-type-change-arrow">→</span>
+          <span>{TYPE_LABELS[toType]}</span>
+          <span class="sb-verdict-pill" style={{ background: VERDICT_COLORS[verdict] }}>
             {VERDICT_LABELS[verdict]}
           </span>
         </div>
@@ -138,43 +103,24 @@ export function PadTypeConfirmDialog({
 
       {/* Reset warning */}
       {verdict === 'reset' && (
-        <div
-          style={{
-            padding: 'var(--space-2) var(--space-4)',
-            background: 'var(--blood-soft)',
-            borderTop: '1px solid var(--border-blood)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: 'var(--fs-xs)',
-            color: 'var(--blood-bright)',
-          }}
-        >
+        <div class="sb-dialog-danger-note">
           Audio source and settings will be cleared. Reconfigure the pad after switching.
         </div>
       )}
 
       {/* Actions */}
-      <div
-        style={{
-          display: 'flex',
-          gap: 'var(--space-2)',
-          padding: 'var(--space-3) var(--space-4)',
-          borderTop: '1px solid var(--border-soft)',
-          justifyContent: 'flex-end',
-        }}
-      >
+      <div class="sb-dialog-actions">
         <button
-          class="sb-btn sb-btn-sm sb-btn-ghost"
+          class="sb-btn sb-btn-sm sb-btn-ghost sb-dialog-action-btn"
           data-testid="type-confirm-cancel"
           onClick={onCancel}
-          style={{ minWidth: 80 }}
         >
           CANCEL
         </button>
         <button
-          class={`sb-btn sb-btn-sm ${isDangerous ? 'sb-btn-danger' : 'sb-btn-primary'}`}
+          class={`sb-btn sb-btn-sm ${isDangerous ? 'sb-btn-danger' : 'sb-btn-primary'} sb-dialog-action-btn`}
           data-testid="type-confirm-switch"
           onClick={onConfirm}
-          style={{ minWidth: 80 }}
         >
           SWITCH
         </button>
@@ -206,37 +152,13 @@ function FieldList({
   color: string;
 }): JSX.Element {
   return (
-    <div
-      style={{
-        padding: 'var(--space-2) var(--space-4)',
-        borderBottom: '1px solid var(--border-soft)',
-      }}
-    >
-      <div
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 'var(--fs-xs)',
-          color,
-          letterSpacing: '.08em',
-          marginBottom: 'var(--space-1)',
-          textTransform: 'uppercase',
-        }}
-      >
+    <div class="sb-dialog-section">
+      <div class="sb-field-section-label" style={{ color }}>
         {label}
       </div>
       <div class="sb-row-wrap">
         {items.map((item) => (
-          <span
-            key={item}
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 'var(--fs-xs)',
-              color: 'var(--text-dim)',
-              padding: '1px 6px',
-              background: 'var(--sunk)',
-              border: '1px solid var(--border-soft)',
-            }}
-          >
+          <span key={item} class="sb-field-chip">
             {item}
           </span>
         ))}

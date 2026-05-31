@@ -157,12 +157,20 @@ Verbotene Muster in neuem V3-Code:
 | `sb-creation-popover-section` | Section container in creation popover — column layout, var(--space-2) padding, top border separator (--border-soft), no-shrink. Used for the name+type form section. | `v3/src/styles/tokens.css` |
 | `sb-creation-sheet` | Mobile bottom sheet for pad creation and pad-type confirmation (slides up from bottom, max 85dvh). | `v3/src/styles/tokens.css` |
 | `sb-creation-sheet-backdrop` | Mobile backdrop behind sb-creation-sheet; sb-type-confirm-backdrop is the desktop equivalent. | `v3/src/styles/tokens.css` |
+| `sb-dialog-action-btn` | Minimum-width enforcer on CANCEL/SWITCH buttons in the dialog actions row — ensures readable button width. 2-use within PadTypeConfirmDialog. | `v3/src/styles/tokens.css` |
+| `sb-dialog-actions` | Footer actions row in a dialog sheet — spacious padding (12/16px), border-top separator, flex justify-end. Wider padding than sb-creation-popover-actions (space-1/2), for dialog context. | `v3/src/styles/tokens.css` |
+| `sb-dialog-danger-note` | Red danger note block inside a dialog (used for RESET warning) — blood-soft bg, blood border-top, mono xs blood-bright text. | `v3/src/styles/tokens.css` |
+| `sb-dialog-header` | Header container strip in the type-confirm dialog — spacious padding, soft bottom border. | `v3/src/styles/tokens.css` |
+| `sb-dialog-section` | Section container in the type-confirm dialog field lists — 8/16px padding, soft bottom border. Repeated per FieldList invocation (KEEPS/MIGRATES/DROPS). | `v3/src/styles/tokens.css` |
+| `sb-dialog-title` | Title text inside a dialog header — UI font, md size, 0.10em tracking, uppercase, text colour, space-2 bottom margin. | `v3/src/styles/tokens.css` |
 | `sb-display` | Hero title — Press Start 2P with gold glow; for page-level titles only. | `v3/src/styles/tokens.css` |
 | `sb-display-vt` | VT323 heading variant of sb-display for medium headings; same glow, less chunky pixels. | `v3/src/styles/tokens.css` |
 | `sb-drop-hint` | Drag-over drop zone hint text — padded, mono xs, transition on color/border. border and color set inline by drag state. | `v3/src/styles/tokens.css` |
 | `sb-empty-body` | Description text inside an empty state — mono xs muted, centered, max-width constrained, relaxed line-height. | `v3/src/styles/tokens.css` |
 | `sb-error-label` | Inline error/warning label — blood red, help cursor, left margin for inline placement. | `v3/src/styles/tokens.css` |
+| `sb-field-chip` | Individual field name chip/tag in a field list — mono xs, dim text, 1/6px padding (sub-token tight chip sizing), sunk bg, soft border. | `v3/src/styles/tokens.css` |
 | `sb-field-label` | Mono 11px field label for inspector sections — block display, bottom margin, uppercase. Used for NAME/TYPE/AUDIO SOURCE/HOTKEY/FADE labels. | `v3/src/styles/tokens.css` |
+| `sb-field-section-label` | Uppercase mono label above a field-chip list — xs font, 0.08em tracking, space-1 bottom margin, uppercase. Color set inline (dynamic — varies per section: setup/gold/blood). | `v3/src/styles/tokens.css` |
 | `sb-filter-rail` | Left sidebar filter column — deep background, right border, flex column, iOS-touch scroll. | `v3/src/styles/tokens.css` |
 | `sb-flame-aura` | Absolute 220×220 circular glow ring behind the flame icon — animated with sb-flicker (defined in global.css). 1-use. | `v3/src/styles/tokens.css` |
 | `sb-flame-icon` | Flame-colored SVG icon wrapper — applies --flame color and --glow-flame filter for currentColor SVG icons. 1-use (FlameLogo). Rule-mandated: both are static token values. | `v3/src/styles/tokens.css` |
@@ -215,6 +223,7 @@ Verbotene Muster in neuem V3-Code:
 | `sb-panel-title` | Flexible-fill title span inside a panel header — mono xs in normal text color. | `v3/src/styles/tokens.css` |
 | `sb-pill` | Compact pixel-frame badge; type-colour variants via is-on, is-loop, is-playlist, is-combo. | `v3/src/styles/tokens.css` |
 | `sb-pix` | Shared CSS base for card/btn/pad/pill/menu-row pixel-frame styling; never applied directly as a className. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-pixel-icon` | SVG display fix for PixelIcon — block display prevents inline baseline gap. Applied as hardcoded base class inside PixelIcon component; callers' class prop is appended after. | `v3/src/styles/tokens.css` |
 | `sb-place-banner` | Place-Mode notification banner in BoardScreen — flex row, setup-mode background, no-shrink. Shown while user picks a pad slot. | `v3/src/styles/tokens.css` |
 | `sb-place-banner-label` | Label text inside sb-place-banner — fills row, mono xs, night color (on setup-mode bg). | `v3/src/styles/tokens.css` |
 | `sb-rail-label` | Section label inside a sidebar rail — VT323 11px muted, letterSpacing, padded. For CATEGORY/TAGS headers. | `v3/src/styles/tokens.css` |
@@ -256,6 +265,7 @@ Verbotene Muster in neuem V3-Code:
 | `sb-start-tagline` | Layout for the sb-mono is-italic tagline on StartScreen — sm font-size, centered, max-width constraint, bottom margin. 1-use. | `v3/src/styles/tokens.css` |
 | `sb-start-title` | Layout additions for the sb-display hero title on StartScreen — xl font-size, centered, bottom margin. 1-use. | `v3/src/styles/tokens.css` |
 | `sb-status-bar` | Bottom 24px strip showing mode, board name, and other metadata. | `v3/src/styles/tokens.css` |
+| `sb-status-right` | Right-slot wrapper in the status bar — auto left margin pushes it to the far right, flex row with space-4 gap. | `v3/src/styles/tokens.css` |
 | `sb-tab` | Individual tab in a tab bar; is-active shows gold underline and label colour. | `v3/src/styles/tokens.css` |
 | `sb-tab-badge` | Count badge inside a tab label — mono xs muted, left margin for separation from tab text. | `v3/src/styles/tokens.css` |
 | `sb-tab-bar` | Outer wrapper for the tab navigation row — screen chrome with deep background, bottom border, side padding. Wraps .sb-tabs. | `v3/src/styles/tokens.css` |
@@ -264,15 +274,32 @@ Verbotene Muster in neuem V3-Code:
 | `sb-tag-list` | Flex-wrap container for tag pills — padded with horizontal gutters. | `v3/src/styles/tokens.css` |
 | `sb-text-input` | Pixel-style text input — sunk background, bordered, VT323 uppercase. For pad name and form fields. | `v3/src/styles/tokens.css` |
 | `sb-toggle` | Binary on/off toggle switch (40×20px); is-on moves thumb right and adds gold glow. Currently no TSX usage. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-topbar` | Root container for TopBarV2 — flex row, 48px height, deep bg, bottom border. Uses flex (vs sb-board-topbar's grid). Sub-token padding: 10px/16px (no exact token match). | `v3/src/styles/tokens.css` |
+| `sb-topbar-badge-wrap` | Mode-badge wrapper div in TopBarV2 — no-shrink to keep badge visible. cursor set inline (dynamic: pointer when clickable, default otherwise). | `v3/src/styles/tokens.css` |
+| `sb-topbar-bc-col` | Breadcrumb column flex wrapper in BoardTopBarV3 — stacks board name above scene name, min-width:0 for truncation. | `v3/src/styles/tokens.css` |
+| `sb-topbar-board-name` | Board name span in BoardTopBarV3 — 16px (sub-token, compact topbar scale), 0.06em tracking, truncating. maxWidth set inline (dynamic: compact ? 80 : 140). | `v3/src/styles/tokens.css` |
+| `sb-topbar-icon-btn` | Icon button size override in the board top bar — 44px min-width (iOS touch target), 0/space-2 padding, space-1 gap for icon+label. 2-use: back button + library toggle. | `v3/src/styles/tokens.css` |
+| `sb-topbar-logo` | Flame icon wrapper in TopBarV2 — flame colour, no-shrink. | `v3/src/styles/tokens.css` |
+| `sb-topbar-secondary` | Secondary muted mono text in topbar context — font-mono 12px (normalized from 11px on V3, sub-token), text-mute, truncating. Cross-topbar: used on V2 breadcrumb and V3 scene name. | `v3/src/styles/tokens.css` |
+| `sb-topbar-title` | Main title span in TopBarV2 — 22px display (sub-token, no token for this size), 0.08em tracking, truncating. Applied on sb-display-vt element. | `v3/src/styles/tokens.css` |
+| `sb-topbar-title-group` | Title + breadcrumb flex group in TopBarV2 — baseline-aligned row, fills remaining space, min-width:0 for truncation. | `v3/src/styles/tokens.css` |
 | `sb-type-btn` | Type-selector button (pad type pill) — fills row evenly, mono xs font, uppercase, tight padding, 28px min-height; color/border/background set inline for active pad-type state. | `v3/src/styles/tokens.css` |
+| `sb-type-change-arrow` | Arrow separator (→) in the type-change confirmation row — muted colour. | `v3/src/styles/tokens.css` |
+| `sb-type-change-from` | FROM-type label in the type-change confirmation row — dim colour to de-emphasise the source type. | `v3/src/styles/tokens.css` |
+| `sb-type-change-row` | Flex row showing FROM → TO type labels with verdict pill — flex, center-aligned, space-3 gap, UI font md. | `v3/src/styles/tokens.css` |
 | `sb-type-confirm` | Desktop modal for confirming a pad-type change (z-index 500, pixel corners); sb-creation-sheet is used on mobile. | `v3/src/styles/tokens.css` |
 | `sb-type-confirm-backdrop` | Desktop backdrop for sb-type-confirm; sb-creation-sheet-backdrop is the mobile equivalent. | `v3/src/styles/tokens.css` |
 | `sb-type-indicator` | 8×8px colored dot indicating pad type in inspector header; color set inline by caller. | `v3/src/styles/tokens.css` |
+| `sb-undo-btn` | UNDO action button inside the undo toast — tight 2px vertical padding (sub-token, space-3 horizontal), no-shrink to stay visible. | `v3/src/styles/tokens.css` |
+| `sb-undo-message` | Message text span inside the undo toast — mono 13px (sub-token between xs/sm, intentional toast sizing), dim colour. | `v3/src/styles/tokens.css` |
 | `sb-undo-toast` | Fixed notification toast above the status bar shown after scene deletion. | `v3/src/styles/tokens.css` |
 | `sb-undo-toast-progress` | Animated gold progress bar at the bottom of the undo toast (linear shrink). | `v3/src/styles/tokens.css` |
 | `sb-upload-bar` | Upload status notification bar — flex row, raised background, top border, mono xs text. Color set inline for error/normal state. | `v3/src/styles/tokens.css` |
 | `sb-value-text` | Numeric value display in inspector — mono xs gold; for fade/volume values next to sliders. | `v3/src/styles/tokens.css` |
+| `sb-verdict-pill` | Verdict label pill in the type-change row (ADDS/MIGRATES/DROPS/LOSSY/RESET) — auto left-push, 2px/10px padding, night text, mono xs bold. background set inline (dynamic per verdict). | `v3/src/styles/tokens.css` |
 | `sb-version-link` | Bare button styled as underlined text link — for version number in StartScreen footer that triggers the changelog overlay. 1-use. Different function from sb-btn-clear (text-link vs dismiss button). | `v3/src/styles/tokens.css` |
+| `sb-waveform` | Root container for the peak-bar waveform — flex row, center-aligned, 1px gap (sub-token, design-specific bar separation). Height and opacity set inline (props: height, dim). | `v3/src/styles/tokens.css` |
+| `sb-waveform-bar` | Individual peak bar in the waveform — fills equal flex width, 1px border-radius (sub-token, design-specific). Height and background set inline (computed: barHeight, played state). | `v3/src/styles/tokens.css` |
 <!-- AUTO-GENERATED:sb-classes END -->
 
 ---

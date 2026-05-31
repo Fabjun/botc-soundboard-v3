@@ -25,7 +25,7 @@ export function StatusBarV2({ mode, boardName, infoText, right }: StatusBarV2Pro
       </span>
       {boardName && <span class="sb-status-section">{boardName}</span>}
       {infoText && <span class="sb-status-section">{infoText}</span>}
-      {right && <span style={{ marginLeft: 'auto', display: 'flex', gap: 16 }}>{right}</span>}
+      {right && <span class="sb-status-right">{right}</span>}
     </div>
   );
 }

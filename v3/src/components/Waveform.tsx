@@ -20,26 +20,17 @@ export function Waveform({ peaks, progress = 0, height = 28, dim = false }: Wave
   const n = peaks.length;
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '1px',
-        height: `${height}px`,
-        opacity: dim ? 0.45 : 1,
-      }}
-    >
+    <div class="sb-waveform" style={{ height: `${height}px`, opacity: dim ? 0.45 : 1 }}>
       {peaks.map((peak, i) => {
         const barHeight = Math.max(2, Math.round(peak * height));
         const played = n > 0 && i / n < progress;
         return (
           <div
             key={i}
+            class="sb-waveform-bar"
             style={{
-              flex: 1,
               height: `${barHeight}px`,
               background: played ? 'var(--gold)' : 'var(--text-mute)',
-              borderRadius: '1px',
             }}
           />
         );

@@ -39,49 +39,18 @@ export function BoardTopBarV3({
       {/* Left: back button + breadcrumb */}
       <div class="sb-board-topbar-left">
         <button
-          class="sb-btn sb-btn-sm sb-btn-ghost"
+          class="sb-btn sb-btn-sm sb-btn-ghost sb-topbar-icon-btn"
           data-testid="board-back-button"
           onClick={onBack}
           title="Back to board list"
-          style={{ minWidth: 44, padding: '0 8px' }}
         >
           <PixelIcon name="flame" size={14} color="var(--flame)" />
         </button>
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 0,
-            minWidth: 0,
-          }}
-        >
-          <span
-            class="sb-display-vt"
-            style={{
-              fontSize: 16,
-              letterSpacing: '.06em',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              maxWidth: compact ? 80 : 140,
-            }}
-          >
+        <div class="sb-topbar-bc-col">
+          <span class="sb-display-vt sb-topbar-board-name" style={{ maxWidth: compact ? 80 : 140 }}>
             {boardName}
           </span>
-          {sceneName && (
-            <span
-              style={{
-                fontFamily: 'var(--font-mono)',
-                fontSize: 11,
-                color: 'var(--text-mute)',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              · {sceneName}
-            </span>
-          )}
+          {sceneName && <span class="sb-topbar-secondary">· {sceneName}</span>}
         </div>
       </div>
 
@@ -91,10 +60,9 @@ export function BoardTopBarV3({
       {/* Right: library toggle + secondary actions */}
       <div class="sb-board-topbar-right">
         <button
-          class={`sb-btn sb-btn-sm ${libraryOpen ? 'sb-btn-primary' : 'sb-btn-ghost'}`}
+          class={`sb-btn sb-btn-sm ${libraryOpen ? 'sb-btn-primary' : 'sb-btn-ghost'} sb-topbar-icon-btn`}
           onClick={onLibraryToggle}
           title={libraryOpen ? 'Close library panel' : 'Open library panel'}
-          style={{ minWidth: 44, padding: '0 8px', gap: 4 }}
         >
           <PixelIcon name="book" size={12} />
           {!compact && 'LIB'}

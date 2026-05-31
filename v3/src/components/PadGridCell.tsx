@@ -108,8 +108,6 @@ export function PadGridCell({
             '--pad-color': color,
             '--pad-glow': `var(--pad-${p.type}-glow)`,
             '--pix-bg': 'var(--raised)',
-            height: '100%',
-            touchAction: 'none', // required for pointer capture on iOS
           } as Record<string, string>
         }
         onClick={handleTap}
@@ -124,50 +122,19 @@ export function PadGridCell({
         }}
       >
         {/* Type badge */}
-        <div
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: '9px',
-            color,
-            letterSpacing: '.08em',
-            opacity: 0.8,
-          }}
-        >
+        <div class="sb-pad-type-label" style={{ color }}>
           {typeLabel}
         </div>
 
         {/* Pad name */}
-        <div
-          class="sb-pad-title"
-          style={{
-            fontSize: 'var(--fs-sm)',
-            flexGrow: 1,
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          {p.name || '—'}
-        </div>
+        <div class="sb-pad-title">{p.name || '—'}</div>
 
         {/* Hotkey badge */}
         {p.hotkey && <div class="sb-pad-key">{p.hotkey}</div>}
 
         {/* SETUP: drag handle indicator */}
         {isSetup && (
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 4,
-              right: 6,
-              fontFamily: 'var(--font-mono)',
-              fontSize: '10px',
-              color: 'var(--border-strong)',
-              cursor: 'grab',
-              userSelect: 'none',
-              lineHeight: 1,
-            }}
-            aria-hidden="true"
-          >
+          <div class="sb-pad-drag-handle" aria-hidden="true">
             ⣿
           </div>
         )}

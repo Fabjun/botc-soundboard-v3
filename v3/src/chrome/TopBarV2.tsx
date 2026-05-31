@@ -26,64 +26,24 @@ export function TopBarV2({
   right,
 }: TopBarV2Props): JSX.Element {
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 12,
-        padding: '10px 16px',
-        background: 'var(--deep)',
-        borderBottom: '1px solid var(--border)',
-        height: 48,
-        flexShrink: 0,
-      }}
-    >
+    <div class="sb-topbar">
       {/* Flame logo */}
-      <div style={{ color: 'var(--flame)', flexShrink: 0 }}>
+      <div class="sb-topbar-logo">
         <PixelIcon name="flame" size={20} />
       </div>
 
       {/* Title + breadcrumb */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'baseline',
-          gap: 8,
-          minWidth: 0,
-          flex: 1,
-        }}
-      >
-        <span
-          class="sb-display-vt"
-          style={{
-            fontSize: 22,
-            letterSpacing: '.08em',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {title}
-        </span>
-        {breadcrumb && (
-          <span
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 12,
-              color: 'var(--text-mute)',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            · {breadcrumb}
-          </span>
-        )}
+      <div class="sb-topbar-title-group">
+        <span class="sb-display-vt sb-topbar-title">{title}</span>
+        {breadcrumb && <span class="sb-topbar-secondary">· {breadcrumb}</span>}
       </div>
 
       {/* Mode badge — only when mode is provided */}
       {mode && (
         <div
+          class="sb-topbar-badge-wrap"
           onClick={onModeSwap}
-          style={{ flexShrink: 0, cursor: onModeSwap ? 'pointer' : 'default' }}
+          style={{ cursor: onModeSwap ? 'pointer' : 'default' }}
         >
           <span class={'sb-mode-badge ' + (mode === 'play' ? 'is-game' : 'is-setup')}>
             <PixelIcon name={mode === 'play' ? 'play' : 'edit'} size={11} color="currentColor" />

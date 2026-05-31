@@ -1206,8 +1206,8 @@ export function PixelIcon({
       viewBox="0 0 16 16"
       role="img"
       aria-label={name}
-      class={className}
-      style={{ display: 'block', ...style }}
+      class={'sb-pixel-icon' + (className ? ' ' + className : '')}
+      style={style}
     >
       {cells.map((c, i) => {
         const spaceIdx = c.indexOf(' ');

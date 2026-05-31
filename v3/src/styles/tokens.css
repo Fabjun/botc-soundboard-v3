@@ -787,11 +787,14 @@
 
 .sb-pad .sb-pad-title {
   font-family: var(--font-ui);
-  font-size: var(--fs-md);
+  font-size: var(--fs-sm); /* was fs-md; PadGridCell always overrode to fs-sm — unifying */
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text);
   line-height: 1.05;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
 }
 .sb-pad .sb-pad-meta {
   font-family: var(--font-mono);
@@ -809,6 +812,25 @@
   background: var(--sunk);
   padding: 1px 6px;
   letter-spacing: 0.04em;
+}
+.sb-pad .sb-pad-type-label {
+  /* Session 3h: type badge in pad cell — mono 9px (sub-token, deliberately tiny), 0.08em tracking, 0.8 opacity. color set inline (dynamic: padTypeColor). */
+  font-family: var(--font-mono);
+  font-size: 9px; /* sub-token: deliberately tiny type badge */
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
+.sb-pad .sb-pad-drag-handle {
+  /* Session 3h: drag handle indicator in SETUP mode — absolute bottom-right, mono 10px (sub-token), border-strong colour, grab cursor. */
+  position: absolute;
+  bottom: 4px; /* sub-token pixel literal — tight corner positioning */
+  right: 6px; /* sub-token pixel literal — tight corner positioning */
+  font-family: var(--font-mono);
+  font-size: 10px; /* sub-token: deliberately small drag indicator */
+  color: var(--border-strong);
+  cursor: grab;
+  user-select: none;
+  line-height: 1;
 }
 
 /* ── Pill ───────────────────────────────────────────────────── */
@@ -1023,6 +1045,12 @@
 .sb-status-bar .sb-status-section:last-child {
   border-right: none;
 }
+.sb-status-right {
+  /* @inventory: Right-slot wrapper in the status bar — auto left margin pushes it to the far right, flex row with space-4 gap. */
+  margin-left: auto;
+  display: flex;
+  gap: var(--space-4);
+}
 
 /* Mode badge — sits in the top bar. Visually distinct between SETUP/GAME
    beyond colour: SETUP uses a hatched fill, GAME uses solid amber. */
@@ -1210,6 +1238,8 @@
       border-box;
   --pad-filter-base: var(--shadow-pad-lift);
   filter: var(--pad-filter-base);
+  height: 100%;
+  touch-action: none; /* required for pointer-event capture on iOS Brave */
 }
 /* Stack glow on top of lift without clobbering it */
 .sb-pad.is-deep.is-hot {
@@ -1241,6 +1271,75 @@
   align-items: center;
   gap: var(--space-2);
   justify-content: flex-end;
+}
+
+/* ── TopBarV2 — Session 3h ────────────────────────────────────────── */
+.sb-topbar {
+  /* @inventory: Root container for TopBarV2 — flex row, 48px height, deep bg, bottom border. Uses flex (vs sb-board-topbar's grid). Sub-token padding: 10px/16px (no exact token match). */
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px 16px; /* sub-token: 10px top/bottom between space-2 (8px) and space-3 (12px) */
+  background: var(--deep);
+  border-bottom: 1px solid var(--border);
+  height: 48px; /* fixed topbar height — no token */
+  flex-shrink: 0;
+}
+.sb-topbar-logo {
+  /* @inventory: Flame icon wrapper in TopBarV2 — flame colour, no-shrink. */
+  color: var(--flame);
+  flex-shrink: 0;
+}
+.sb-topbar-title-group {
+  /* @inventory: Title + breadcrumb flex group in TopBarV2 — baseline-aligned row, fills remaining space, min-width:0 for truncation. */
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 0;
+  flex: 1;
+}
+.sb-topbar-title {
+  /* @inventory: Main title span in TopBarV2 — 22px display (sub-token, no token for this size), 0.08em tracking, truncating. Applied on sb-display-vt element. */
+  font-size: 22px; /* sub-token: topbar title size, intentional display scale */
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sb-topbar-secondary {
+  /* @inventory: Secondary muted mono text in topbar context — font-mono 12px (normalized from 11px on V3, sub-token), text-mute, truncating. Cross-topbar: used on V2 breadcrumb and V3 scene name. */
+  font-family: var(--font-mono);
+  font-size: 12px; /* sub-token: secondary topbar text, deliberate between xs/sm */
+  color: var(--text-mute);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sb-topbar-badge-wrap {
+  /* @inventory: Mode-badge wrapper div in TopBarV2 — no-shrink to keep badge visible. cursor set inline (dynamic: pointer when clickable, default otherwise). */
+  flex-shrink: 0;
+}
+
+/* ── Board TopBar V3 additions — Session 3h ─────────────────────── */
+.sb-topbar-icon-btn {
+  /* @inventory: Icon button size override in the board top bar — 44px min-width (iOS touch target), 0/space-2 padding, space-1 gap for icon+label. 2-use: back button + library toggle. */
+  min-width: 44px;
+  padding: 0 var(--space-2);
+  gap: var(--space-1);
+}
+.sb-topbar-bc-col {
+  /* @inventory: Breadcrumb column flex wrapper in BoardTopBarV3 — stacks board name above scene name, min-width:0 for truncation. */
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.sb-topbar-board-name {
+  /* @inventory: Board name span in BoardTopBarV3 — 16px (sub-token, compact topbar scale), 0.06em tracking, truncating. maxWidth set inline (dynamic: compact ? 80 : 140). */
+  font-size: 16px; /* sub-token: compact topbar title — intentionally smaller than TopBarV2's 22px */
+  letter-spacing: 0.06em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ── Mode Toggle ── SETUP | GAME interactive pill (v24) ─────────────── */
@@ -1644,6 +1743,94 @@
   background: rgba(0, 0, 0, 0.4);
 }
 
+/* ── Type Confirm Dialog — Session 3h ────────────────────────────── */
+.sb-dialog-header {
+  /* @inventory: Header container strip in the type-confirm dialog — spacious padding, soft bottom border. */
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+.sb-dialog-title {
+  /* @inventory: Title text inside a dialog header — UI font, md size, 0.10em tracking, uppercase, text colour, space-2 bottom margin. */
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: var(--space-2);
+}
+.sb-type-change-row {
+  /* @inventory: Flex row showing FROM → TO type labels with verdict pill — flex, center-aligned, space-3 gap, UI font md. */
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-ui);
+  font-size: var(--fs-md);
+}
+.sb-type-change-from {
+  /* @inventory: FROM-type label in the type-change confirmation row — dim colour to de-emphasise the source type. */
+  color: var(--text-dim);
+}
+.sb-type-change-arrow {
+  /* @inventory: Arrow separator (→) in the type-change confirmation row — muted colour. */
+  color: var(--text-mute);
+}
+.sb-verdict-pill {
+  /* @inventory: Verdict label pill in the type-change row (ADDS/MIGRATES/DROPS/LOSSY/RESET) — auto left-push, 2px/10px padding, night text, mono xs bold. background set inline (dynamic per verdict). */
+  margin-left: auto;
+  padding: 2px 10px; /* 2px top/bottom: deliberate sub-token — tight pill sizing */
+  color: var(--night);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: bold;
+  letter-spacing: 0.06em;
+}
+.sb-dialog-danger-note {
+  /* @inventory: Red danger note block inside a dialog (used for RESET warning) — blood-soft bg, blood border-top, mono xs blood-bright text. */
+  padding: var(--space-2) var(--space-4);
+  background: var(--blood-soft);
+  border-top: 1px solid var(--border-blood);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--blood-bright);
+}
+.sb-dialog-actions {
+  /* @inventory: Footer actions row in a dialog sheet — spacious padding (12/16px), border-top separator, flex justify-end. Wider padding than sb-creation-popover-actions (space-1/2), for dialog context. */
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-soft);
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+.sb-dialog-action-btn {
+  /* @inventory: Minimum-width enforcer on CANCEL/SWITCH buttons in the dialog actions row — ensures readable button width. 2-use within PadTypeConfirmDialog. */
+  min-width: 80px;
+}
+.sb-dialog-section {
+  /* @inventory: Section container in the type-confirm dialog field lists — 8/16px padding, soft bottom border. Repeated per FieldList invocation (KEEPS/MIGRATES/DROPS). */
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+.sb-field-section-label {
+  /* @inventory: Uppercase mono label above a field-chip list — xs font, 0.08em tracking, space-1 bottom margin, uppercase. Color set inline (dynamic — varies per section: setup/gold/blood). */
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-1);
+  text-transform: uppercase;
+}
+.sb-field-chip {
+  /* @inventory: Individual field name chip/tag in a field list — mono xs, dim text, 1/6px padding (sub-token tight chip sizing), sunk bg, soft border. */
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  padding: 1px 6px; /* 1px/6px: deliberate sub-token — compact tag sizing */
+  background: var(--sunk);
+  border: 1px solid var(--border-soft);
+}
+
 /* ── Undo Toast ── anchored above status bar ─────────────────────── */
 .sb-undo-toast {
   /* @inventory: Fixed notification toast above the status bar shown after scene deletion. */
@@ -1681,6 +1868,18 @@
   to {
     width: 0%;
   }
+}
+
+.sb-undo-message {
+  /* @inventory: Message text span inside the undo toast — mono 13px (sub-token between xs/sm, intentional toast sizing), dim colour. */
+  font-family: var(--font-mono);
+  font-size: 13px; /* sub-token: deliberate — between fs-xs and fs-sm for toast context */
+  color: var(--text-dim);
+}
+.sb-undo-btn {
+  /* @inventory: UNDO action button inside the undo toast — tight 2px vertical padding (sub-token, space-3 horizontal), no-shrink to stay visible. */
+  padding: 2px var(--space-3); /* 2px top/bottom: deliberate sub-token — tight pill sizing */
+  flex-shrink: 0;
 }
 
 /* ── Inspector / PadEditor ─────────────────────────────────── */
@@ -2386,4 +2585,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* ── Waveform — Session 3h ────────────────────────────────────────── */
+.sb-waveform {
+  /* @inventory: Root container for the peak-bar waveform — flex row, center-aligned, 1px gap (sub-token, design-specific bar separation). Height and opacity set inline (props: height, dim). */
+  display: flex;
+  align-items: center;
+  gap: 1px; /* sub-token: 1px bar separation — design-specific visual choice */
+}
+.sb-waveform-bar {
+  /* @inventory: Individual peak bar in the waveform — fills equal flex width, 1px border-radius (sub-token, design-specific). Height and background set inline (computed: barHeight, played state). */
+  flex: 1;
+  border-radius: 1px; /* sub-token: 1px — design-specific subtle rounding */
+}
+
+/* ── PixelIcon — Session 3h ───────────────────────────────────────── */
+.sb-pixel-icon {
+  /* @inventory: SVG display fix for PixelIcon — block display prevents inline baseline gap. Applied as hardcoded base class inside PixelIcon component; callers' class prop is appended after. */
+  display: block;
 }
