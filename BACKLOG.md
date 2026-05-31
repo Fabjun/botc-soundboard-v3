@@ -733,7 +733,7 @@ DoD for each file session: `audit:inline-styles` → 0 violations for that file.
 | **3d** ✅ Done (4210405) | `PadCreationPopover.tsx` | 15 | 6 | 0 | 0 violations, 0 d-w-s. 8 new classes (sb-source-tabs, sb-tab-sm, sb-scroll-fill, sb-creation-popover-actions, sb-btn-muted, sb-sheet-header, sb-creation-popover-backdrop, sb-source-item). §6: 104→112. Resolution: 3 delete / 1 compose / 3 path-A unchanged / 4 path-A updated / 1 modifier / 9 new-class entries = 8 unique new classes. Reuse rate 45% (5/11 of 3b's flagged classes; leaf-level classes generalize, container-structure classes are component-specific — no re-planning of 3e–3h). 3b bet sb-type-btn WON. Plan deviation: planned sb-btn-sm min-height:36px rejected at spot-check — sb-btn-sm is used across 9 files including navigation buttons; 44px iOS touch-target floor via global rule is correct there. §4 Dead CSS sb-creation-popover-section resolved. |
 | **3e** ✅ Done (96ae78d) | `StartScreen.tsx` | 19 | 0 | 0 | 0 violations, 0 d-w-s. 18 new classes (sb-overlay family, sb-changelog family, sb-flame-icon, sb-start-* family, sb-btn-unlock, sb-version-link). §6: 112→130. Resolution: 1 Path A / 1 A+B / 1 0+B / 1 Primitiv+B / 15 new-class = 19. Reuse rate 10.5% — StartScreen is a centered splash with no tab bar and no empty state; all 3c bets (sb-screen, sb-screen-empty, sb-tab-bar) FAILED (inapplicable — not promoted, not cleaned up — each is still in active use on its own screen). Token normalization: 10 off-token values aligned (all ≤4px drift). New Sorte-2 bets for 3e (Verfallsbedingung: Slice 8): sb-overlay, sb-overlay-header, sb-overlay-body flagged for promotion if settings/future overlays appear. Changelog-family classes (sb-changelog-*) to demote if changelog component is removed. Opportunistic 3b-bet test: sb-panel-title evaluated against ChangelogOverlay's "CHANGELOG" heading — rejected (sb-panel-title is font-mono/fs-xs/flex:1; overlay title needs font-ui/fs-lg). Does not change sb-panel-title's bet status: its declared target is 3g (LibraryPanel), not 3e; this was a side test only — status remains PENDING. |
 | **3f** ✅ Done (b46fb44) | `BoardScreen.tsx` + `BoardListScreen.tsx` | 31 (BS: 17, BLS: 14) | 1 (BLS:161 d-w-s → sb-board-row) | 0 | 0 violations, 0 d-w-s. §6: 130→145 (+15 new sb-* classes). Audit total: 88→57. Resolution breakdown: DELETE 1 / Path A §6 7 / intra-session 1 / cross-file intra-session 3 / CSS extension 1 / new modifier 3 / new class 15 = 31. Reuse rate 35% (11/31). 3a residual (BLS:238 flexShrink:0) resolved via flat sb-row-actions class applied at element level — flat model maintained throughout. sb-screen: **WON** (3 uses: BS×2 + BLS×1). sb-tab-bar: still PARTIALLY-FAILED (3g pending). sb-section-header-row: not found in 3f files, moves to 3g. New 3f bets: sb-row-rename-input, sb-row-actions, sb-btn-icon-sm (all pending 3g — AudioRow scope). Token normalizations: 13px→--fs-xs (1px drift), fontSize:22px=--fs-xl exact, 11px sb-hint-text→10px (1px drift), padding 10px/14px→8px/12px (2px drift each). Off-token literals: 6px×3 (sb-place-banner, sb-setup-toolbar, sb-btn-icon-sm), 56px×1 (sb-board-row minHeight), 60px×1 (is-loose padding) — see §5 BACKLOG note below. Architecture: flat model invariant formally stated; sb-menu-row pre-flat legacy noted and left for dedicated consolidation pass. |
-| **3g** | `SceneRail.tsx` + `LibraryPanel.tsx` + `AudioRow.tsx` | 9 + 11 + 8 = 28 | 0+0+2 = 2 | 0 | 0 violations, 0 d-w-s |
+| **3g** ✅ Done (12fbbc0) | `SceneRail.tsx` + `LibraryPanel.tsx` + `AudioRow.tsx` | 9 + 11 + 8 = 28 | 0+0+2 = 2 | 0 | 0 violations, 0 d-w-s. §6: 145→159 (+14 new classes). Audit total: 57→29. Resolution: 1 DELETE / 14 Path-A §6 / 2 intra-session / 13 new class = 30 resolutions for 28 violations (+2 from d-w-s dual split). Reuse rate 57% overall (73% LibraryPanel — thesis confirmed for screen→panel siblings; 50% AudioRow). 0 new literal 11px values — SR-2 and AR-9 normalized to var(--fs-xs). 4 existing class updates: sb-row (min-width:0), sb-scroll-fill (overscroll-behavior:contain), sb-count-text (flex-shrink:0), sb-hint-text (truncation triplet). Bet outcomes: #3 WON (sb-panel-title on Library span), #5 WON (sb-search-field LP-3), #6 WON (sb-btn-clear LP-5), #12 WON (sb-scroll-fill LP-7); #4 PARTIAL (sb-search-bar → sb-lib-panel-search-bar sibling); #7 FAILED (sb-item-list wrong structure), #10 FINAL-FAILED→screen-local (sb-tab-bar, LibraryPanel has no tab bar), #11 FAILED (sb-filter-rail), #21 FAILED (sb-row-rename-input: wrong font scale for filenames), #22 FAILED (sb-row-actions: AudioRow uses grid, not flex+actions), #23 FAILED (sb-btn-icon-sm: 36px fits neither 28px SceneRail nor 44px AudioRow). |
 | **3h** | `PadTypeConfirmDialog.tsx` + `TopBarV2.tsx` + `BoardTopBarV3.tsx` + `PadGridCell.tsx` + `UndoToast.tsx` + `StatusBarV2.tsx` + `Waveform.tsx` + `PixelIcon.tsx` | 13+5+4+4+2+1+0+0 = 29 | 1+1+1+0+0+0+2+0 = 5 | 1(PTD)+1(Pix) = 2 | 0 violations, 0 d-w-s, unclassified resolved |
 
 **Arithmetic verification:** 12+23+20+15+19+31+28+29 = 177 ✓ | d-w-s: 4+3+6+0+0+2+5 = 20 ✓ | unclassified: 2 ✓
@@ -741,28 +741,28 @@ _(3a resolves 12 fully + 1 residual deferred to 3f; 3f scope is 31 = 17+14. Tota
 
 **3b Sorte-2 bets** (created on expectation of 3d/3c reuse; cleanup candidates if not used as Path A):
 - `sb-type-btn` — **WON (3d)**: PadCreationPopover type pills use it directly. Class updated (added fontFamily, textTransform, cursor, minHeight:28px).
-- `sb-section-header-row` — **PENDING** (not used in 3d; still no space-between section header found). Verify in 3e/3f/3g; cleanup if no Path A use found by end of 3h.
-- `sb-panel-title` — **PENDING** (not used in 3d; mobile header is a container `sb-sheet-header`, not a title span). Main hope: 3g (LibraryPanel). Cleanup candidate if isolated to PadEditorPanel.
+- `sb-section-header-row` — **PENDING** (not used in 3d or 3f or 3g). Verify in 3h; cleanup if no Path A use found.
+- `sb-panel-title` — **WON (3g)**: Applied to `<span>Library</span>` in LibraryPanel header. flex:1 pushes close button right without marginLeft:auto. 2 uses: PadEditorPanel "Pad Editor" + LibraryPanel "Library". Bet fully resolved.
 
 **3c Sorte-2 bets** (1-use in 3c, created on expectation of 3g/3e reuse; cleanup candidates if not used as Path A):
 High-confidence (3g is LibraryPanel — same library surface):
-- `sb-search-bar` — bet: 3g (LibraryPanel) has a search wrapper bar. Cleanup if not used.
-- `sb-search-field` — bet: 3g has a sunk search input row. Cleanup if not used.
-- `sb-btn-clear` — bet: 3g has a clear "×" button in search. Cleanup if not used.
-- `sb-item-list` — bet: 3g has a scrollable item list. Cleanup if not used.
+- `sb-search-bar` — **PARTIAL (3g)**: LibraryPanel has a search bar but the values differ (padding 6/8 vs 10/14, border-soft vs border). Created `sb-lib-panel-search-bar` as a sibling class (NOT a modifier of sb-search-bar — standalone, named for component context). The structural concept is confirmed; exact reuse was not possible.
+- `sb-search-field` — **WON (3g)**: LibraryPanel uses it as Path A (LP-3). 2px gap drift (6→8) within tolerance. 2 uses: LibraryScreen + LibraryPanel. Bet fully resolved.
+- `sb-btn-clear` — **WON (3g)**: LibraryPanel uses it as Path A (LP-5). 1px padding drift within tolerance. 2 uses: LibraryScreen + LibraryPanel. Bet fully resolved.
+- `sb-item-list` — **FAILED (3g)**: sb-item-list uses padding + flex-column + gap (card-style list). LibraryPanel uses border-bottom separators without inner padding/gap. LibraryPanel list uses sb-scroll-fill instead. Class stays — in active use on LibraryScreen. Downgrade to screen-local.
 
 Moderate-confidence:
 - `sb-screen` — **WON (3f)**: BoardScreen root×2 + BoardListScreen root — all full-height column-layout app screen roots. 3 confirmed uses across 3 screens (LibraryScreen + BoardScreen + BoardListScreen). Bet fully resolved.
 - `sb-screen-empty` — **FAILED (3e)**: StartScreen has no empty state; inapplicable. Class stays — in active use on LibraryScreen. ⚠️ Retroactively registered: this bet was implicit at 3c close (LibraryScreen empty-state class, expected that other screens might inherit the centered-empty-state pattern) but was not formally listed at the time; the omission was identified when the 3e entry referenced it as a 3c bet. Corrected here to make the 3c count accurate (7→8).
-- `sb-tab-bar` — **PARTIALLY-FAILED (3e+3f)**: Neither StartScreen nor BoardScreen/BLS has a tab bar. 3g (LibraryPanel scope) is the remaining test. Cleanup if isolated to LibraryScreen.
-- `sb-filter-rail` — bet: 3g (LibraryPanel) or a future filter view has a sidebar rail. Cleanup if not used.
+- `sb-tab-bar` — **FINAL FAILED → screen-local**: 3e failed (StartScreen no tab bar), 3f failed (BoardScreen/BLS no tab bar), 3g final test failed (LibraryPanel has no tab bar). Class stays — in active use on LibraryScreen. Downgraded from expected multi-screen to screen-local.
+- `sb-filter-rail` — **FAILED (3g)**: LibraryPanel has no filter rail (it is a panel, not a 2-col screen layout). Class stays — in active use on LibraryScreen. Downgrade to screen-local.
 
 **3d Sorte-2 bets** (created on expectation of 3e–3h reuse; cleanup candidates if not confirmed):
-- `sb-scroll-fill` — **HIGH confidence (3g)**: SceneRail list and LibraryPanel list are the same fill-and-scroll pattern. Cleanup if neither 3g file uses it.
+- `sb-scroll-fill` — **WON (3g)**: LibraryPanel item list uses it as Path A (LP-7). Updated with overscroll-behavior:contain. 2+ uses: PadCreationPopover + LibraryPanel. Bet resolved.
 - `sb-sheet-header` — **moderate (3h)**: PadTypeConfirmDialog mobile path likely has a similar sheet title header. Cleanup if 3h doesn't use it.
 - `sb-creation-popover-actions` — **moderate (3h)**: PadTypeConfirmDialog likely has an action button footer row. Cleanup or merge if 3h doesn't use it.
 - `sb-btn-muted` — **moderate (3h)**: Recessive secondary actions in PadTypeConfirmDialog or other creation flows. Cleanup if 3h doesn't use it.
-- `sb-tab-sm` — **lower confidence (3g/3h)**: Compact tab modifier. Confirm in any compact tab context; cleanup if not reused outside PadCreationPopover.
+- `sb-tab-sm` — **NOT FOUND (3g)** → pending 3h: Neither SceneRail nor LibraryPanel nor AudioRow has compact tab elements. Lower confidence. Cleanup if not reused outside PadCreationPopover after 3h.
 - `sb-source-tabs` — **1-use flag**: Only used in PadCreationPopover source picker. Cleanup candidate by end of 3h if no second creation flow reuses it (or merge with sb-tabs at standardization time).
 
 ---
@@ -782,55 +782,58 @@ Moderate-confidence:
 | # | Class | Origin | Remaining target | Status | Verfallsbedingung |
 |---|-------|--------|------------------|--------|--------------------|
 | 1 | `sb-type-btn` | 3b | — | **WON (3d)** | Confirmed ≥2-use. No action. |
-| 2 | `sb-section-header-row` | 3b | 3g | **OPEN — pending 3g** | Not found in 3f files (no space-between section header in BoardScreen/BLS). Cleanup if no Path A use by end of 3h. |
-| 3 | `sb-panel-title` | 3b | 3g | **OPEN — pending 3g** | Cleanup if isolated to PadEditorPanel. Side-tested in 3e against ChangelogOverlay title — rejected (font-mono/fs-xs vs font-ui/fs-lg); declared target is 3g, status unchanged. |
-| 4 | `sb-search-bar` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. High confidence. |
-| 5 | `sb-search-field` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. High confidence. |
-| 6 | `sb-btn-clear` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. High confidence. |
-| 7 | `sb-item-list` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. High confidence. |
+| 2 | `sb-section-header-row` | 3b | 3h | **OPEN — pending 3h** | Not found in 3f or 3g. Cleanup if no Path A use by end of 3h. |
+| 3 | `sb-panel-title` | 3b | — | **WON (3g)** | Applied to LibraryPanel "Library" span. 2 uses: PadEditorPanel + LibraryPanel. Bet resolved. |
+| 4 | `sb-search-bar` | 3c | — | **LOST — but class justified** | LibraryPanel needs sb-lib-panel-search-bar (different padding/border for 280px panel). sb-search-bar stays in use on LibraryScreen. Concept confirmed, exact reuse not possible. |
+| 5 | `sb-search-field` | 3c | — | **WON (3g)** | LibraryPanel LP-3 uses it as Path A. 2 uses: LibraryScreen + LibraryPanel. |
+| 6 | `sb-btn-clear` | 3c | — | **WON (3g)** | LibraryPanel LP-5 uses it as Path A. 2 uses: LibraryScreen + LibraryPanel. |
+| 7 | `sb-item-list` | 3c | — | **LOST — but class justified** | LibraryPanel uses sb-scroll-fill (row-based list, not card-style). sb-item-list stays in use on LibraryScreen. |
 | 8 | `sb-screen` | 3c | 3f | **WON (3f)** | Used on BS root×2 + BLS root×1 — all full-height column-layout app screen roots. Confirmed ≥3-use. No action. |
 | 9 | `sb-screen-empty` | 3c | 3e | **LOST — but class justified** | Failed in 3e (StartScreen has no empty state). In active use on LibraryScreen. No cleanup. |
-| 10 | `sb-tab-bar` | 3c | 3g | **PARTIALLY-FAILED (3e+3f failed, 3g pending)** | Neither StartScreen nor BoardScreen/BLS has a tab bar. In active use on LibraryScreen — no cleanup even if 3g also fails; downgrade to screen-local. |
-| 11 | `sb-filter-rail` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. Moderate confidence. |
-| 12 | `sb-scroll-fill` | 3d | 3g | **OPEN — pending 3g** | Cleanup if neither SceneRail nor LibraryPanel uses it. High confidence. |
+| 10 | `sb-tab-bar` | 3c | — | **FINAL FAILED → screen-local** | 3e, 3f, 3g all failed (none have a tab bar). In active use on LibraryScreen — no cleanup. Downgraded to screen-local. |
+| 11 | `sb-filter-rail` | 3c | — | **LOST — but class justified** | LibraryPanel has no filter rail. In active use on LibraryScreen. Downgrade to screen-local. |
+| 12 | `sb-scroll-fill` | 3d | — | **WON (3g)** | LibraryPanel LP-7 uses it as Path A. Updated with overscroll-behavior:contain. ≥2 uses. |
 | 13 | `sb-sheet-header` | 3d | 3h | **OPEN — pending 3h** | Cleanup if PadTypeConfirmDialog (3h) doesn't use it. Moderate confidence. |
 | 14 | `sb-creation-popover-actions` | 3d | 3h | **OPEN — pending 3h** | Cleanup or merge if 3h doesn't use it. Moderate confidence. |
 | 15 | `sb-btn-muted` | 3d | 3h | **OPEN — pending 3h** | Cleanup if 3h doesn't use it. Moderate confidence. |
-| 16 | `sb-tab-sm` | 3d | 3g (also 3h) | **OPEN — pending 3g** | Cleanup if not reused outside PadCreationPopover. Lower confidence. |
+| 16 | `sb-tab-sm` | 3d | 3h | **NOT FOUND (3g) → pending 3h** | Not found in SceneRail/LibraryPanel/AudioRow. Cleanup if not reused outside PadCreationPopover after 3h. |
 | 17 | `sb-source-tabs` | 3d | end of 3h | **OPEN — pending 3h** | 1-use flag. Cleanup or merge with `sb-tabs` if no second creation flow by end of 3h. |
 | 18 | `sb-overlay` | 3e | Slice 8 | **SPECULATIVE — far** | Promote to confirmed multi-use if settings screen or future overlays appear in Slice 8. |
 | 19 | `sb-overlay-header` | 3e | Slice 8 | **SPECULATIVE — far** | Same as `sb-overlay`. |
 | 20 | `sb-overlay-body` | 3e | Slice 8 | **SPECULATIVE — far** | Same as `sb-overlay`. |
-| 21 | `sb-row-rename-input` | 3f | 3g | **OPEN — pending 3g** | 1-use in BLS BoardRow. AudioRow (3g scope) likely has inline rename input with same font-ui/fs-lg/uppercase styling. Cleanup if AudioRow uses a different pattern. |
-| 22 | `sb-row-actions` | 3f | 3g | **OPEN — pending 3g** | 1-use in BLS BoardRow (non-shrinking action group). AudioRow action buttons (edit/delete) likely share this layout. Cleanup if AudioRow uses sb-row-sm or different pattern. |
-| 23 | `sb-btn-icon-sm` | 3f | 3g | **OPEN — pending 3g** | 2-use in BLS BoardRow (edit+delete btns, 36px min-width, 6px padding). AudioRow compact action buttons likely match. Verify ≥3 use in 3g or reconsider. |
+| 21 | `sb-row-rename-input` | 3f | — | **LOST — but class justified** | AudioRow rename uses font-ui fs-sm/14px, no uppercase — fundamentally different typography from board names (fs-lg/18px, 0.08em, uppercase). Created sb-audio-row-rename. sb-row-rename-input stays in use on BLS BoardRow. |
+| 22 | `sb-row-actions` | 3f | — | **LOST — but class justified** | AudioRow uses 5-column CSS Grid (not flex with trailing action group). No trailing action group wrapper. sb-row-actions stays in BLS BoardRow. |
+| 23 | `sb-btn-icon-sm` | 3f | — | **LOST — but class justified** | SceneRail action buttons = 28px (uses sb-btn-icon). AudioRow delete = 44px (iOS touch target). 36px fits neither. sb-btn-icon-sm stays in BLS BoardRow (2-use). |
+| 24 | `sb-flex-trunc` | 3g | 3h | **OPEN — pending 3h** | New layout primitive (flex:1 + min-width:0 + truncation triplet). Currently 1-use (SceneRail scene name). BoardTopBarV3 (3h scope) has truncating title text — likely Path A. Cleanup if not reused outside SceneRail after 3h. |
+| 25 | `sb-panel-empty` | 3g | 3h | **OPEN — pending 3h** | 2-use intra-session (SceneRail + LibraryPanel). Check 3h files for other panel empty-state messages. Cleanup if isolated to these two after 3h. |
 
-**Count check:** 23 bets total. WON: 2 · LOST-cleanup: 0 · LOST-justified: 1 · PARTIALLY-FAILED: 1 · OPEN-pending-3g: 12 · OPEN-pending-3h: 4 · SPECULATIVE: 3 → sum = 23 ✓
+**Count check:** 25 bets total. WON: 7 (#1,3,5,6,8,12; #3 newly WON in 3g — was 2 before, now 7) · LOST-justified: 7 (#9,4,7,10,11,21,22,23) · PARTIALLY-FAILED: 0 · OPEN-pending-3h: 7 (#2,13,14,15,16,17,24,25 → 8 rows but #17 source-tabs shares 3h with others, counting distinct: 2,13,14,15,16,17,24,25 = 8) · SPECULATIVE: 3 (#18,19,20)
+
+Wait — recounting: WON: #1,3,5,6,8,12 = 6. LOST-justified: #9,4,7,10,11,21,22,23 = 8. OPEN-pending-3h: #2,13,14,15,16,17,24,25 = 8. SPECULATIVE: #18,19,20 = 3. Sum = 6+8+8+3 = 25 ✓
 
 ---
 
-#### Bets 3g must test
+#### Bets 3g tested ✅ Done (12fbbc0)
 
-3g covers `SceneRail.tsx` + `LibraryPanel.tsx` + `AudioRow.tsx`. Verified against individual bet entries:
+3g covered `SceneRail.tsx` + `LibraryPanel.tsx` + `AudioRow.tsx`. All 13 bets resolved:
 
-**Certain (declared 3g targets):**
-1. `sb-search-bar` (#4) — LibraryPanel search wrapper bar (high confidence)
-2. `sb-search-field` (#5) — LibraryPanel sunk search input row (high confidence)
-3. `sb-btn-clear` (#6) — LibraryPanel search clear × button (high confidence)
-4. `sb-item-list` (#7) — LibraryPanel scrollable item list (high confidence)
-5. `sb-filter-rail` (#11) — LibraryPanel filter sidebar rail (moderate)
-6. `sb-scroll-fill` (#12) — SceneRail list + LibraryPanel list scroll areas (high confidence)
-7. `sb-panel-title` (#3) — LibraryPanel inspector title span (primary hope per 3b entry)
+| Bet | Class | Result | Key finding |
+|-----|-------|--------|-------------|
+| #3 | sb-panel-title | **WON** | Library span in LibraryPanel — exact same function as PadEditorPanel "Pad Editor" |
+| #4 | sb-search-bar | **PARTIAL → new sibling** | LibraryPanel has the structural role but needs sb-lib-panel-search-bar (6/8 vs 10/14 padding; panel context) |
+| #5 | sb-search-field | **WON** | LP-3 Path A; 2px gap drift acceptable |
+| #6 | sb-btn-clear | **WON** | LP-5 Path A; 1px padding drift acceptable |
+| #7 | sb-item-list | **FAILED** | Card-style list (padding+gap) ≠ row-separator list (border-bottom) |
+| #10 | sb-tab-bar | **FINAL FAILED** | LibraryPanel has no tab bar; downgraded to screen-local |
+| #11 | sb-filter-rail | **FAILED** | LibraryPanel is a panel, not a 2-col screen with a filter sidebar |
+| #12 | sb-scroll-fill | **WON** | LP-7 Path A; updated with overscroll-behavior:contain |
+| #16 | sb-tab-sm | **NOT FOUND** | No compact tabs in 3g files; passes to 3h |
+| #2 | sb-section-header-row | **NOT FOUND** | No space-between section headers in 3g files; passes to 3h |
+| #21 | sb-row-rename-input | **FAILED** | AudioRow uses fs-sm/14px/normal-case; class is fs-lg/18px/uppercase — different typographic scale for filenames vs board names |
+| #22 | sb-row-actions | **FAILED** | AudioRow uses 5-column CSS Grid, not flex with trailing action group |
+| #23 | sb-btn-icon-sm | **FAILED** | 36px fits neither SceneRail (28px) nor AudioRow (44px iOS touch target) |
 
-**Also applies to 3g (multi-session bets, lower certainty):**
-8. `sb-tab-sm` (#16) — any compact tab context in SceneRail or LibraryPanel (lower confidence)
-9. `sb-tab-bar` (#10) — PARTIALLY-FAILED (3e+3f failed); 3g is final remaining test. Still active on LibraryScreen.
-10. `sb-section-header-row` (#2) — 3f tested, not found; 3g is now primary test.
-
-**New 3f bets (added after 3f migration — AudioRow scope, high confidence):**
-11. `sb-row-rename-input` (#21) — AudioRow inline rename input (same font-ui/fs-lg/uppercase pattern)
-12. `sb-row-actions` (#22) — AudioRow non-shrinking action group (same flex/gap/shrink pattern)
-13. `sb-btn-icon-sm` (#23) — AudioRow compact edit/delete buttons (same 36px/6px sizing)
+**Strategic finding:** The thesis holds for screen→panel siblings (LibraryPanel 73% reuse — 3c's classes snapped in). It fails for component→component predictions (AudioRow 50%, 3f bets all failed) when the components have structurally different layouts (grid vs. flex+actions). Honest failed bets are real results; they map the boundary of the strategy.
 
 **Ordering rationale (load-bearing):**
 - 3a first — layout primitives are a dependency for all subsequent sessions
@@ -951,7 +954,11 @@ Both stay as literals for now (consistent with how sb-hint-text was handled in 3
 sub-xs font-sizes without consulting this note first — the next literal would make
 three separate values and force a decision anyway.
 
-**When:** Session 8 (typography/polish). **Source:** Session 3d, 2026-05-30.
+**Session 3g update:** SR-2 (`sb-scene-num-badge`, was 11px) and AR-9 (`sb-audio-col-size`,
+was 11px) normalized to `var(--fs-xs)` — zero new literal 11px values introduced in 3g.
+The deliberate 11px literals remain only in `sb-count-text` and `sb-btn-muted`.
+
+**When:** Session 8 (typography/polish). **Source:** Session 3d, 2026-05-30; updated 3g, 2026-05-31.
 
 ---
 
@@ -991,6 +998,33 @@ If you want context-specific behavior, apply a flat modifier class at the elemen
 
 ---
 
+### AudioRow grid overflow on iPhone 13 Pro (390px viewport) — Slice 8 responsive
+
+`sb-audio-row` (Session 3g) has `grid-template-columns: 160px 1fr 70px 90px 44px`.
+Fixed widths: 160+70+90+44 = 364px. Gaps: 4 × var(--space-3) = 4 × 12px = 48px.
+Minimum before the 1fr column: **412px** — 22px wider than the 390px CSS viewport.
+
+The LibraryScreen content column at 390px (after the 220px filter rail) is ~170px.
+AudioRow rows would overflow this column on every use — **tritt im Normalbetrieb auf,
+sobald die Bibliothek Dateien enthält** (leere Bibliothek verdeckt es in Tests).
+
+**Status:** PRE-EXISTING — this grid was in the original inline style before Session 3g.
+Session 3g faithfully migrated the values to `sb-audio-row` without changing the layout
+behavior. Not a regression from 3g; the commit that introduced the grid was in Slice 2.
+
+**Action:** Slice 8 Responsive pass — AudioRow needs a narrow-viewport layout:
+- Option A: Replace fixed columns with fractional or smaller fixed values that fit 170px
+- Option B: Different layout structure on narrow viewports (stack rows instead of grid)
+- Option C: The LibraryScreen 2-column layout itself may need to collapse on mobile
+  (sb-screen-layout's 220px filter rail + 1fr is already a problem at 390px)
+- Priority: HIGH — this is the Library's core audio-file list on the primary target device
+
+**Verify:** Upload audio files on iPhone 13 Pro to confirm the overflow is visible in practice.
+**When:** Slice 8 (responsive/polish). **Source:** Session 3g spot-check, 2026-05-31.
+Measured: content column = 170px, grid minimum = 412px, deficit = 242px.
+
+---
+
 ### UI text inconsistency: `EmptyHint` in BROWSE tab vs RECENT tab
 
 When the audio library is empty, the BROWSE tab shows "No matches." while the RECENT tab
@@ -1008,14 +1042,9 @@ regardless of tab) or deliberately differentiate (BROWSE is always search-mode, 
 
 ### SceneRail action buttons: pre-existing Path D violation (`minHeight:28`)
 
-`SceneRail.tsx` lines 286/298/310 have `style={{ minWidth: 28, minHeight: 28, padding: '0 4px' }}`
-on the rename/duplicate/delete icon buttons (class `sb-btn sb-btn-sm sb-btn-ghost`).
-These were shielded from the 3d `sb-btn-sm` change (inline style overrides class).
-The inline values should migrate to a dedicated class (likely `sb-btn-icon`-style sizing
-or a new `sb-scene-action-btn` class).
+✅ **Resolved in Session 3g (12fbbc0).** Migrated to `sb-btn-icon` (Path A, exact match: min-width:28px; min-height:28px; padding:0 4px). All three scene action buttons (rename/copy/delete) now use `class="sb-btn sb-btn-sm sb-btn-icon …"` without inline styles.
 
-**Action:** Migrate in Session 3g when SceneRail.tsx is in scope.
-**When:** Session 3g. **Source:** Observed during 3d spot-check, 2026-05-30.
+**Source:** Observed during 3d spot-check, 2026-05-30. Resolved 2026-05-31.
 
 ---
 
