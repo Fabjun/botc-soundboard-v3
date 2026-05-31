@@ -732,7 +732,7 @@ DoD for each file session: `audit:inline-styles` → 0 violations for that file.
 | **3c** ✅ Done (24b6977) | `LibraryScreen.tsx` | 20 | 3 | 0 | 0 violations, 0 d-w-s. 19 new classes + 2 existing-class fixes (sb-tab button resets, sb-search-input 11px→var(--fs-xs) drift). §6: 85→104. Path A rate 5% (expected: LibraryScreen structurally distinct from PadEditorPanel). 0 Sorte-2 bets from 3b resolved. 8 Sorte-2 bets created for 3g/3e (see note below). sb-col added as new layout primitive. |
 | **3d** ✅ Done (4210405) | `PadCreationPopover.tsx` | 15 | 6 | 0 | 0 violations, 0 d-w-s. 8 new classes (sb-source-tabs, sb-tab-sm, sb-scroll-fill, sb-creation-popover-actions, sb-btn-muted, sb-sheet-header, sb-creation-popover-backdrop, sb-source-item). §6: 104→112. Resolution: 3 delete / 1 compose / 3 path-A unchanged / 4 path-A updated / 1 modifier / 9 new-class entries = 8 unique new classes. Reuse rate 45% (5/11 of 3b's flagged classes; leaf-level classes generalize, container-structure classes are component-specific — no re-planning of 3e–3h). 3b bet sb-type-btn WON. Plan deviation: planned sb-btn-sm min-height:36px rejected at spot-check — sb-btn-sm is used across 9 files including navigation buttons; 44px iOS touch-target floor via global rule is correct there. §4 Dead CSS sb-creation-popover-section resolved. |
 | **3e** ✅ Done (96ae78d) | `StartScreen.tsx` | 19 | 0 | 0 | 0 violations, 0 d-w-s. 18 new classes (sb-overlay family, sb-changelog family, sb-flame-icon, sb-start-* family, sb-btn-unlock, sb-version-link). §6: 112→130. Resolution: 1 Path A / 1 A+B / 1 0+B / 1 Primitiv+B / 15 new-class = 19. Reuse rate 10.5% — StartScreen is a centered splash with no tab bar and no empty state; all 3c bets (sb-screen, sb-screen-empty, sb-tab-bar) FAILED (inapplicable — not promoted, not cleaned up — each is still in active use on its own screen). Token normalization: 10 off-token values aligned (all ≤4px drift). New Sorte-2 bets for 3e (Verfallsbedingung: Slice 8): sb-overlay, sb-overlay-header, sb-overlay-body flagged for promotion if settings/future overlays appear. Changelog-family classes (sb-changelog-*) to demote if changelog component is removed. Opportunistic 3b-bet test: sb-panel-title evaluated against ChangelogOverlay's "CHANGELOG" heading — rejected (sb-panel-title is font-mono/fs-xs/flex:1; overlay title needs font-ui/fs-lg). Does not change sb-panel-title's bet status: its declared target is 3g (LibraryPanel), not 3e; this was a side test only — status remains PENDING. |
-| **3f** | `BoardScreen.tsx` + `BoardListScreen.tsx` | 17 + **14** = **31** | 0 | 0 | 0 violations + 0 d-w-s + 0 pure-layout for BoardListScreen. BoardListScreen has 14 (not 13) because the 3a residual `style={{ flexShrink: 0 }}` still counts as 1 violation. The action-row semantic class (created in 3f) absorbs it — reaching 0 pure-layout for that file. |
+| **3f** ✅ Done (b46fb44) | `BoardScreen.tsx` + `BoardListScreen.tsx` | 31 (BS: 17, BLS: 14) | 1 (BLS:161 d-w-s → sb-board-row) | 0 | 0 violations, 0 d-w-s. §6: 130→145 (+15 new sb-* classes). Audit total: 88→57. Resolution breakdown: DELETE 1 / Path A §6 7 / intra-session 1 / cross-file intra-session 3 / CSS extension 1 / new modifier 3 / new class 15 = 31. Reuse rate 35% (11/31). 3a residual (BLS:238 flexShrink:0) resolved via flat sb-row-actions class applied at element level — flat model maintained throughout. sb-screen: **WON** (3 uses: BS×2 + BLS×1). sb-tab-bar: still PARTIALLY-FAILED (3g pending). sb-section-header-row: not found in 3f files, moves to 3g. New 3f bets: sb-row-rename-input, sb-row-actions, sb-btn-icon-sm (all pending 3g — AudioRow scope). Token normalizations: 13px→--fs-xs (1px drift), fontSize:22px=--fs-xl exact, 11px sb-hint-text→10px (1px drift), padding 10px/14px→8px/12px (2px drift each). Off-token literals: 6px×3 (sb-place-banner, sb-setup-toolbar, sb-btn-icon-sm), 56px×1 (sb-board-row minHeight), 60px×1 (is-loose padding) — see §5 BACKLOG note below. Architecture: flat model invariant formally stated; sb-menu-row pre-flat legacy noted and left for dedicated consolidation pass. |
 | **3g** | `SceneRail.tsx` + `LibraryPanel.tsx` + `AudioRow.tsx` | 9 + 11 + 8 = 28 | 0+0+2 = 2 | 0 | 0 violations, 0 d-w-s |
 | **3h** | `PadTypeConfirmDialog.tsx` + `TopBarV2.tsx` + `BoardTopBarV3.tsx` + `PadGridCell.tsx` + `UndoToast.tsx` + `StatusBarV2.tsx` + `Waveform.tsx` + `PixelIcon.tsx` | 13+5+4+4+2+1+0+0 = 29 | 1+1+1+0+0+0+2+0 = 5 | 1(PTD)+1(Pix) = 2 | 0 violations, 0 d-w-s, unclassified resolved |
 
@@ -752,9 +752,9 @@ High-confidence (3g is LibraryPanel — same library surface):
 - `sb-item-list` — bet: 3g has a scrollable item list. Cleanup if not used.
 
 Moderate-confidence:
-- `sb-screen` — **FAILED (3e)**: StartScreen is centered splash (align-items:center + gradient bg); sb-screen is column-layout + surface bg — different function. 3f BoardScreen is the remaining test. Cleanup if BoardScreen also doesn't reuse.
+- `sb-screen` — **WON (3f)**: BoardScreen root×2 + BoardListScreen root — all full-height column-layout app screen roots. 3 confirmed uses across 3 screens (LibraryScreen + BoardScreen + BoardListScreen). Bet fully resolved.
 - `sb-screen-empty` — **FAILED (3e)**: StartScreen has no empty state; inapplicable. Class stays — in active use on LibraryScreen. ⚠️ Retroactively registered: this bet was implicit at 3c close (LibraryScreen empty-state class, expected that other screens might inherit the centered-empty-state pattern) but was not formally listed at the time; the omission was identified when the 3e entry referenced it as a 3c bet. Corrected here to make the 3c count accurate (7→8).
-- `sb-tab-bar` — **FAILED (3e)**: StartScreen has no tab bar. 3f/3g are the remaining tests. Cleanup if isolated to LibraryScreen.
+- `sb-tab-bar` — **PARTIALLY-FAILED (3e+3f)**: Neither StartScreen nor BoardScreen/BLS has a tab bar. 3g (LibraryPanel scope) is the remaining test. Cleanup if isolated to LibraryScreen.
 - `sb-filter-rail` — bet: 3g (LibraryPanel) or a future filter view has a sidebar rail. Cleanup if not used.
 
 **3d Sorte-2 bets** (created on expectation of 3e–3h reuse; cleanup candidates if not confirmed):
@@ -782,15 +782,15 @@ Moderate-confidence:
 | # | Class | Origin | Remaining target | Status | Verfallsbedingung |
 |---|-------|--------|------------------|--------|--------------------|
 | 1 | `sb-type-btn` | 3b | — | **WON (3d)** | Confirmed ≥2-use. No action. |
-| 2 | `sb-section-header-row` | 3b | 3f, 3g | **OPEN — pending 3f** | Cleanup if no Path A use by end of 3h. |
+| 2 | `sb-section-header-row` | 3b | 3g | **OPEN — pending 3g** | Not found in 3f files (no space-between section header in BoardScreen/BLS). Cleanup if no Path A use by end of 3h. |
 | 3 | `sb-panel-title` | 3b | 3g | **OPEN — pending 3g** | Cleanup if isolated to PadEditorPanel. Side-tested in 3e against ChangelogOverlay title — rejected (font-mono/fs-xs vs font-ui/fs-lg); declared target is 3g, status unchanged. |
 | 4 | `sb-search-bar` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. High confidence. |
 | 5 | `sb-search-field` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. High confidence. |
 | 6 | `sb-btn-clear` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. High confidence. |
 | 7 | `sb-item-list` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. High confidence. |
-| 8 | `sb-screen` | 3c | 3f | **PARTIALLY-FAILED (3e failed, 3f pending)** | In active use on LibraryScreen — no cleanup even if 3f also fails; downgrade to screen-local only. |
+| 8 | `sb-screen` | 3c | 3f | **WON (3f)** | Used on BS root×2 + BLS root×1 — all full-height column-layout app screen roots. Confirmed ≥3-use. No action. |
 | 9 | `sb-screen-empty` | 3c | 3e | **LOST — but class justified** | Failed in 3e (StartScreen has no empty state). In active use on LibraryScreen. No cleanup. |
-| 10 | `sb-tab-bar` | 3c | 3f, 3g | **PARTIALLY-FAILED (3e failed, 3f/3g pending)** | In active use on LibraryScreen — no cleanup even if all remaining tests fail; downgrade to screen-local only. |
+| 10 | `sb-tab-bar` | 3c | 3g | **PARTIALLY-FAILED (3e+3f failed, 3g pending)** | Neither StartScreen nor BoardScreen/BLS has a tab bar. In active use on LibraryScreen — no cleanup even if 3g also fails; downgrade to screen-local. |
 | 11 | `sb-filter-rail` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. Moderate confidence. |
 | 12 | `sb-scroll-fill` | 3d | 3g | **OPEN — pending 3g** | Cleanup if neither SceneRail nor LibraryPanel uses it. High confidence. |
 | 13 | `sb-sheet-header` | 3d | 3h | **OPEN — pending 3h** | Cleanup if PadTypeConfirmDialog (3h) doesn't use it. Moderate confidence. |
@@ -801,8 +801,11 @@ Moderate-confidence:
 | 18 | `sb-overlay` | 3e | Slice 8 | **SPECULATIVE — far** | Promote to confirmed multi-use if settings screen or future overlays appear in Slice 8. |
 | 19 | `sb-overlay-header` | 3e | Slice 8 | **SPECULATIVE — far** | Same as `sb-overlay`. |
 | 20 | `sb-overlay-body` | 3e | Slice 8 | **SPECULATIVE — far** | Same as `sb-overlay`. |
+| 21 | `sb-row-rename-input` | 3f | 3g | **OPEN — pending 3g** | 1-use in BLS BoardRow. AudioRow (3g scope) likely has inline rename input with same font-ui/fs-lg/uppercase styling. Cleanup if AudioRow uses a different pattern. |
+| 22 | `sb-row-actions` | 3f | 3g | **OPEN — pending 3g** | 1-use in BLS BoardRow (non-shrinking action group). AudioRow action buttons (edit/delete) likely share this layout. Cleanup if AudioRow uses sb-row-sm or different pattern. |
+| 23 | `sb-btn-icon-sm` | 3f | 3g | **OPEN — pending 3g** | 2-use in BLS BoardRow (edit+delete btns, 36px min-width, 6px padding). AudioRow compact action buttons likely match. Verify ≥3 use in 3g or reconsider. |
 
-**Count check:** 20 bets total. WON: 1 · LOST-cleanup: 0 · LOST-justified: 1 · PARTIALLY-FAILED: 2 · OPEN-pending-3f: 1 · OPEN-pending-3g: 8 · OPEN-pending-3h: 4 · SPECULATIVE: 3 → sum = 20 ✓
+**Count check:** 23 bets total. WON: 2 · LOST-cleanup: 0 · LOST-justified: 1 · PARTIALLY-FAILED: 1 · OPEN-pending-3g: 12 · OPEN-pending-3h: 4 · SPECULATIVE: 3 → sum = 23 ✓
 
 ---
 
@@ -821,8 +824,13 @@ Moderate-confidence:
 
 **Also applies to 3g (multi-session bets, lower certainty):**
 8. `sb-tab-sm` (#16) — any compact tab context in SceneRail or LibraryPanel (lower confidence)
-9. `sb-tab-bar` (#10) — PARTIALLY-FAILED; 3f is primary remaining test but 3g also listed
-10. `sb-section-header-row` (#2) — 3f is primary; test if a space-between section header appears in 3g files
+9. `sb-tab-bar` (#10) — PARTIALLY-FAILED (3e+3f failed); 3g is final remaining test. Still active on LibraryScreen.
+10. `sb-section-header-row` (#2) — 3f tested, not found; 3g is now primary test.
+
+**New 3f bets (added after 3f migration — AudioRow scope, high confidence):**
+11. `sb-row-rename-input` (#21) — AudioRow inline rename input (same font-ui/fs-lg/uppercase pattern)
+12. `sb-row-actions` (#22) — AudioRow non-shrinking action group (same flex/gap/shrink pattern)
+13. `sb-btn-icon-sm` (#23) — AudioRow compact edit/delete buttons (same 36px/6px sizing)
 
 **Ordering rationale (load-bearing):**
 - 3a first — layout primitives are a dependency for all subsequent sessions
@@ -944,6 +952,42 @@ sub-xs font-sizes without consulting this note first — the next literal would 
 three separate values and force a decision anyway.
 
 **When:** Session 8 (typography/polish). **Source:** Session 3d, 2026-05-30.
+
+---
+
+### Sub-token padding `6px`: off-ladder size between `--space-1` (4px) and `--space-2` (8px)
+
+Three classes from Session 3f use `6px` as a padding literal:
+- `sb-place-banner`: `padding: 6px var(--space-3)` — notification banner vertical padding
+- `sb-setup-toolbar`: `padding: 6px var(--space-3)` — SETUP toolbar vertical padding
+- `sb-btn-icon-sm`: `padding: 0 6px` — compact icon button horizontal padding
+
+`6px` is not on the token ladder (--space-1=4, --space-2=8). All three carry the same
+value, which is not coincidence — they represent the same visual density target (tighter
+than --space-2=8 but less dense than --space-1=4). **Do not add further 6px literals**
+without consulting this note first; the next instance would make four total and force
+a tokenization decision.
+
+**Action:** Session 8 decides: add `--space-1-5: 6px` (or similar), or keep named literals.
+**When:** Session 8. **Source:** Session 3f, 2026-05-31.
+
+---
+
+### Flat CSS model invariant (established Session 3f)
+
+All sb-* classes added from Session 3a onward follow a **flat model**: one class per
+element, composition via multiple classes on the same element. No new descendant
+selectors inside any new class.
+
+**Exception: sb-menu-row family (pre-flat legacy)** — `sb-menu-row` predates this
+invariant and carries existing descendant rules (`.sb-menu-row .sb-icon`,
+`.sb-menu-row .sb-row-title`). Sessions 3f–3h do not touch these. Flattening
+sb-menu-row's descendant structure belongs in a dedicated consolidation pass
+(post-3h or Slice 8), not inline in a migration sub-session.
+
+**Rule:** When adding new classes in 3g, 3h, or beyond — no new descendant selectors.
+If you want context-specific behavior, apply a flat modifier class at the element.
+**When:** Ongoing. **Source:** Session 3f, 2026-05-31.
 
 ---
 
