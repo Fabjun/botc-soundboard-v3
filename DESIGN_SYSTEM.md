@@ -199,7 +199,7 @@ Verbotene Muster in neuem V3-Code:
 | `sb-lib-panel-search-bar` | Outer search section bar in LibraryPanel — compact padding (6/8px), deep background, soft bottom border, no-shrink. Sibling of sb-search-bar (same structural role, smaller dimensions for a 280px panel). 1-use (LibraryPanel). | `v3/src/styles/tokens.css` |
 | `sb-library-panel` | Library browse panel in the board right rail (280px, hides overflow). | `v3/src/styles/tokens.css` |
 | `sb-menu-row` | Pixel-frame list row with icon, primary title, and subtitle slots. | `v3/src/styles/tokens.css` |
-| `sb-mode-badge` | Compact inline SETUP/GAME badge for top-bar and status-bar surfaces. | `v3/src/styles/tokens.css` |
+| `sb-mode-badge` | Compact inline SETUP/GAME badge for top-bar surfaces — flex-shrink:0 prevents badge from shrinking in flex topbar context. | `v3/src/styles/tokens.css` |
 | `sb-mode-toggle` | Interactive SETUP | GAME pill in the board top bar center (v24 design). | `v3/src/styles/tokens.css` |
 | `sb-mode-toggle-flash` | Reduced-motion fallback for sb-mode-toggle (brightness flash instead of sparks). ModeToggle.tsx skips animation entirely rather than applying this class. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-mode-toggle-half` | Left or right half-button of the mode toggle pill. | `v3/src/styles/tokens.css` |
@@ -275,13 +275,11 @@ Verbotene Muster in neuem V3-Code:
 | `sb-text-input` | Pixel-style text input — sunk background, bordered, VT323 uppercase. For pad name and form fields. | `v3/src/styles/tokens.css` |
 | `sb-toggle` | Binary on/off toggle switch (40×20px); is-on moves thumb right and adds gold glow. Currently no TSX usage. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-topbar` | Root container for TopBarV2 — flex row, 48px height, deep bg, bottom border. Uses flex (vs sb-board-topbar's grid). Sub-token padding: 10px/16px (no exact token match). | `v3/src/styles/tokens.css` |
-| `sb-topbar-badge-wrap` | Mode-badge wrapper div in TopBarV2 — no-shrink to keep badge visible. cursor set inline (dynamic: pointer when clickable, default otherwise). | `v3/src/styles/tokens.css` |
 | `sb-topbar-bc-col` | Breadcrumb column flex wrapper in BoardTopBarV3 — stacks board name above scene name, min-width:0 for truncation. | `v3/src/styles/tokens.css` |
-| `sb-topbar-board-name` | Board name span in BoardTopBarV3 — 16px (sub-token, compact topbar scale), 0.06em tracking, truncating. maxWidth set inline (dynamic: compact ? 80 : 140). | `v3/src/styles/tokens.css` |
 | `sb-topbar-icon-btn` | Icon button size override in the board top bar — 44px min-width (iOS touch target), 0/space-2 padding, space-1 gap for icon+label. 2-use: back button + library toggle. | `v3/src/styles/tokens.css` |
 | `sb-topbar-logo` | Flame icon wrapper in TopBarV2 — flame colour, no-shrink. | `v3/src/styles/tokens.css` |
 | `sb-topbar-secondary` | Secondary muted mono text in topbar context — font-mono 12px (normalized from 11px on V3, sub-token), text-mute, truncating. Cross-topbar: used on V2 breadcrumb and V3 scene name. | `v3/src/styles/tokens.css` |
-| `sb-topbar-title` | Main title span in TopBarV2 — 22px display (sub-token, no token for this size), 0.08em tracking, truncating. Applied on sb-display-vt element. | `v3/src/styles/tokens.css` |
+| `sb-topbar-title` | Truncating title span base — used by TopBarV2 (is-app) and BoardTopBarV3 (is-board). Base provides truncation; scale set via is-app / is-board modifier. | `v3/src/styles/tokens.css` |
 | `sb-topbar-title-group` | Title + breadcrumb flex group in TopBarV2 — baseline-aligned row, fills remaining space, min-width:0 for truncation. | `v3/src/styles/tokens.css` |
 | `sb-type-btn` | Type-selector button (pad type pill) — fills row evenly, mono xs font, uppercase, tight padding, 28px min-height; color/border/background set inline for active pad-type state. | `v3/src/styles/tokens.css` |
 | `sb-type-change-arrow` | Arrow separator (→) in the type-change confirmation row — muted colour. | `v3/src/styles/tokens.css` |

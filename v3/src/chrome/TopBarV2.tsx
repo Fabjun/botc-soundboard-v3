@@ -34,22 +34,20 @@ export function TopBarV2({
 
       {/* Title + breadcrumb */}
       <div class="sb-topbar-title-group">
-        <span class="sb-display-vt sb-topbar-title">{title}</span>
+        <span class="sb-display-vt sb-topbar-title is-app">{title}</span>
         {breadcrumb && <span class="sb-topbar-secondary">· {breadcrumb}</span>}
       </div>
 
       {/* Mode badge — only when mode is provided */}
       {mode && (
-        <div
-          class="sb-topbar-badge-wrap"
+        <span
+          class={'sb-mode-badge ' + (mode === 'play' ? 'is-game' : 'is-setup')}
           onClick={onModeSwap}
           style={{ cursor: onModeSwap ? 'pointer' : 'default' }}
         >
-          <span class={'sb-mode-badge ' + (mode === 'play' ? 'is-game' : 'is-setup')}>
-            <PixelIcon name={mode === 'play' ? 'play' : 'edit'} size={11} color="currentColor" />
-            {mode === 'play' ? 'GAME' : 'SETUP'}
-          </span>
-        </div>
+          <PixelIcon name={mode === 'play' ? 'play' : 'edit'} size={11} color="currentColor" />
+          {mode === 'play' ? 'GAME' : 'SETUP'}
+        </span>
       )}
 
       {/* Right slot */}

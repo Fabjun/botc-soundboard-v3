@@ -338,62 +338,54 @@ actual system documentation.
 **When:** As design documentation catch-up, likely before Slice 8.
 **Source:** Referenced in multiple sessions as "not yet written."
 
-### End-of-Session-3 consolidation pass (after 3h)
+### ✅ End-of-Session-3 consolidation pass — COMPLETE (2026-05-31)
 
-> **⚠️ Timing: run ONLY after 3h is complete.** Doing any part of this mid-migration
-> wastes effort — 3f–3h keep changing the class landscape, so a sweep done now goes stale
-> before it finishes. End of Session 3 is when §6 reaches its final post-migration state
-> and nothing large moves anymore.
->
-> **Scope — hand-maintained content only.** Generated artifacts (§6, §A, ADR index,
-> docs-sync output) are verified continuously by CI (the docs-sync-check gate fails a push
-> on drift) — they are **explicitly out of scope**. This pass is for content CI cannot
-> check: prose accuracy, bet outcomes, and @inventory description correctness.
+> **Completed 2026-05-31.** All five tasks done. See results below.
 
-**Five tasks:**
+**Five tasks — outcomes:**
 
-**1. @inventory-vs-CSS accuracy audit**
-Verify that every class's `/* @inventory: … */` description matches its actual CSS
-definition. `sync:classes` only checks that the comment *exists* — it cannot detect a
-description that describes an old definition. By end of Session 3 the mid-migration checks
-will have covered 3b–3e redefinitions; this final pass covers everything including 3f–3h
-additions. Flag and fix mismatches; a stale description is misinformation in §6.
-_(Ongoing rule: add the `@inventory` comment when creating a class, and update it when
-redefining one. The full accuracy sweep here is the one-time end-of-migration verification.)_
+**1. ✅ @inventory-vs-CSS accuracy audit — PASS, no corrections needed**
+127 @inventory comments reviewed across tokens.css + global.css. Zero genuine mismatches.
+One initial false positive (sb-verdict-pill label names) resolved by direct source verification
+— VERDICT_LABELS = {add:'ADDS', migrate:'MIGRATES', drop:'DROPS', lossy:'LOSSY', reset:'RESET'}
+confirms @inventory was correct. Sub-token classes correctly annotated with "sub-token: deliberate"
+justifications.
 
-**2. CLAUDE.md descriptive-vs-prescriptive audit**
-Cross-reference: "Single-source design values + descriptive/prescriptive split" (§5,
-Session 8 target). Review whether Sessions 3f–3h added any descriptive duplication to
-CLAUDE.md or DESIGN_SYSTEM prose (class values repeated in prose instead of referenced
-from the single source). Do not duplicate the Session 8 work; note what needs attention
-there. Part B of that entry (classify each statement as descriptive or prescriptive)
-applies — descriptive repetitions of class values → remove; prescriptive rules → keep.
+**2. ✅ CLAUDE.md descriptive-vs-prescriptive audit — identified, deferred to Slice 8**
+No descriptive duplication found in 3f–3h additions. CLAUDE.md references class names without
+repeating CSS values. Prescriptive rules correctly prescriptive.
+Two phrasing items deferred to Slice 8: (a) line 233 "these primitives are created in Session 3"
+→ past tense; (b) line 268 add post-migration baseline "0 violations (2026-05-31)" alongside
+the pre-migration baseline.
 
-**3. 1-use class consolidation review**
-By end of 3h, some classes flagged as 1-use during migration will have been reused via
-Path A; others remain 1-use. Go through the full list of classes created with a 1-use
-flag and decide for each: **confirmed-justified** (standalone design element, no natural
-partner), or **consolidation candidate** (merge, add as modifier on an existing class,
-or drop). The Sorte-2 bet index feeds this directly — every LOST-cleanup bet resolves
-here into a concrete merge/drop action.
+**3. ✅ 1-use class consolidation review — 2 actions executed, 24 confirmed-justified**
+Group A (7 FINALLY-LOST): all 7 confirmed-justified — no consolidation actions.
+Group B (19 1-use from 3h): 17 confirmed-justified + 2 consolidation actions:
+- **sb-topbar-board-name → sb-topbar-title.is-board** (three-step diagnosis: same function
+  "truncating topbar title span" + intentional scale variation → Modifikator. Base: truncation
+  only. `.is-app` = 22px/0.08em. `.is-board` = 16px/0.06em.)
+- **sb-topbar-badge-wrap absorbed into sb-mode-badge** (single-property utility anti-pattern:
+  `flex-shrink:0` only, same as eliminated sb-text-mute. flex-shrink:0 moved to sb-mode-badge.
+  Wrapper div removed from TopBarV2.tsx.)
+Principles applied: (a) button variants use sb-btn-{variant} pattern (sb-btn-muted stays);
+(b) size modifiers use -sm suffix (sb-tab-sm stays); (c) §6 scanned for partners on all
+consolidation candidates — no additional partners found.
+**Final §6 count: 186 → 184** (commit SHA: see consolidation-pass commit).
 
-**4. Final Sorte-2 bet resolution**
-Close out all OPEN bets in the consolidated bet index (§5 → Sorte-2 Bet Index) per
-actual outcomes after 3h. PARTIALLY-FAILED bets resolve to WON or LOST-but-justified.
-SPECULATIVE bets (the 3e overlay family, Slice-8 target) carry forward unchanged — note
-their status explicitly. The index is the canonical record; update it, not session entries.
+**4. ✅ Sorte-2 bet resolution — confirmed correct, already closed at 994d2eb**
+25 entries: 7 WON + 8 LOST-justified + 7 FINALLY-LOST + 3 SPECULATIVE = 25 ✓.
+No OPEN bets. Index correctly closed; no corrections needed.
 
-**5. Inter-document consistency check**
-Spot-check that session entries and the bet index are mutually consistent after 3h.
-Typical drift: a session entry still says "PENDING" for a bet the index shows as WON.
-Fix the lagging entry; the index is canonical. Also verify token-drift normalizations
-logged during migration (e.g. 3e's 10 off-token values) are reflected correctly.
+**5. ✅ Inter-document consistency — PASS**
+BACKLOG "Session 3 COMPLETE" note (186 classes, 0 Path D) consistent with Bet Index.
+Token-drift normalizations (3e/3f/3g/3h sub-token literals) correctly reflected in @inventory
+comments with "sub-token: deliberate" justification notes.
 
-**When:** After 3h is complete, before Slice 5 starts (or at latest before Slice 8
-design-system work, which relies on a clean §6 and accurate prose).
-**Source:** CLAUDE.md §13 (auto-generated inventuren); consolidated bet index; Sessions 3d, 3e.
-**Cross-reference:** "Single-source design values + descriptive/prescriptive split" (§5
-CSS Class Discipline → Session 8 target, the architectural follow-up to this pass).
+**Outstanding (separate sessions):**
+- sb-menu-row pre-flat family restructuring — dedicated session, different work mode
+- Slice 8 items: CLAUDE.md phrasing (tasks 2), sub-token tokenisation, sb-overlay family (#18–20)
+
+**Source:** CLAUDE.md §13; Sorte-2 Bet Index; Sessions 3d–3h.
 
 ---
 
@@ -1034,18 +1026,20 @@ All these literals are documented in the @inventory comments in tokens.css.
 All 177 inline-style Path D violations across all app files have been migrated.
 Project-wide audit Total Path D = 0 (confirmed headlessly, 994d2eb).
 
-**Final §6 class count:** 186 sb-* classes (up from 63 at Session 3a start).
+**Final §6 class count after consolidation pass: 184 sb-* classes** (186 post-migration → 184
+after consolidation pass; 2 merged: sb-topbar-board-name → sb-topbar-title.is-board,
+sb-topbar-badge-wrap absorbed into sb-mode-badge).
 
-**What is unblocked:** The end-of-Session-3 consolidation pass (see §5 → "End-of-Session-3
-consolidation pass" entry). Primary targets: 7 FINALLY-LOST consolidation candidates
-(#2 sb-section-header-row, #13 sb-sheet-header, #14 sb-creation-popover-actions,
-#15 sb-btn-muted, #16 sb-tab-sm, #17 sb-source-tabs, #24 sb-flex-trunc), plus ~19
-1-use classes from Session 3h flagged for review, plus the sb-menu-row pre-flat family
-restructuring.
+**Consolidation pass:** ✅ COMPLETE (2026-05-31). All five tasks done. See §2 → "End-of-Session-3
+consolidation pass" for full results. 24 of 26 candidate classes confirmed-justified, 2 merged.
 
 **What remains pending (Session 8):** Sub-token literal tokenization, the sb-overlay
 family (SPECULATIVE #18–20), visual regression check of PadGridCell/PadTypeConfirmDialog/
-UndoToast/Waveform with real audio data (not headlessly testable without audio fixtures).
+UndoToast/Waveform with real audio data (not headlessly testable without audio fixtures),
+CLAUDE.md phrasing items (line 233 past tense, line 268 post-migration baseline).
+
+**Separate session (sb-menu-row restructuring):** Pre-flat family flattening — dedicated
+session after consolidation pass, structural work mode.
 
 ---
 

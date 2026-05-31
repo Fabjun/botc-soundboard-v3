@@ -47,7 +47,10 @@ export function BoardTopBarV3({
           <PixelIcon name="flame" size={14} color="var(--flame)" />
         </button>
         <div class="sb-topbar-bc-col">
-          <span class="sb-display-vt sb-topbar-board-name" style={{ maxWidth: compact ? 80 : 140 }}>
+          <span
+            class="sb-display-vt sb-topbar-title is-board"
+            style={{ maxWidth: compact ? 80 : 140 }}
+          >
             {boardName}
           </span>
           {sceneName && <span class="sb-topbar-secondary">· {sceneName}</span>}

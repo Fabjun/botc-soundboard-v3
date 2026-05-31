@@ -1055,7 +1055,7 @@
 /* Mode badge — sits in the top bar. Visually distinct between SETUP/GAME
    beyond colour: SETUP uses a hatched fill, GAME uses solid amber. */
 .sb-mode-badge {
-  /* @inventory: Compact inline SETUP/GAME badge for top-bar and status-bar surfaces. */
+  /* @inventory: Compact inline SETUP/GAME badge for top-bar surfaces — flex-shrink:0 prevents badge from shrinking in flex topbar context. */
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1065,6 +1065,7 @@
   letter-spacing: 0.14em;
   padding: 3px 10px;
   --pix-step: 3px;
+  flex-shrink: 0;
 }
 .sb-mode-badge.is-game {
   background: var(--gold);
@@ -1299,12 +1300,20 @@
   flex: 1;
 }
 .sb-topbar-title {
-  /* @inventory: Main title span in TopBarV2 — 22px display (sub-token, no token for this size), 0.08em tracking, truncating. Applied on sb-display-vt element. */
-  font-size: 22px; /* sub-token: topbar title size, intentional display scale */
-  letter-spacing: 0.08em;
-  white-space: nowrap;
+  /* @inventory: Truncating title span base — used by TopBarV2 (is-app) and BoardTopBarV3 (is-board). Base provides truncation; scale set via is-app / is-board modifier. */
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sb-topbar-title.is-app {
+  /* @inventory: App-level title scale modifier — 22px (sub-token, intentional display scale), 0.08em tracking. TopBarV2 screen title. */
+  font-size: 22px; /* sub-token: topbar title size, intentional display scale */
+  letter-spacing: 0.08em;
+}
+.sb-topbar-title.is-board {
+  /* @inventory: Board-level title scale modifier — 16px (sub-token, compact), 0.06em tracking. BoardTopBarV3 breadcrumb board name. maxWidth set inline (dynamic: compact ? 80 : 140). */
+  font-size: 16px; /* sub-token: compact topbar title — intentionally smaller than is-app 22px */
+  letter-spacing: 0.06em;
 }
 .sb-topbar-secondary {
   /* @inventory: Secondary muted mono text in topbar context — font-mono 12px (normalized from 11px on V3, sub-token), text-mute, truncating. Cross-topbar: used on V2 breadcrumb and V3 scene name. */
@@ -1315,11 +1324,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.sb-topbar-badge-wrap {
-  /* @inventory: Mode-badge wrapper div in TopBarV2 — no-shrink to keep badge visible. cursor set inline (dynamic: pointer when clickable, default otherwise). */
-  flex-shrink: 0;
-}
-
 /* ── Board TopBar V3 additions — Session 3h ─────────────────────── */
 .sb-topbar-icon-btn {
   /* @inventory: Icon button size override in the board top bar — 44px min-width (iOS touch target), 0/space-2 padding, space-1 gap for icon+label. 2-use: back button + library toggle. */
@@ -1333,15 +1337,6 @@
   flex-direction: column;
   min-width: 0;
 }
-.sb-topbar-board-name {
-  /* @inventory: Board name span in BoardTopBarV3 — 16px (sub-token, compact topbar scale), 0.06em tracking, truncating. maxWidth set inline (dynamic: compact ? 80 : 140). */
-  font-size: 16px; /* sub-token: compact topbar title — intentionally smaller than TopBarV2's 22px */
-  letter-spacing: 0.06em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 /* ── Mode Toggle ── SETUP | GAME interactive pill (v24) ─────────────── */
 .sb-mode-toggle {
   /* @inventory: Interactive SETUP | GAME pill in the board top bar center (v24 design). */
