@@ -338,12 +338,62 @@ actual system documentation.
 **When:** As design documentation catch-up, likely before Slice 8.
 **Source:** Referenced in multiple sessions as "not yet written."
 
-### `@inventory` descriptions for all sb-* classes
-The `sync:classes` generator (part of `npm run sync:docs`) populates DESIGN_SYSTEM.md §6
-from `/* @inventory: Description */` CSS comments. Many of the ~57 sb-* classes lack the
-comment. Without it, the auto-generated inventory is incomplete.
-**When:** Ongoing — add the comment whenever touching a class; do a full pass before Slice 8.
-**Source:** CLAUDE.md §13 — Auto-generierte Inventuren.
+### End-of-Session-3 consolidation pass (after 3h)
+
+> **⚠️ Timing: run ONLY after 3h is complete.** Doing any part of this mid-migration
+> wastes effort — 3f–3h keep changing the class landscape, so a sweep done now goes stale
+> before it finishes. End of Session 3 is when §6 reaches its final post-migration state
+> and nothing large moves anymore.
+>
+> **Scope — hand-maintained content only.** Generated artifacts (§6, §A, ADR index,
+> docs-sync output) are verified continuously by CI (the docs-sync-check gate fails a push
+> on drift) — they are **explicitly out of scope**. This pass is for content CI cannot
+> check: prose accuracy, bet outcomes, and @inventory description correctness.
+
+**Five tasks:**
+
+**1. @inventory-vs-CSS accuracy audit**
+Verify that every class's `/* @inventory: … */` description matches its actual CSS
+definition. `sync:classes` only checks that the comment *exists* — it cannot detect a
+description that describes an old definition. By end of Session 3 the mid-migration checks
+will have covered 3b–3e redefinitions; this final pass covers everything including 3f–3h
+additions. Flag and fix mismatches; a stale description is misinformation in §6.
+_(Ongoing rule: add the `@inventory` comment when creating a class, and update it when
+redefining one. The full accuracy sweep here is the one-time end-of-migration verification.)_
+
+**2. CLAUDE.md descriptive-vs-prescriptive audit**
+Cross-reference: "Single-source design values + descriptive/prescriptive split" (§5,
+Session 8 target). Review whether Sessions 3f–3h added any descriptive duplication to
+CLAUDE.md or DESIGN_SYSTEM prose (class values repeated in prose instead of referenced
+from the single source). Do not duplicate the Session 8 work; note what needs attention
+there. Part B of that entry (classify each statement as descriptive or prescriptive)
+applies — descriptive repetitions of class values → remove; prescriptive rules → keep.
+
+**3. 1-use class consolidation review**
+By end of 3h, some classes flagged as 1-use during migration will have been reused via
+Path A; others remain 1-use. Go through the full list of classes created with a 1-use
+flag and decide for each: **confirmed-justified** (standalone design element, no natural
+partner), or **consolidation candidate** (merge, add as modifier on an existing class,
+or drop). The Sorte-2 bet index feeds this directly — every LOST-cleanup bet resolves
+here into a concrete merge/drop action.
+
+**4. Final Sorte-2 bet resolution**
+Close out all OPEN bets in the consolidated bet index (§5 → Sorte-2 Bet Index) per
+actual outcomes after 3h. PARTIALLY-FAILED bets resolve to WON or LOST-but-justified.
+SPECULATIVE bets (the 3e overlay family, Slice-8 target) carry forward unchanged — note
+their status explicitly. The index is the canonical record; update it, not session entries.
+
+**5. Inter-document consistency check**
+Spot-check that session entries and the bet index are mutually consistent after 3h.
+Typical drift: a session entry still says "PENDING" for a bet the index shows as WON.
+Fix the lagging entry; the index is canonical. Also verify token-drift normalizations
+logged during migration (e.g. 3e's 10 off-token values) are reflected correctly.
+
+**When:** After 3h is complete, before Slice 5 starts (or at latest before Slice 8
+design-system work, which relies on a clean §6 and accurate prose).
+**Source:** CLAUDE.md §13 (auto-generated inventuren); consolidated bet index; Sessions 3d, 3e.
+**Cross-reference:** "Single-source design values + descriptive/prescriptive split" (§5
+CSS Class Discipline → Session 8 target, the architectural follow-up to this pass).
 
 ---
 
