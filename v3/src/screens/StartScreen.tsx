@@ -22,7 +22,7 @@ declare const __BUILD_DATE__: string;
 
 function FlameLogo({ size = 80 }: { size?: number }): JSX.Element {
   return (
-    <div style={{ color: 'var(--flame)', filter: 'var(--glow-flame)' }}>
+    <div class="sb-flame-icon">
       <PixelIcon name="flame" size={size} />
     </div>
   );
@@ -32,38 +32,10 @@ function FlameLogo({ size = 80 }: { size?: number }): JSX.Element {
 
 function ChangelogOverlay({ onClose }: { onClose: () => void }): JSX.Element {
   return (
-    <div
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 300,
-        background: 'var(--deep)',
-        display: 'flex',
-        flexDirection: 'column',
-        overscrollBehavior: 'none',
-      }}
-    >
+    <div class="sb-overlay">
       {/* Header */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '14px 16px',
-          borderBottom: '1px solid var(--border)',
-          flexShrink: 0,
-        }}
-      >
-        <div
-          style={{
-            fontFamily: 'var(--font-ui)',
-            fontSize: 'var(--fs-lg)',
-            letterSpacing: '.08em',
-            color: 'var(--text)',
-          }}
-        >
-          CHANGELOG
-        </div>
+      <div class="sb-overlay-header">
+        <div class="sb-overlay-title">CHANGELOG</div>
         <button
           class="sb-btn sb-btn-sm sb-btn-ghost"
           onClick={onClose}
@@ -74,69 +46,19 @@ function ChangelogOverlay({ onClose }: { onClose: () => void }): JSX.Element {
       </div>
 
       {/* Scrollable entries */}
-      <div
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          WebkitOverflowScrolling: 'touch',
-          padding: '12px 16px 32px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 24,
-        }}
-      >
+      <div class="sb-overlay-body">
         {CHANGELOG.map((entry) => (
           <div key={entry.version}>
             {/* Version header */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'baseline',
-                gap: 10,
-                marginBottom: 8,
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: 'var(--font-ui)',
-                  fontSize: 'var(--fs-lg)',
-                  letterSpacing: '.06em',
-                  color: 'var(--gold)',
-                }}
-              >
-                v {entry.version}
-              </span>
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: 11,
-                  color: 'var(--text-mute)',
-                }}
-              >
-                {entry.date}
-              </span>
+            <div class="sb-row sb-changelog-entry-header">
+              <span class="sb-changelog-version">v {entry.version}</span>
+              <span class="sb-caption">{entry.date}</span>
             </div>
 
             {/* Items */}
-            <ul
-              style={{
-                margin: 0,
-                paddingLeft: 16,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 5,
-              }}
-            >
+            <ul class="sb-changelog-items">
               {entry.items.map((item, i) => (
-                <li
-                  key={i}
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: 12,
-                    color: 'var(--text-dim)',
-                    lineHeight: 1.55,
-                  }}
-                >
+                <li key={i} class="sb-mono sb-changelog-item">
                   {item}
                 </li>
               ))}
@@ -183,90 +105,35 @@ export function StartScreen(): JSX.Element {
   const [showChangelog, setShowChangelog] = useState(false);
 
   return (
-    <div
-      class="sb sb-scanlines"
-      style={{
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%',
-        minHeight: '100dvh',
-        background: `
-          radial-gradient(60% 50% at 50% 65%, var(--flame-soft) 0%, transparent 70%),
-          radial-gradient(120% 70% at 50% -10%, var(--glow-radial) 0%, transparent 65%),
-          var(--night)
-        `,
-      }}
-    >
+    <div class="sb sb-scanlines sb-start-screen">
       {showChangelog && <ChangelogOverlay onClose={() => setShowChangelog(false)} />}
 
       {/* ── Flame logo with ambient glow ── */}
-      <div
-        style={{
-          width: 200,
-          height: 200,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
-          marginBottom: 32,
-        }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            width: 220,
-            height: 220,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, var(--flame-aura) 0%, transparent 60%)',
-            animation: 'sb-flicker 1.6s ease-in-out infinite',
-          }}
-        />
+      <div class="sb-flame-well">
+        <div class="sb-flame-aura" />
         <FlameLogo size={120} />
       </div>
 
       {/* ── App title ── */}
-      <div class="sb-display" style={{ fontSize: 22, textAlign: 'center', marginBottom: 18 }}>
+      <div class="sb-display sb-start-title">
         SOUNDBOARD
         <br />
         OF STORYTELLING
       </div>
 
       {/* ── Tagline ── */}
-      <div
-        class="sb-mono is-italic"
-        style={{
-          fontSize: 13,
-          color: 'var(--text-dim)',
-          marginBottom: 36,
-          textAlign: 'center',
-          maxWidth: 320,
-        }}
-      >
+      <div class="sb-mono is-italic sb-start-tagline">
         // a tool for game-masters and other creative creatures
       </div>
 
       {/* ── Unlock button — minimum 44px touch target per CLAUDE.md ── */}
-      <button
-        class="sb-btn sb-btn-primary"
-        style={{
-          minWidth: 240,
-          padding: '12px 24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 10,
-        }}
-        onClick={handleUnlock}
-      >
+      <button class="sb-btn sb-btn-primary sb-btn-unlock" onClick={handleUnlock}>
         <PixelIcon name="play" size={14} />
         TAP TO UNLOCK
       </button>
 
       {/* ── Navigation buttons ── */}
-      <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
+      <div class="sb-start-nav">
         <button
           class="sb-btn sb-btn-sm sb-btn-ghost"
           onClick={() => {
@@ -288,33 +155,9 @@ export function StartScreen(): JSX.Element {
       </div>
 
       {/* ── Footer: clickable version → changelog + audio state ── */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: 18,
-          fontFamily: 'var(--font-mono)',
-          fontSize: 11,
-          color: 'var(--text-mute)',
-          textAlign: 'center',
-          padding: '0 16px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-        }}
-      >
+      <div class="sb-start-footer">
         <button
-          style={{
-            background: 'none',
-            border: 'none',
-            padding: 0,
-            fontFamily: 'var(--font-mono)',
-            fontSize: 11,
-            color: 'var(--text-dim)',
-            cursor: 'pointer',
-            letterSpacing: 'inherit',
-            textDecoration: 'underline dotted',
-            textUnderlineOffset: '3px',
-          }}
+          class="sb-version-link"
           onClick={() => setShowChangelog(true)}
           aria-label="Open changelog"
         >

@@ -1089,6 +1089,77 @@
   mix-blend-mode: overlay;
 }
 
+/* ── StartScreen ─────────────────────────────────────────────────── */
+.sb-start-screen {
+  /* @inventory: Centered splash container for StartScreen — full-viewport centered flex column with 3-stop flame gradient. 1-use (StartScreen only). */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 100dvh;
+  background:
+    radial-gradient(60% 50% at 50% 65%, var(--flame-soft) 0%, transparent 70%),
+    radial-gradient(120% 70% at 50% -10%, var(--glow-radial) 0%, transparent 65%), var(--night);
+}
+.sb-flame-icon {
+  /* @inventory: Flame-colored SVG icon wrapper — applies --flame color and --glow-flame filter for currentColor SVG icons. 1-use (FlameLogo). Rule-mandated: both are static token values. */
+  color: var(--flame);
+  filter: var(--glow-flame);
+}
+.sb-flame-well {
+  /* @inventory: Fixed 200×200 centered icon well for the StartScreen flame logo — position:relative anchors sb-flame-aura. 1-use. */
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: var(--space-8);
+}
+.sb-flame-aura {
+  /* @inventory: Absolute 220×220 circular glow ring behind the flame icon — animated with sb-flicker (defined in global.css). 1-use. */
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--flame-aura) 0%, transparent 60%);
+  animation: sb-flicker 1.6s ease-in-out infinite;
+}
+.sb-start-title {
+  /* @inventory: Layout additions for the sb-display hero title on StartScreen — xl font-size, centered, bottom margin. 1-use. */
+  font-size: var(--fs-xl);
+  text-align: center;
+  margin-bottom: var(--space-4);
+}
+.sb-start-tagline {
+  /* @inventory: Layout for the sb-mono is-italic tagline on StartScreen — sm font-size, centered, max-width constraint, bottom margin. 1-use. */
+  font-size: var(--fs-sm);
+  text-align: center;
+  max-width: 320px;
+  margin-bottom: var(--space-8);
+}
+.sb-start-nav {
+  /* @inventory: Navigation buttons row on StartScreen — flex row with 12px gap and top margin. 1-use. */
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-8);
+}
+.sb-start-footer {
+  /* @inventory: Absolutely positioned footer strip on StartScreen — mono xs muted text, centered, flex row for version link + build info. 1-use. */
+  position: absolute;
+  bottom: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-mute);
+  text-align: center;
+  padding: 0 var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
 /* Grid bg — used in SETUP mode on the board canvas to show the layout grid */
 .sb-grid-bg {
   /* @inventory: Cross-hatch layout grid on the board canvas in SETUP mode. */
@@ -1618,6 +1689,72 @@
   font-size: var(--fs-xs);
   color: var(--text);
 }
+
+/* ── Overlay family ──────────────────────────────────────────────── */
+.sb-overlay {
+  /* @inventory: Fixed full-viewport overlay shell — deep background, flex column, no overscroll. Used for full-screen dialogs (z-index 300). */
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: var(--deep);
+  display: flex;
+  flex-direction: column;
+  overscroll-behavior: none;
+}
+.sb-overlay-header {
+  /* @inventory: Header strip for full-screen overlays — space-between flex row, border separator, no-shrink. Wraps sb-overlay-title + close action. */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.sb-overlay-title {
+  /* @inventory: Large VT323 heading inside an overlay header — identifies what the overlay contains. */
+  font-family: var(--font-ui);
+  font-size: var(--fs-lg);
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+.sb-overlay-body {
+  /* @inventory: Scrollable flex-fill body of an overlay — grows to fill remaining height, iOS-touch scroll, padded, flex-column content layout. */
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: var(--space-3) var(--space-4) var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ── Changelog (children of sb-overlay) ─────────────────────────── */
+.sb-changelog-entry-header {
+  /* @inventory: Per-entry header row in a changelog list — baseline alignment and margin override on sb-row. Use as class="sb-row sb-changelog-entry-header". */
+  align-items: baseline;
+  margin-bottom: var(--space-2);
+}
+.sb-changelog-version {
+  /* @inventory: Version number label inside a changelog entry — large VT323 in gold. */
+  font-family: var(--font-ui);
+  font-size: var(--fs-lg);
+  letter-spacing: 0.06em;
+  color: var(--gold);
+}
+.sb-changelog-items {
+  /* @inventory: <ul> list reset for changelog items — flex-column layout with small gap and no default margins. */
+  margin: 0;
+  padding-left: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.sb-changelog-item {
+  /* @inventory: Changelog list item text additions on top of sb-mono — xs font-size and relaxed line-height. Use as class="sb-mono sb-changelog-item". */
+  font-size: var(--fs-xs);
+  line-height: 1.55;
+}
+
 .sb-text-input {
   /* @inventory: Pixel-style text input — sunk background, bordered, VT323 uppercase. For pad name and form fields. */
   width: 100%;
@@ -1756,6 +1893,11 @@
   /* @inventory: Extra-small button modifier — smaller than sb-btn-sm; for tight button rows in inspector and type-confirm panels. */
   padding: 1px 6px;
   font-size: var(--fs-xs);
+}
+.sb-btn-unlock {
+  /* @inventory: Sizing modifier for the StartScreen TAP TO UNLOCK CTA — 240px min-width and taller padding. 1-use. Rule-mandated: minWidth + padding-override are static values. */
+  min-width: 240px;
+  padding: var(--space-3) var(--space-6);
 }
 .sb-btn-muted {
   /* @inventory: Visually recessive action button — 11px font (deliberate off-ladder, see sub-token pattern note), text-mute color, 32px height. For de-emphasized secondary actions like "More options". */
@@ -1939,4 +2081,17 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+}
+.sb-version-link {
+  /* @inventory: Bare button styled as underlined text link — for version number in StartScreen footer that triggers the changelog overlay. 1-use. Different function from sb-btn-clear (text-link vs dismiss button). */
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+  cursor: pointer;
+  letter-spacing: inherit;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
 }

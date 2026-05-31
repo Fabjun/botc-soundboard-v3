@@ -127,10 +127,15 @@ Verbotene Muster in neuem V3-Code:
 | `sb-btn-muted` | Visually recessive action button — 11px font (deliberate off-ladder, see sub-token pattern note), text-mute color, 32px height. For de-emphasized secondary actions like "More options". | `v3/src/styles/tokens.css` |
 | `sb-btn-primary` | Button variant — gold border and label; highlighted action. | `v3/src/styles/tokens.css` |
 | `sb-btn-sm` | Small-size modifier for .sb-btn; tighter padding and smaller font. | `v3/src/styles/tokens.css` |
+| `sb-btn-unlock` | Sizing modifier for the StartScreen TAP TO UNLOCK CTA — 240px min-width and taller padding. 1-use. Rule-mandated: minWidth + padding-override are static values. | `v3/src/styles/tokens.css` |
 | `sb-btn-xs` | Extra-small button modifier — smaller than sb-btn-sm; for tight button rows in inspector and type-confirm panels. | `v3/src/styles/tokens.css` |
 | `sb-caption` | Smallest text style — xs mono in text-mute; for filenames and metadata. Currently no TSX usage. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-card` | Pixel-frame container card with padding and drop-shadow elevation. Currently no TSX usage; V3 list items use sb-menu-row instead. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-category-item` | Active category row in filter rail — gold left border indicator, flex space-between, VT323 font. Slice 3 has only "All"; gains more uses in Slice 5+. | `v3/src/styles/tokens.css` |
+| `sb-changelog-entry-header` | Per-entry header row in a changelog list — baseline alignment and margin override on sb-row. Use as class="sb-row sb-changelog-entry-header". | `v3/src/styles/tokens.css` |
+| `sb-changelog-item` | Changelog list item text additions on top of sb-mono — xs font-size and relaxed line-height. Use as class="sb-mono sb-changelog-item". | `v3/src/styles/tokens.css` |
+| `sb-changelog-items` | <ul> list reset for changelog items — flex-column layout with small gap and no default margins. | `v3/src/styles/tokens.css` |
+| `sb-changelog-version` | Version number label inside a changelog entry — large VT323 in gold. | `v3/src/styles/tokens.css` |
 | `sb-col` | Flex-column layout primitive with min-height:0 — enables overflow scrolling in flex-column children. Use for column containers that scroll. | `v3/src/styles/tokens.css` |
 | `sb-count-text` | Inline count/quantity text — mono xs muted. Used in category rows and similar metadata contexts. | `v3/src/styles/tokens.css` |
 | `sb-creation-popover` | Fixed 300px popover for Path A (desktop) pad creation flow. | `v3/src/styles/tokens.css` |
@@ -145,6 +150,9 @@ Verbotene Muster in neuem V3-Code:
 | `sb-error-label` | Inline error/warning label — blood red, help cursor, left margin for inline placement. | `v3/src/styles/tokens.css` |
 | `sb-field-label` | Mono 11px field label for inspector sections — block display, bottom margin, uppercase. Used for NAME/TYPE/AUDIO SOURCE/HOTKEY/FADE labels. | `v3/src/styles/tokens.css` |
 | `sb-filter-rail` | Left sidebar filter column — deep background, right border, flex column, iOS-touch scroll. | `v3/src/styles/tokens.css` |
+| `sb-flame-aura` | Absolute 220×220 circular glow ring behind the flame icon — animated with sb-flicker (defined in global.css). 1-use. | `v3/src/styles/tokens.css` |
+| `sb-flame-icon` | Flame-colored SVG icon wrapper — applies --flame color and --glow-flame filter for currentColor SVG icons. 1-use (FlameLogo). Rule-mandated: both are static token values. | `v3/src/styles/tokens.css` |
+| `sb-flame-well` | Fixed 200×200 centered icon well for the StartScreen flame logo — position:relative anchors sb-flame-aura. 1-use. | `v3/src/styles/tokens.css` |
 | `sb-flex-1` | Flex fill — takes all remaining space in a flex container. Use as a spacer or to push siblings to opposite ends. | `v3/src/styles/tokens.css` |
 | `sb-grid-bg` | Cross-hatch layout grid on the board canvas in SETUP mode. | `v3/src/styles/tokens.css` |
 | `sb-hidden` | Visibility utility — hides element from layout (display:none). For hidden file inputs and conditionally invisible nodes. | `v3/src/styles/tokens.css` |
@@ -172,7 +180,11 @@ Verbotene Muster in neuem V3-Code:
 | `sb-mode-toggle-sparks` | Overflow container intended for spark particles during mode-switch. Not used; ModeToggle.tsx appends sparks to document.body instead. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-mono` | Secondary mono body text in text-dim; currently used only for the StartScreen tagline, designed as a utility for descriptions and body copy. | `v3/src/styles/tokens.css` |
 | `sb-num` | Premiere-style numeric scrubber chip — ew-resize cursor, sunk background; for PAD editor trim and loop inputs. [unused-css] | `v3/src/styles/tokens.css` |
+| `sb-overlay` | Fixed full-viewport overlay shell — deep background, flex column, no overscroll. Used for full-screen dialogs (z-index 300). | `v3/src/styles/tokens.css` |
+| `sb-overlay-body` | Scrollable flex-fill body of an overlay — grows to fill remaining height, iOS-touch scroll, padded, flex-column content layout. | `v3/src/styles/tokens.css` |
+| `sb-overlay-header` | Header strip for full-screen overlays — space-between flex row, border separator, no-shrink. Wraps sb-overlay-title + close action. | `v3/src/styles/tokens.css` |
 | `sb-overlay-scroll` | Scroll container for overlays and panels; contains overscroll within the element. Currently no TSX usage. [unused-css] | `v3/src/styles/global.css` |
+| `sb-overlay-title` | Large VT323 heading inside an overlay header — identifies what the overlay contains. | `v3/src/styles/tokens.css` |
 | `sb-pad` | Base pad shell — pixel-frame, type-colour left spine, is-hot glow, is-setup dashed border. | `v3/src/styles/tokens.css` |
 | `sb-pad-cell-add` | "+" symbol in empty grid cells; the tap-to-create affordance. | `v3/src/styles/tokens.css` |
 | `sb-pad-editor` | Right inspector panel shown when a pad is selected in SETUP mode (280px, scrolls). | `v3/src/styles/tokens.css` |
@@ -209,6 +221,11 @@ Verbotene Muster in neuem V3-Code:
 | `sb-slider-thumb` | Draggable thumb on the slider track with gold glow. Slice 8+ feature. [unused-css] | `v3/src/styles/tokens.css` |
 | `sb-source-item` | Clickable column item in a source picker list — column layout, 5px/8px padding, soft bottom separator, pointer cursor, 2px gap between name row and waveform preview. Background (selection state) set inline. | `v3/src/styles/tokens.css` |
 | `sb-source-tabs` | Tab row container in creation popover source picker — flex row, soft bottom border, no-shrink. Wraps sb-tab sb-tab-sm source-picker tabs. | `v3/src/styles/tokens.css` |
+| `sb-start-footer` | Absolutely positioned footer strip on StartScreen — mono xs muted text, centered, flex row for version link + build info. 1-use. | `v3/src/styles/tokens.css` |
+| `sb-start-nav` | Navigation buttons row on StartScreen — flex row with 12px gap and top margin. 1-use. | `v3/src/styles/tokens.css` |
+| `sb-start-screen` | Centered splash container for StartScreen — full-viewport centered flex column with 3-stop flame gradient. 1-use (StartScreen only). | `v3/src/styles/tokens.css` |
+| `sb-start-tagline` | Layout for the sb-mono is-italic tagline on StartScreen — sm font-size, centered, max-width constraint, bottom margin. 1-use. | `v3/src/styles/tokens.css` |
+| `sb-start-title` | Layout additions for the sb-display hero title on StartScreen — xl font-size, centered, bottom margin. 1-use. | `v3/src/styles/tokens.css` |
 | `sb-status-bar` | Bottom 24px strip showing mode, board name, and other metadata. | `v3/src/styles/tokens.css` |
 | `sb-tab` | Individual tab in a tab bar; is-active shows gold underline and label colour. | `v3/src/styles/tokens.css` |
 | `sb-tab-badge` | Count badge inside a tab label — mono xs muted, left margin for separation from tab text. | `v3/src/styles/tokens.css` |
@@ -226,6 +243,7 @@ Verbotene Muster in neuem V3-Code:
 | `sb-undo-toast-progress` | Animated gold progress bar at the bottom of the undo toast (linear shrink). | `v3/src/styles/tokens.css` |
 | `sb-upload-bar` | Upload status notification bar — flex row, raised background, top border, mono xs text. Color set inline for error/normal state. | `v3/src/styles/tokens.css` |
 | `sb-value-text` | Numeric value display in inspector — mono xs gold; for fade/volume values next to sliders. | `v3/src/styles/tokens.css` |
+| `sb-version-link` | Bare button styled as underlined text link — for version number in StartScreen footer that triggers the changelog overlay. 1-use. Different function from sb-btn-clear (text-link vs dismiss button). | `v3/src/styles/tokens.css` |
 <!-- AUTO-GENERATED:sb-classes END -->
 
 ---
