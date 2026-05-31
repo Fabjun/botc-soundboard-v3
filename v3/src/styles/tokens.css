@@ -473,6 +473,10 @@
   line-height: 1.05;
   font-weight: 400;
 }
+.sb-display-vt.is-heading {
+  font-size: var(--fs-xl);
+  text-align: center;
+}
 
 .sb-label {
   /* @inventory: Uppercase VT323 label; intended for field labels and section headings. Currently no TSX usage. [unused-css] */
@@ -646,6 +650,9 @@
   color: var(--gold);
   line-height: 1.1;
   margin: 0 0 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .sb-menu-row .sb-row-sub {
   font-family: var(--font-mono);
@@ -702,6 +709,10 @@
   --pix-bg: transparent;
   --pix-border: var(--border-blood);
   color: var(--danger);
+}
+.sb-btn.is-on-setup {
+  color: var(--night);
+  border-color: var(--night);
 }
 .sb-btn-sm {
   /* @inventory: Small-size modifier for .sb-btn; tighter padding and smaller font. */
@@ -1889,6 +1900,16 @@
   min-height: 28px;
   padding: 0 4px;
 }
+.sb-btn-icon-sm {
+  /* @inventory: Compact icon-button modifier — 36px min-width, tight 6px padding. For icon-only action buttons in list rows (edit, delete). Bet for 3g reuse (AudioRow). */
+  min-width: 36px;
+  padding: 0 6px;
+}
+.sb-btn-cta {
+  /* @inventory: CTA button sizing modifier — 200px min-width, 44px min-height (iOS touch guideline). For primary action buttons in empty states. */
+  min-width: 200px;
+  min-height: 44px;
+}
 .sb-btn-xs {
   /* @inventory: Extra-small button modifier — smaller than sb-btn-sm; for tight button rows in inspector and type-confirm panels. */
   padding: 1px 6px;
@@ -1937,13 +1958,14 @@
 /* ── LibraryScreen / Screen-level ─────────────────────────── */
 
 .sb-screen {
-  /* @inventory: Full-height screen root container — flex column, 100dvh, surface background, positioned; outline-offset for inset drag indicators. */
+  /* @inventory: Full-height screen root container — flex column, 100dvh, surface background, positioned, overflow hidden; outline-offset for inset drag indicators. */
   display: flex;
   flex-direction: column;
   height: 100dvh;
   background: var(--surface);
   position: relative;
   outline-offset: -2px;
+  overflow: hidden;
 }
 .sb-screen-empty {
   /* @inventory: Full-screen centered empty state — flex column, centered both axes, fills parent, mono xs text in text-mute. */
@@ -1958,6 +1980,9 @@
   font-size: var(--fs-xs);
   text-align: center;
   gap: var(--space-3);
+}
+.sb-screen-empty.is-loose {
+  padding: 60px var(--space-6);
 }
 .sb-upload-bar {
   /* @inventory: Upload status notification bar — flex row, raised background, top border, mono xs text. Color set inline for error/normal state. */
@@ -2094,4 +2119,120 @@
   letter-spacing: inherit;
   text-decoration: underline dotted;
   text-underline-offset: 3px;
+}
+
+/* ── Board screens (BoardScreen + BoardListScreen) ─────────────────
+   sb-menu-row is pre-flat legacy with existing descendant rules
+   (.sb-menu-row .sb-icon, .sb-menu-row .sb-row-title). 3f extends
+   those existing rules but adds no new descendant rules. The flat
+   invariant applies to all new classes in this section.            */
+
+.sb-board-body {
+  /* @inventory: 3-column content row in BoardScreen — fills space between TopBar and StatusBar, flex row with overflow containment. */
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+.sb-board-main {
+  /* @inventory: Center column of BoardScreen 3-col layout — flex column fill with min-width:0 (allows inner content to shrink) and overflow containment. */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+.sb-center-placeholder {
+  /* @inventory: Centered placeholder message in a flex-fill area — flex row, centered both axes, mono muted text, gap for optional inline button. */
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  color: var(--text-mute);
+  gap: var(--space-3);
+}
+.sb-place-banner {
+  /* @inventory: Place-Mode notification banner in BoardScreen — flex row, setup-mode background, no-shrink. Shown while user picks a pad slot. */
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px var(--space-3);
+  background: var(--mode-setup);
+  flex-shrink: 0;
+}
+.sb-place-banner-label {
+  /* @inventory: Label text inside sb-place-banner — fills row, mono xs, night color (on setup-mode bg). */
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--night);
+}
+.sb-setup-toolbar {
+  /* @inventory: SETUP-mode bottom toolbar in BoardScreen — flex row, deep background, top border, no-shrink. Contains ADD PAD button and keyboard hint. */
+  padding: 6px var(--space-3);
+  background: var(--deep);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+.sb-kbd {
+  /* @inventory: Inline keyboard key indicator — raised background, tight horizontal padding. */
+  background: var(--raised);
+  padding: 0 var(--space-1);
+}
+.sb-empty-body {
+  /* @inventory: Description text inside an empty state — mono xs muted, centered, max-width constrained, relaxed line-height. */
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-mute);
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.6;
+}
+.sb-board-list-area {
+  /* @inventory: Scrollable board list container in BoardListScreen — flex column fill with iOS-touch scroll and overscroll containment. */
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.sb-board-row {
+  /* @inventory: Board list row modifier for sb-menu-row — raised pixel-frame background, pointer cursor, tighter gap/padding, 56px min-height. Overrides sb-menu-row defaults via later cascade. */
+  --pix-bg: var(--raised);
+  cursor: pointer;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  min-height: 56px;
+}
+.sb-flex-min {
+  /* @inventory: Text-fill layout primitive — flex:1 + min-width:0. Use for flex containers that hold truncatable text. Distinct from sb-flex-1 (spacer): min-width:0 is the defining property. */
+  flex: 1;
+  min-width: 0;
+}
+.sb-row-actions {
+  /* @inventory: Non-shrinking compact action-button group — flex row, 4px gap, flex-shrink:0. For icon-button clusters at the trailing end of list rows. Bet for 3g reuse (AudioRow action group). */
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+.sb-row-rename-input {
+  /* @inventory: Inline rename input in a list row — matches row-title typography (font-ui, fs-lg, uppercase), sunk background, strong border, no outline. Bet for 3g reuse (AudioRow). */
+  background: var(--sunk);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--fs-lg);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px var(--space-2);
+  outline: none;
+  width: 100%;
 }

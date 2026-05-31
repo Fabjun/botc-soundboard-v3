@@ -51,14 +51,7 @@ export function BoardListScreen(): JSX.Element {
   }
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100dvh',
-        background: 'var(--surface)',
-      }}
-    >
+    <div class="sb-screen">
       <TopBarV2
         title="Boards"
         breadcrumb={`${allBoards.length} board${allBoards.length !== 1 ? 's' : ''}`}
@@ -86,18 +79,7 @@ export function BoardListScreen(): JSX.Element {
       />
 
       {/* Board list */}
-      <div
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          WebkitOverflowScrolling: 'touch',
-          overscrollBehavior: 'none',
-          padding: '8px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '4px',
-        }}
-      >
+      <div class="sb-board-list-area">
         {allBoards.length === 0 ? (
           <EmptyBoardsState onCreate={handleCreate} />
         ) : (
@@ -157,33 +139,23 @@ function BoardRow({ board, onOpen }: { board: Board; onOpen: () => void }): JSX.
 
   return (
     <div
-      class="sb-menu-row"
+      class="sb-menu-row sb-board-row"
       data-testid={`board-row-${board.id}`}
-      style={
-        {
-          '--pix-bg': 'var(--raised)',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          padding: '10px 14px',
-          minHeight: '56px',
-        } as Record<string, string>
-      }
       onClick={() => {
         if (!editing) onOpen();
       }}
     >
       {/* Icon */}
-      <div style={{ flexShrink: 0, color: 'var(--gold)' }}>
+      <div class="sb-icon">
         <PixelIcon name="scroll" size={18} />
       </div>
 
       {/* Name + meta */}
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <div class="sb-flex-min">
         {editing ? (
           <input
             type="text"
+            class="sb-row-rename-input"
             value={editValue}
             onInput={(e) => setEditValue((e.target as HTMLInputElement).value)}
             onKeyDown={(e) => {
@@ -199,29 +171,9 @@ function BoardRow({ board, onOpen }: { board: Board; onOpen: () => void }): JSX.
             onBlur={commitRename}
             onClick={(e) => e.stopPropagation()}
             autoFocus
-            style={{
-              background: 'var(--sunk)',
-              border: '1px solid var(--border-strong)',
-              color: 'var(--text)',
-              fontFamily: 'var(--font-ui)',
-              fontSize: 'var(--fs-lg)',
-              letterSpacing: '.08em',
-              textTransform: 'uppercase',
-              padding: '3px 8px',
-              outline: 'none',
-              width: '100%',
-            }}
           />
         ) : (
-          <div
-            class="sb-row-title"
-            data-testid={`board-row-title-${board.id}`}
-            style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
+          <div class="sb-row-title" data-testid={`board-row-title-${board.id}`}>
             {board.name}
           </div>
         )}
@@ -235,11 +187,10 @@ function BoardRow({ board, onOpen }: { board: Board; onOpen: () => void }): JSX.
 
       {/* Actions */}
       {!editing && (
-        <div class="sb-row-sm" style={{ flexShrink: 0 }} onClick={(e) => e.stopPropagation()}>
+        <div class="sb-row-actions" onClick={(e) => e.stopPropagation()}>
           <button
-            class="sb-btn sb-btn-sm sb-btn-ghost"
+            class="sb-btn sb-btn-sm sb-btn-ghost sb-btn-icon-sm"
             data-testid={`board-edit-${board.id}`}
-            style={{ minWidth: 36, padding: '0 6px' }}
             title="Rename board"
             onClick={() => {
               setEditValue(board.name);
@@ -249,9 +200,8 @@ function BoardRow({ board, onOpen }: { board: Board; onOpen: () => void }): JSX.
             <PixelIcon name="edit" size={11} />
           </button>
           <button
-            class={`sb-btn sb-btn-sm ${deleteConfirm ? 'sb-btn-danger' : 'sb-btn-ghost'}`}
+            class={`sb-btn sb-btn-sm sb-btn-icon-sm ${deleteConfirm ? 'sb-btn-danger' : 'sb-btn-ghost'}`}
             data-testid={`board-delete-${board.id}`}
-            style={{ minWidth: 36, padding: '0 6px' }}
             title={deleteConfirm ? 'Click again to confirm' : 'Delete board'}
             onClick={handleDelete}
             onBlur={() => setDeleteConfirm(false)}
@@ -268,37 +218,15 @@ function BoardRow({ board, onOpen }: { board: Board; onOpen: () => void }): JSX.
 
 function EmptyBoardsState({ onCreate }: { onCreate: () => void }): JSX.Element {
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flex: 1,
-        padding: '60px 24px',
-        gap: 16,
-      }}
-    >
+    <div class="sb-screen-empty is-loose">
       <PixelIcon name="scroll" size={48} color="var(--border)" />
-      <div class="sb-display-vt" style={{ fontSize: 22, textAlign: 'center' }}>
-        No Boards Yet
-      </div>
-      <div
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 13,
-          color: 'var(--text-mute)',
-          textAlign: 'center',
-          maxWidth: 300,
-          lineHeight: 1.6,
-        }}
-      >
+      <div class="sb-display-vt is-heading">No Boards Yet</div>
+      <div class="sb-empty-body">
         A Board holds your Scenes and Pads for one game session or campaign.
       </div>
       <button
-        class="sb-btn sb-btn-primary"
+        class="sb-btn sb-btn-primary sb-btn-cta"
         data-testid="create-first-board-button"
-        style={{ minWidth: 220, minHeight: 44, gap: 8 }}
         onClick={onCreate}
       >
         <PixelIcon name="sparkle" size={14} />+ CREATE FIRST BOARD

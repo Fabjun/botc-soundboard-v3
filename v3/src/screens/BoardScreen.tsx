@@ -119,28 +119,11 @@ export function BoardScreen(): JSX.Element {
 
   if (!board) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100dvh',
-          background: 'var(--surface)',
-        }}
-      >
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: 'var(--font-mono)',
-            color: 'var(--text-mute)',
-          }}
-        >
+      <div class="sb-screen">
+        <div class="sb-center-placeholder">
           Board not found.
           <button
             class="sb-btn sb-btn-sm sb-btn-ghost"
-            style={{ marginLeft: 12 }}
             onClick={() => {
               currentScreen.value = 'board-list';
             }}
@@ -284,15 +267,7 @@ export function BoardScreen(): JSX.Element {
   // ── Layout ─────────────────────────────────────────────────────────────────
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100dvh',
-        background: 'var(--surface)',
-        overflow: 'hidden',
-      }}
-    >
+    <div class="sb-screen">
       <BoardTopBarV3
         boardName={board.name}
         sceneName={scene?.name}
@@ -306,14 +281,7 @@ export function BoardScreen(): JSX.Element {
       />
 
       {/* Main content */}
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          minHeight: 0,
-          overflow: 'hidden',
-        }}
-      >
+      <div class="sb-board-body">
         {/* Left: Scene rail */}
         <SceneRail
           board={board}
@@ -325,15 +293,7 @@ export function BoardScreen(): JSX.Element {
         />
 
         {/* Center: Pad grid or empty states */}
-        <main
-          style={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            minWidth: 0,
-            overflow: 'hidden',
-          }}
-        >
+        <main class="sb-board-main">
           {!hasScenes ? (
             <EmptyBoardState
               onAddScene={async () => {
@@ -355,46 +315,18 @@ export function BoardScreen(): JSX.Element {
               }}
             />
           ) : !scene ? (
-            <div
-              style={{
-                flex: 1,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: 'var(--font-mono)',
-                color: 'var(--text-mute)',
-              }}
-            >
-              Select a scene
-            </div>
+            <div class="sb-center-placeholder">Select a scene</div>
           ) : (
             <>
               {/* Path B Mobile — Place-Mode banner */}
               {placeMode && (
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    padding: '6px 12px',
-                    background: 'var(--mode-setup)',
-                    flexShrink: 0,
-                  }}
-                >
-                  <span
-                    style={{
-                      flex: 1,
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '12px',
-                      color: 'var(--night)',
-                    }}
-                  >
+                <div class="sb-place-banner">
+                  <span class="sb-place-banner-label">
                     Tap a slot to place &quot;
                     {libraryItems.value.find((m) => m.id === placeMode.itemId)?.name ?? '…'}&quot;
                   </span>
                   <button
-                    class="sb-btn sb-btn-sm sb-btn-ghost"
-                    style={{ color: 'var(--night)', borderColor: 'var(--night)' }}
+                    class="sb-btn sb-btn-sm sb-btn-ghost is-on-setup"
                     onClick={() => setPlaceMode(null)}
                   >
                     Cancel
@@ -419,29 +351,13 @@ export function BoardScreen(): JSX.Element {
 
           {/* SETUP toolbar — ADD PAD button */}
           {mode === 'edit' && scene && (
-            <div
-              style={{
-                padding: '6px 12px',
-                background: 'var(--deep)',
-                borderTop: '1px solid var(--border)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                flexShrink: 0,
-              }}
-            >
+            <div class="sb-setup-toolbar">
               <button class="sb-btn sb-btn-sm sb-btn-primary" onClick={handleAddPad}>
                 <PixelIcon name="sparkle" size={11} />
                 ADD PAD
               </button>
-              <span
-                style={{
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '11px',
-                  color: 'var(--text-mute)',
-                }}
-              >
-                or press <kbd style={{ background: 'var(--raised)', padding: '0 4px' }}>A</kbd>
+              <span class="sb-hint-text">
+                or press <kbd class="sb-kbd">A</kbd>
               </span>
             </div>
           )}
@@ -490,39 +406,13 @@ export function BoardScreen(): JSX.Element {
 
 function EmptyBoardState({ onAddScene }: { onAddScene: () => void }): JSX.Element {
   return (
-    <div
-      style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 16,
-        padding: '40px 24px',
-        background: 'var(--surface)',
-      }}
-    >
+    <div class="sb-screen-empty">
       <PixelIcon name="scroll" size={40} color="var(--border)" />
-      <div class="sb-display-vt" style={{ fontSize: 22, textAlign: 'center' }}>
-        Empty Board
-      </div>
-      <div
-        style={{
-          fontFamily: 'var(--font-mono)',
-          fontSize: 13,
-          color: 'var(--text-mute)',
-          textAlign: 'center',
-          maxWidth: 320,
-          lineHeight: 1.6,
-        }}
-      >
+      <div class="sb-display-vt is-heading">Empty Board</div>
+      <div class="sb-empty-body">
         Add a scene to start placing pads. Scenes group pads by narrative moment.
       </div>
-      <button
-        class="sb-btn sb-btn-primary"
-        style={{ minWidth: 200, minHeight: 44, gap: 8 }}
-        onClick={onAddScene}
-      >
+      <button class="sb-btn sb-btn-primary sb-btn-cta" onClick={onAddScene}>
         <PixelIcon name="sparkle" size={14} />+ NEW SCENE
       </button>
     </div>
