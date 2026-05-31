@@ -715,6 +715,65 @@ Moderate-confidence:
 - `sb-tab-sm` — **lower confidence (3g/3h)**: Compact tab modifier. Confirm in any compact tab context; cleanup if not reused outside PadCreationPopover.
 - `sb-source-tabs` — **1-use flag**: Only used in PadCreationPopover source picker. Cleanup candidate by end of 3h if no second creation flow reuses it (or merge with sb-tabs at standardization time).
 
+---
+
+### Sorte-2 Bet Index (consolidated)
+
+> **Canonical status source.** Future sessions (3f–3h, Slice 8) update this table — not their individual session entries. Session entries remain as historical context; when a bet is won or lost, mark it here first. If a session entry says "PENDING" and this table says "OPEN-pending-3g", they mean the same thing — the table wording is authoritative. Do not create new per-session bet sections; extend this index instead.
+
+**Six status categories:**
+- **WON** — target session used the class as Path A; confirmed ≥2-use. No further action.
+- **LOST — cleanup candidate** — target session did not use it; no other justification. Merge or remove the class.
+- **LOST — but class justified** — cross-session bet failed; class is legitimately used on its origin screen. No cleanup; downgrade expectation from "multi-screen" to "screen-local."
+- **PARTIALLY-FAILED** — tested in one target session and failed; remaining target sessions still pending. Class is active on its origin screen regardless of outcome.
+- **OPEN — pending session X** — target session has not run; bet stands.
+- **SPECULATIVE — far** — target is a distant or unplanned slice (e.g. Slice 8); accepted 1-use class with a vague future hope, not a near-term testable bet.
+
+| # | Class | Origin | Remaining target | Status | Verfallsbedingung |
+|---|-------|--------|------------------|--------|--------------------|
+| 1 | `sb-type-btn` | 3b | — | **WON (3d)** | Confirmed ≥2-use. No action. |
+| 2 | `sb-section-header-row` | 3b | 3f, 3g | **OPEN — pending 3f** | Cleanup if no Path A use by end of 3h. |
+| 3 | `sb-panel-title` | 3b | 3g | **OPEN — pending 3g** | Cleanup if isolated to PadEditorPanel. Side-tested in 3e against ChangelogOverlay title — rejected (font-mono/fs-xs vs font-ui/fs-lg); declared target is 3g, status unchanged. |
+| 4 | `sb-search-bar` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. High confidence. |
+| 5 | `sb-search-field` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. High confidence. |
+| 6 | `sb-btn-clear` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. High confidence. |
+| 7 | `sb-item-list` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. High confidence. |
+| 8 | `sb-screen` | 3c | 3f | **PARTIALLY-FAILED (3e failed, 3f pending)** | In active use on LibraryScreen — no cleanup even if 3f also fails; downgrade to screen-local only. |
+| 9 | `sb-screen-empty` | 3c | 3e | **LOST — but class justified** | Failed in 3e (StartScreen has no empty state). In active use on LibraryScreen. No cleanup. |
+| 10 | `sb-tab-bar` | 3c | 3f, 3g | **PARTIALLY-FAILED (3e failed, 3f/3g pending)** | In active use on LibraryScreen — no cleanup even if all remaining tests fail; downgrade to screen-local only. |
+| 11 | `sb-filter-rail` | 3c | 3g | **OPEN — pending 3g** | Cleanup if LibraryPanel doesn't use it. Moderate confidence. |
+| 12 | `sb-scroll-fill` | 3d | 3g | **OPEN — pending 3g** | Cleanup if neither SceneRail nor LibraryPanel uses it. High confidence. |
+| 13 | `sb-sheet-header` | 3d | 3h | **OPEN — pending 3h** | Cleanup if PadTypeConfirmDialog (3h) doesn't use it. Moderate confidence. |
+| 14 | `sb-creation-popover-actions` | 3d | 3h | **OPEN — pending 3h** | Cleanup or merge if 3h doesn't use it. Moderate confidence. |
+| 15 | `sb-btn-muted` | 3d | 3h | **OPEN — pending 3h** | Cleanup if 3h doesn't use it. Moderate confidence. |
+| 16 | `sb-tab-sm` | 3d | 3g (also 3h) | **OPEN — pending 3g** | Cleanup if not reused outside PadCreationPopover. Lower confidence. |
+| 17 | `sb-source-tabs` | 3d | end of 3h | **OPEN — pending 3h** | 1-use flag. Cleanup or merge with `sb-tabs` if no second creation flow by end of 3h. |
+| 18 | `sb-overlay` | 3e | Slice 8 | **SPECULATIVE — far** | Promote to confirmed multi-use if settings screen or future overlays appear in Slice 8. |
+| 19 | `sb-overlay-header` | 3e | Slice 8 | **SPECULATIVE — far** | Same as `sb-overlay`. |
+| 20 | `sb-overlay-body` | 3e | Slice 8 | **SPECULATIVE — far** | Same as `sb-overlay`. |
+
+**Count check:** 20 bets total. WON: 1 · LOST-cleanup: 0 · LOST-justified: 1 · PARTIALLY-FAILED: 2 · OPEN-pending-3f: 1 · OPEN-pending-3g: 8 · OPEN-pending-3h: 4 · SPECULATIVE: 3 → sum = 20 ✓
+
+---
+
+#### Bets 3g must test
+
+3g covers `SceneRail.tsx` + `LibraryPanel.tsx` + `AudioRow.tsx`. Verified against individual bet entries:
+
+**Certain (declared 3g targets):**
+1. `sb-search-bar` (#4) — LibraryPanel search wrapper bar (high confidence)
+2. `sb-search-field` (#5) — LibraryPanel sunk search input row (high confidence)
+3. `sb-btn-clear` (#6) — LibraryPanel search clear × button (high confidence)
+4. `sb-item-list` (#7) — LibraryPanel scrollable item list (high confidence)
+5. `sb-filter-rail` (#11) — LibraryPanel filter sidebar rail (moderate)
+6. `sb-scroll-fill` (#12) — SceneRail list + LibraryPanel list scroll areas (high confidence)
+7. `sb-panel-title` (#3) — LibraryPanel inspector title span (primary hope per 3b entry)
+
+**Also applies to 3g (multi-session bets, lower certainty):**
+8. `sb-tab-sm` (#16) — any compact tab context in SceneRail or LibraryPanel (lower confidence)
+9. `sb-tab-bar` (#10) — PARTIALLY-FAILED; 3f is primary remaining test but 3g also listed
+10. `sb-section-header-row` (#2) — 3f is primary; test if a space-between section header appears in 3g files
+
 **Ordering rationale (load-bearing):**
 - 3a first — layout primitives are a dependency for all subsequent sessions
 - 3b (PadEditorPanel) **before** 3d (PadCreationPopover) — both have form-section patterns;
