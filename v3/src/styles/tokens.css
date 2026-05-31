@@ -1832,7 +1832,7 @@
   /* @inventory: Clickable row in library browser list — padded, truncated, pointer cursor; selection color/bg set inline. */
   padding: 5px 8px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   border-bottom: 1px solid var(--border-soft);
   cursor: pointer;
   overflow: hidden;
@@ -1860,8 +1860,8 @@
   /* @inventory: Read-only display row in inspector — flex, sunk background, bordered; for hotkey and value display. */
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 8px;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
   background: var(--sunk);
   border: 1px solid var(--border);
 }
