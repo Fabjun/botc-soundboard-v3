@@ -7,9 +7,18 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.7';
+export const APP_VERSION = '3.0.8';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.8',
+    date: '2026-06-04',
+    items: [
+      'Docs: Library-as-tile-grid working assumption, modular sidebar building block, multi-level settings hierarchy — BACKLOG Design Session 2026-06-04',
+      'Docs: C10 assumption verified (Library structurally different from pad grid), C10 Punkt 8 als Sonderfall des allgemeinen Hierarchie-Modells ausgewiesen',
+      'Docs: Architektur-Motto "Think big, but don\'t rush" ergänzt',
+    ],
+  },
   {
     version: '3.0.7',
     date: '2026-05-28',
