@@ -851,6 +851,110 @@ before the resize handle is built.
 
 ---
 
+#### Mobile Board design round 1 — Claude Design outcome
+
+> **Context:** A "discuss-first" brief for the mobile Board (GAME + SETUP) was sent to Claude Design. The reply combined (a) critique within the decided scope — adopted as refinements — and (b) flagged feature candidates plus a grip-options plan. Build go for a clickable phone prototype was given after this session; the settled items flow into that prototype.
+>
+> **Status labels used below:** _settled refinement_ = critique within scope, adopted; _settled decision_ = user-decided; _confirmed_ = already-decided, re-affirmed; _parked candidate_ = idea, NOT to be built without an explicit go-ahead; _dropped idea_ = explicitly excluded.
+
+---
+
+#### Adopted refinements _(settled — flow into the prototype)_
+
+These came from Claude Design's critique within already-decided scope and are accepted as refinements of the existing design.
+
+### SETUP sheet-shrink during active tuning _(settled refinement)_
+
+The SETUP live-preview sheet must not cover the grid it previews. On a phone, a bottom-sheet holding size/gap/columns/font controls covers 40–50% of the grid — you'd tune columns while seeing only the top rows reflow. **Resolution:** while a control is actively being dragged, the sheet collapses to a single thin strip (just that control + its live value) so the grid is almost fully visible during the moment that matters; release → sheet returns. The SETUP sidebar is a partial sheet (grid visible behind) that further shrinks during active tuning.
+**→ Cross-reference:** [C10](#c10--variable-grid-gap-preserving-reflow-gesture-based-scroll-protection-settings-architecture) (the column/size controls live in the SETUP sidebar; sheet behavior is the interaction layer on top of C10's display settings) · [2d — Sidebar as reusable building block](#2d--sidebar-as-reusable-building-block) (the sidebar shell that houses these controls).
+
+### FLIP re-wrap animation for column-change _(settled refinement)_
+
+Continuous column-change with ~64 pads must not be visually violent. Dragging the column slider re-wraps the whole sequence each step; 64 pads jumping is disorienting. **Resolution:** (i) animate the re-wrap with FLIP so pads visibly travel to their new slots (object permanence), not teleport; (ii) anchor the re-wrap on the pad currently at the top of the viewport so the scroll position doesn't leap mid-drag. C10 decided the _what_ (hard-wrapping sequence); this refinement is the _how it animates_.
+**→ Cross-reference:** [C10 point 4](#c10--variable-grid-gap-preserving-reflow-gesture-based-scroll-protection-settings-architecture) (hard-wrapping sequence — the mechanism being animated).
+
+### STOP ALL: dedicated, oversized, high-contrast real estate _(settled refinement)_
+
+STOP ALL gets dedicated, oversized, high-contrast real estate (likely a fixed corner). It is the one control that must never be mis-hit or hard to find, in the dark, mid-performance. This constrains the whole bottom-band layout, so STOP's priority is explicit. Related: the expanded now-playing overlay (when 6–8 loops run) is a scrollable overlay, but STOP ALL stays reachable from the thumb zone regardless of that overlay's state — the user is never trapped scrolling a mixer to kill sound.
+**→ Cross-reference:** [PANIC / fade-all button](#panic--fade-all-button) (engine already done; this refinement constrains its placement in the layout) · [Glanceable loop state](#glanceable-loop-state) (the now-playing overlay context where the scroll-vs-STOP conflict arises).
+
+### Color-independent mode legibility _(settled refinement)_
+
+Mode legibility must not lean on color alone. Since atmosphere is provisional, the mode read rests on gold↔teal + pad-face treatment + bottom-band swap. The solid-vs-dashed pad face is the load-bearing, color-independent channel (works for a deuteranope and with atmosphere off) — not decoration. Removing the atmosphere layer must cost nothing on legibility.
+**→ Cross-reference:** [Mode-awareness cues (Slice 8)](#mode-awareness-cues) (atmosphere is the highest-impact option, but settled cues carry the mode without it).
+
+---
+
+#### Two decisions _(settled)_
+
+### D1 — Gap creation in SETUP: empty slots are tappable cells _(settled decision)_
+
+In **SETUP mode**, empty slots are visible, tappable cells: tapping an empty slot creates a pad there, exactly as the existing "Add PAD" button does — reusing the existing pad-creation mechanism, with the empty cell itself as the new trigger location. In **GAME mode**, an empty slot is simply empty space (not rendered as a cell). This makes "deliberately leaving a gap" well-defined: a gap is an unfilled slot; you fill it by tapping it.
+**→ Cross-reference:** [C10 point 3](#c10--variable-grid-gap-preserving-reflow-gesture-based-scroll-protection-settings-architecture) (free placement with gaps allowed — this decision gives gaps their creation mechanic).
+
+### D2 — Swipe and mode-switch are two different interactions _(settled decision — consolidates B8)_
+
+Two DIFFERENT interactions that must not be conflated:
+
+**Scene switching:** The tappable scene tab/switcher is the primary path in **BOTH modes**. A horizontal swipe is an optional accelerator **ONLY in GAME mode** — NOT in SETUP (in SETUP the reorder-drag owns the gesture from `pointerdown` via `setPointerCapture()`; a scene-swipe would collide with pad-moving — code-confirmed, hard conflict without redesign). The stray-swipe risk mid-performance (Claude Design critique #4) applies to the GAME scene-swipe; mitigations adopted: firmer horizontal threshold, scene-edge peek before commit, snap-back if ambiguous.
+
+**Mode switching (GAME↔SETUP):** ONLY via the switch control, which doubles as the "SETUP/GAME" heading. **NEVER via swipe.**
+
+This is a clarification and consolidation of B8, not a reversal.
+**→ Consolidates:** [B8 — Szenenwechsel-Mechanismus](#b8--szenenwechsel-mechanismus-tap-switcher-primär-swipe-optional-und-game-only).
+
+---
+
+#### Feature candidates _(parked — NOT to be built; each needs an explicit go-ahead; "think big, don't rush")_
+
+These are ideas, each with a stated relation to already-decided things and a condition under which it would become relevant. **Do not build any of these without an explicit decision.**
+
+### Performance Lock _(parked candidate — strong candidate, phone-specific)_
+
+A thumb-zone lock that disables SETUP entry (and the optional GAME scene-swipe) during live play. Addresses the remaining risk of an accidental mode-switch mid-performance — a stray tap on the SETUP/GAME heading turning fires into moves.
+**Build when:** this accidental-switch need shows up in real use.
+**Relation to existing:** extends [Stage Lock](#stage-lock) (that candidate covers layout + edit-gesture freeze; this adds SETUP entry specifically) · [Parked candidates](#parked-candidates-_not-committed-each-has-a-stated-problem-it-would-solve_).
+
+### Haptic gesture feedback _(parked candidate — verify iOS availability first)_
+
+A distinct buzz on pickup-engage (fill-ring completes) and on fire; expresses "make gesture states feel natural" through touch.
+**CRITICAL CAVEAT:** The web Vibration API is historically **NOT** supported on iOS Safari — since the primary target is iPhone + Brave, verify availability on the real device before considering this further (measure, don't guess). May be technically unavailable on the target.
+**Build when:** iOS/Brave Vibration API availability confirmed on the real device AND a friction point in real use supports it.
+**→ [Parked candidates](#parked-candidates-_not-committed-each-has-a-stated-problem-it-would-solve_).**
+
+### Hold-to-audition in SETUP _(dropped idea — explicitly excluded for now)_
+
+**Status: DROPPED.** The user knows their own sounds; auditioning solves a non-problem for this audience. Recorded as a conceptual idea only; not a deferred feature.
+Two notes if ever revisited: (i) it would collide with the decided SETUP long-press (= pick up pad) and would need a different gesture or location; (ii) it overlaps the Pad Editor preview scope and the audition-vs-live-output routing question.
+**→ Relation to existing:** [B9 — audition-vs-live-output candidate](#b9--gap-einordnung-drei-bestätigungen-zwei-neue-kandidaten) (B9-d is a separate concern about audio routing — dropping hold-to-audition does not close B9-d) · [Long-Press-Peek](#long-press-peek) (the only remaining long-press candidate in SETUP; its coexistence question is already documented there).
+
+### Named display presets _(parked candidate — low priority)_
+
+A recallable saved combo of size/gap/columns/font. **Reframed:** this is an EXTENSION of the existing default concept (one default per element-type → multiple named ones), NOT a new feature — it belongs with the multi-level settings hierarchy and deferred Display-Settings work. The most likely use case (different devices) may already be covered by per-device-separate settings already decided. Additionally: with per-surface settings, a preset would need to clarify whether it's per-surface or cross-surface.
+**Build when:** a real need to switch between configurations on the same device is demonstrated.
+**→ Cross-reference:** [2e — Multi-level settings hierarchy](#2e--multi-level-settings-hierarchy) (this would be an extension of the default/individual model, not a standalone feature).
+
+---
+
+#### Confirmed _(already-decided; re-affirmed in this session)_
+
+### Atmosphere stays provisional _(confirmed)_
+
+Hearth-glow/embers atmosphere is architected as a toggleable layer the mode distinction does NOT depend on; evaluated separately (incl. performance). The settled mode cues (gold↔teal, pad-face, bottom-band swap) carry mode on their own. Removing atmosphere must cost nothing on legibility.
+**→ Cross-reference:** [Mode-awareness cues (Slice 8)](#mode-awareness-cues) · [Color-independent mode legibility](#color-independent-mode-legibility-_settled-refinement_) above.
+
+### Fill-ring: scroll always wins _(confirmed)_
+
+Fill-ring on long-hold is kept. Any movement past the scroll threshold cancels the ring instantly — scroll intent always wins over pickup. This is the LibraryPanel-pattern applied to pad pickup in SETUP.
+
+### Grip options: three treatments, pending visual decision _(confirmed — review pending)_
+
+Claude Design will show THREE treatments side-by-side: **A** (protrude+color), **B** (pictographic flush), **C** (raised vs. recessed) — each on phone bottom-seam AND tablet vertical-seam, in active AND dimmed states (dimmed is the real test). Winner propagates everywhere.
+**Status:** No decision yet — options to be reviewed.
+**→ Cross-reference:** [Summonable overlay contract](#summonable-overlay-contract-_pending-not-yet-finalized--refined-after-panel-fit-check_) (the grip is the visual face of the contract's seam handle) · [A3 — Grip-Vokabular: Rail vs. Pull-Tab](#a3--grip-vokabular-rail-vs-pull-tab-_betrifft-summonable-overlay-vertrag_).
+
+---
+
 ## 2. Documentation Debt
 
 ### DESIGN_SYSTEM.md §1–§5 write out

@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.9';
+export const APP_VERSION = '3.0.10';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.10',
+    date: '2026-06-04',
+    items: [
+      'Docs: Mobile Board design round 1 (Claude Design) — adopted refinements (sheet-shrink, FLIP re-wrap, STOP ALL priority, color-independent mode legibility), gap-creation + swipe/mode-switch decisions, parked feature candidates',
+    ],
+  },
   {
     version: '3.0.9',
     date: '2026-06-04',
