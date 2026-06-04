@@ -74,6 +74,7 @@ Jede Entscheidung bekommt eine eigene Datei. Format: `docs/architecture/_templat
 | [ADR-0026](0026-mode-toggle-headline.md) | Mode-Toggle als interaktive Screen-Headline (BoardTopBarV3) | Accepted | Slice 3 | 2026-05-27 |
 | [ADR-0027](0027-pad-type-colors-semantic.md) | PAD-Typ-Farben sind semantisch reserviert | Accepted | cross-cutting | 2026-05-27 |
 | [ADR-0028](0028-single-component-variants.md) | Ein Component pro UI-Element — Varianten via Props | Accepted | cross-cutting | 2026-05-27 |
+| [ADR-0045](0045-two-axis-adaptive-model.md) | Zwei-Achsen-Adaptives Modell — eine App, keine getrennten Systeme | Accepted | cross-cutting | 2026-06-04 |
 
 ### Interaktion
 

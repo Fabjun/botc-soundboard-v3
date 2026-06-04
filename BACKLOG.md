@@ -397,13 +397,50 @@ is correct; no implementation change needed.
 Design-code drift is NOT resolved by updating design files. Stale places (e.g., `v11-mobile`
 shows 3 columns; 4-column grid is binding) remain as archive.
 
-### Desktop after mobile; two separate interaction systems
+### Two-axis adaptive model
 
-Desktop is a post-mobile phase with its own paradigm: mouse/keyboard, draggable panels.
-Mobile and Desktop are separated by **input type** (Touch vs. Mouse/Keyboard), not screen size.
-The mobile system spans adaptively from phone to tablet (all touch-based).
-**4-column grid is binding across all touch sizes**
+The app is **ONE adaptive application** — no separate "Desktop system," no version switch.
+Presentation adapts along two independent axes:
+
+**Axis 1 — Screen format** governs spatial layout (where things sit). Narrow/portrait →
+dock bar at the bottom, thumb zone. Wide/landscape → side-rail, more visible simultaneously.
+This is the responsive axis (CSS breakpoints). Crucially, dock-edge position depends on screen
+FORMAT, not on input type — a phone driven by a mouse keeps its bar at the bottom because a
+side-rail is awkward in portrait format, not because it is touch.
+
+**Axis 2 — Input type** governs additive capabilities (what you can do), WITHOUT changing the
+spatial layout. Touch is always the base (works everywhere). When a mouse/keyboard is present,
+ADDITIONAL capabilities layer on top: hover tooltips, right-click context menus, keyboard
+shortcuts. Progressive enhancement, not a separate version.
+
+The two axes are independent — all four combinations make sense (narrow+touch, narrow+mouse,
+wide+touch, wide+mouse). The current mobile prototype is the "narrow + touch" region; the
+existing app code is the "wide + mouse" region. Both are regions of ONE adaptive app.
+
+**On density:** "denser targets" belongs to Axis 1 (screen size → larger screens afford denser
+layout), NOT to Axis 2 (input type). The touch-minimum target size (~44 px) is the base for all
+inputs. A mouse hits large targets fine; no input-driven density change is assumed. If denser
+layouts are ever wanted, they belong on Axis 1, large-screen — not baked in as Axis-2 behaviour.
+
+**What "mobile first" now means:** the "narrow + touch" region of the adaptive space is built
+first. The existing app code already is the "wide + mouse" region. There is no separate "Desktop
+system" to build as a later block — the goal is to bring both regions into ONE adaptive app.
+The exact breakpoint thresholds (where the sidebar moves from bottom to side) are an
+implementation detail to be tuned empirically on real devices; not decided now.
+
+**Device-detection / version-switch problem — resolved:** Because there are no longer two
+exclusive versions, there is nothing to "switch" and nothing to mis-detect. The app detects both
+axes continuously: screen format via standard CSS breakpoints; input type via the
+`pointer: coarse/fine` and `hover` media queries / Pointer Events API (the established, reliable
+Web standard). Browser "Request Desktop Site" is NOT a usable switch — on iOS it only changes
+the user-agent string, while the physical viewport and the `pointer` media query remain
+unchanged. UA-based detection is unreliable and unnecessary under the adaptive model.
+
+**4-column grid is binding across all screen formats**
 (→ [Grid configurability](#grid-configurability-gridconfig-popover)).
+**→ ADR:** [ADR-0045](docs/architecture/0045-two-axis-adaptive-model.md) · **→ Boundary:**
+Axis-1 frame-layout adaptation ≠ pad-grid column reflow
+(→ [ADR-0032](docs/architecture/0032-grid-4col-constant.md)).
 
 ---
 
@@ -542,8 +579,12 @@ Schwellenwerte und Feedback-Form sind nicht festgelegt.
 ### A5 — Adaptive Andock-Regel (Vorschlag)
 
 Invariante: 4-Spalten-Grid, Zellen wachsen mit Viewport-Größe. Variable: Andock-Kante rotiert
-nach Formfaktor — Phone = Bottom-Sheets, Tablet = Side-Rail. Idee für die Layout-Ausarbeitung,
-nicht beschlossen.
+nach Formfaktor — schmal/Hochformat = Bottom-Sheets, breit/Querformat = Side-Rail. Idee für
+die Layout-Ausarbeitung, nicht beschlossen.
+**Framing-Korrektur (2026-06-04):** Die Regel ist screen-format-getrieben (Axis 1), nicht
+geräte- oder eingabetyp-getrieben — die ursprüngliche "Phone/Tablet"-Formulierung war ein
+Kurzname für "schmal/breit", nicht das eigentliche Kriterium.
+→ [Two-axis adaptive model](#two-axis-adaptive-model).
 
 ### A6 — Screen-Skizzen (Vorschlag)
 
@@ -731,7 +772,7 @@ _Settled — deliberate forward-looking exception per the [architecture motto](#
 
 **Beschluss:** The sidebar is a reusable building block: a generic **shell + behavior** (a container docked to a window edge, openable/closable with a grip) that receives its **content** from the window it serves. The shell does not know its content — each window supplies its own context-specific options.
 
-The sidebar IS a summonable panel from the overlay contract: bottom-sheet on phone, side-rail on tablet. Every sidebar instance has Layer 2 (Summon + Resize). **→ Cross-reference:** [Summonable overlay contract](#summonable-overlay-contract-_pending-not-yet-finalized--refined-after-panel-fit-check_) — the sidebar and the overlay contract describe the same mechanism from two angles: behavior (contract: layers, gestures, grip types) vs. structural reusability (this entry: generic shell, content injection per window).
+The sidebar IS a summonable panel from the overlay contract: bottom-sheet on narrow/portrait-format screens, side-rail on wide/landscape-format screens (Axis-1, screen-format-driven — not device-type or input-type driven; → [ADR-0045](docs/architecture/0045-two-axis-adaptive-model.md)). Every sidebar instance has Layer 2 (Summon + Resize). **→ Cross-reference:** [Summonable overlay contract](#summonable-overlay-contract-_pending-not-yet-finalized--refined-after-panel-fit-check_) — the sidebar and the overlay contract describe the same mechanism from two angles: behavior (contract: layers, gestures, grip types) vs. structural reusability (this entry: generic shell, content injection per window).
 
 **Deliberately chosen as a forward-looking exception to the continuous-refactoring principle** (per the [architecture motto](#architecture-motto--think-big-but-dont-rush)): multiple sidebar instances are known to be likely (Board SETUP sidebar, Library sidebar, potentially more). Building the generic shell up front is consciously justified — not spec-building, but preventing the obvious duplication that would otherwise be certain.
 
@@ -1018,6 +1059,12 @@ comments with "sub-token: deliberate" justification notes.
 
 Open questions surfaced during implementation but not yet resolved. Each needs a deliberate
 decision before the relevant slice ships.
+
+### Two-axis unification — existing code + mobile prototype into ONE adaptive app
+
+The two-axis adaptive model (→ [Stable directions](#two-axis-adaptive-model)) establishes the governing model but does not yet close the implementation gap. The larger upcoming work: bring the existing desktop app code (the "wide + mouse" region) and the mobile prototype (the "narrow + touch" region) into ONE adaptive app. All previously-designed features will likely need to be re-examined through the two-axis lens — which axis governs each, and how each behaves across the four regions (narrow+touch, narrow+mouse, wide+touch, wide+mouse).
+**When:** After the mobile prototype reaches a stable, verified state. Not started; recorded here so it isn't lost.
+**→ Source:** Part 4 of the two-axis model revision, 2026-06-04.
 
 ### Empty-SETUP affordance
 See Features → Slice 8 above. Duplicated here as a reminder that it is a design decision,

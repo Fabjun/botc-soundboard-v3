@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.10';
+export const APP_VERSION = '3.0.11';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.11',
+    date: '2026-06-04',
+    items: [
+      'Docs: Replace mobile-vs-desktop split with two-axis adaptive model (screen format × input type); write ADR-0045; supersede old framing in BACKLOG; clarify ADR-0032 boundary; resolve device-detection question',
+    ],
+  },
   {
     version: '3.0.10',
     date: '2026-06-04',

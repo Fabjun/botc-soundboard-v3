@@ -58,5 +58,11 @@ das ist der Slice-8-Weg. Default bleibt 4×4.
 ## Related
 
 - **Dateien:** `v3/src/components/PadGrid.tsx`, `v3/src/types.ts` (Scene.gridConfig)
-- **ADRs:** ADR-0008 (Pad-Position als {col,row} — viewport-stabile Koordinaten), ADR-0006 (iOS Minimum = 360px Viewports)
+- **ADRs:** ADR-0008 (Pad-Position als {col,row} — viewport-stabile Koordinaten), ADR-0006 (iOS Minimum = 360px Viewports), ADR-0045 (Zwei-Achsen-Adaptives Modell)
+- **Grenzziehung (Axis 1 vs. ADR-0032):** Axis-1-Frame-Layout-Adaptation (wo Sidebar/Bands
+  sitzen, abhängig vom Screen-Format — Bottom-Bar bei schmal/Hochformat, Side-Rail bei
+  breit/Querformat) ≠ das Pad-Grid-Column-Reflow, das dieses ADR adressiert. ADR-0032
+  verbietet automatisches Reflow der **Pad-Grid-Spaltenanzahl** (die Pads selbst bleiben
+  immer in der konfigurierten Spaltenanzahl). Axis 1 betrifft das **umgebende Frame-Layout**
+  (Sidebar-Position, Band-Anordnung). Beide Konzepte sind unabhängig; kein Widerspruch.
 - **Quelldokumente:** `DESIGN_NOTES.md §A4 · grid stays 4-col on every viewport`
