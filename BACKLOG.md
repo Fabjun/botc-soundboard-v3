@@ -360,6 +360,14 @@ folder via a `+ NEW` row at the bottom.
 
 ---
 
+#### Guiding principle — technically-minded tinkerers
+
+Predictable mechanics and full user control take precedence over convenient automation. The app does not "hold the user's hand" through visual comfort features; it lets them configure everything themselves. Comfort/automation variants are offered as opt-in options in the settings menu, not as defaults.
+**Caveat:** Sensible default values nonetheless, so the app is immediately usable without tweaking — control is additionally available, not forced. This principle guides future design decisions: it explains, among others, the configurable grid parameters, the hard-wrapping column behavior, and the classification of scrollbar / collapsing-gaps as opt-in exceptions.
+**Cross-reference:** → [C10](#c10--variable-grid-gap-preserving-reflow-gesture-based-scroll-protection-settings-architecture) (the resolved grid conflict; the solution is built on this principle).
+
+---
+
 #### Stable directions
 
 ### Audio continues during scene switch _(confirmed correct — Slice 5)_
@@ -482,8 +490,8 @@ panel-fit check 2026-06-04.
 #### Design session round 2 — 2026-06-04 (continued)
 
 > Die folgenden drei Blöcke haben **unterschiedlichen Status** und dürfen nicht vermischt werden.
-> A = vorgeschlagener Design-Input (nicht beschlossen), B = getroffene Beschlüsse, C = ungelöstes
-> Architektur-Problem. Der Statusunterschied ist der Kern dieser Einträge.
+> A = vorgeschlagener Design-Input (nicht beschlossen), B = getroffene Beschlüsse, C = Architektur-Konflikt
+> (C10 resolved 2026-06-04). Der Statusunterschied ist der Kern dieser Einträge.
 
 ---
 
@@ -564,7 +572,7 @@ Bewegungsschwelle nötig; `touch-action: none` auf `.sb-pad.is-deep` gilt auch i
 nativer Browser-Swipe). Implementierbar, aber nicht trivial.
 Diese Begründung ist festgehalten, damit spätere „warum nicht überall?"-Fragen die Entscheidung
 nicht aufweichen.
-**Berührt:** → [Unbounded-pads/grid-scroll conflict (C10)](#c10--unbegrenzte-pads-vs-nicht-scrollendes-grid)
+**Berührt:** → [C10 — Variable grid, gap-preserving reflow](#c10--variable-grid-gap-preserving-reflow-gesture-based-scroll-protection-settings-architecture) (resolved).
 
 ### B9 — Gap-Einordnung: drei Bestätigungen, zwei neue Kandidaten
 
@@ -589,34 +597,54 @@ Claude Designs fünf geflagte Gaps wurden eingeordnet:
 
 ---
 
-#### C — Neu aufgedeckter Architektur-Konflikt _(ungelöst)_
+#### C — Architektur-Konflikt _(C10: resolved 2026-06-04)_
 
-### C10 — Unbegrenzte Pads vs. nicht-scrollendes Grid
+### C10 — Variable grid, gap-preserving reflow, gesture-based scroll protection, settings architecture
 
-**Konflikt:** Die Pad-Zahl pro Szene ist laut User-Anforderung nicht begrenzt. Der aktuelle Code
-zeigt ein festes, nicht-scrollendes Grid:
-- `.sb-pad-grid`: kein `overflow` gesetzt; `flex: 1; min-height: 0` (füllt feste Höhe)
-- `.sb-board-main`: `overflow: hidden`
+**Starting situation:** The pad count per scene is unbounded (user requirement). The current code has a non-scrolling grid (`.sb-pad-grid`: no `overflow` set; `.sb-board-main`: `overflow: hidden`). These two requirements are incompatible — excess pads silently disappear behind `overflow: hidden`, unreachable and without any indication.
 
-Sobald eine Szene mehr Pads enthält als das Grid zeigt, verschwinden überzählige Pads hinter
-`overflow: hidden` — unerreichbar, ohne Fehlermeldung, still. Die beiden Anforderungen
-(unbegrenzte Pads + nicht-scrollendes Grid) sind unvereinbar.
+**Status: RESOLVED.** Foundation: the [guiding principle](#guiding-principle--technically-minded-tinkerers) (predictable mechanics + full user control, sensible defaults).
 
-**Konsequenz-Kette (berührt andere Entscheidungen):**
+#### Core design
 
-1. Unbegrenzte Pads → Grid muss Überlauf zulassen (vertikal scrollbar oder paginiert).
-2. Scrollendes Feuer-Grid → Claude Designs „Scroll-Gefahr"-Gap wird real: Im abgedunkelten Raum
-   kann ein Scroll-Wisch versehentlich eine Tap-to-fire-Zelle treffen. (Claude Designs Vorschlag:
-   dedizierter Scroll-Gutter / „grab-to-scroll"-Rand an einem Griffflächen-Streifen — oder
-   Überlauf als Signal, eine neue Szene zu beginnen statt eine Szene zu verlängern.)
-3. Vertikales Scrollen tritt zu den bestehenden Grid-Gesten hinzu: Tap = feuern, horizontales
-   Wischen = Swipe-to-page (GAME, optional; → [B8](#b8--szenenwechsel-mechanismus-tap-switcher-primär-swipe-optional-und-game-only)),
-   Reorder-Drag (SETUP). Die vertikale Scroll-Geste vs. horizontale Page-Geste muss achsen-sicher
-   disambiguiert werden — was durch A1 (zweiachsige Grammatik) adressiert werden soll.
+1. **Two column modes (from V1):** `AUTO` — pad size + gap determine column count via `auto-fill` — OR fixed column count (user picks 2–6 or similar). Both modes selectable.
 
-**Status: ungelöst.** Betrifft das Grid-Grundlayout. Muss vor der mobilen Implementierung
-(Slice 8) adressiert werden — vermutlich als Teil der visuellen Layout-Ausarbeitung.
-**→ Slice 8:** [Mobile layout adaptation](#mobile-layout-adaptation).
+2. **Configurable pad display at full V1 scope:** pad size, gap/spacing, column mode, font/label size — all with live preview directly on the board, via the board side-menu in SETUP mode. Scope reduction possible later. Sensible default values apply (see guiding principle).
+
+3. **Free placement with gaps allowed:** the user may arrange pads with empty slots. Gaps are a legitimate grouping device alongside scenes.
+
+4. **Column change = hard-wrapping sequence:** when the column count changes, the linear pad sequence wraps hard (position N lands in row ⌈N / column count⌉). Gaps keep their place in the sequence. Nothing disappears, no "orphaning." The 2D pattern may shift (pads move to a different row) — this is deliberately accepted: predictable mechanics rather than pattern-preserving magic, which is logically impossible anyway.
+
+5. **Data model `{col, row}` stays (ADR-0008 confirmed).** No rebuild to a linear array — gap preservation is exactly what requires the fixed positions.
+
+6. **Free reordering with swap/insert:** dragging a pad onto another pad = swap; dragging a pad between two pads = insert. Already implemented (25% edge zone vs. center).
+
+7. **Scroll protection with many pads** (target ~64 pads/scene; scrolling is the normal case): character-based gesture disambiguation — quick tap = fire pad (GAME) / select (SETUP); swipe motion (past a movement threshold) = scroll; longer hold without movement = pick up pad, then drag to reorder (SETUP only). Thresholds are app-global, adjustable in app settings. Follows the proven LibraryPanel pattern (350 ms hold, cancel at 8 px movement).
+
+8. **Settings architecture (two separate levels, no duplication):** App level = app-wide (e.g. themes, gesture thresholds), set in the app settings menu. Board level = only for the current board (e.g. pad display), set in the board side-menu. The same setting option must NOT appear on both levels. Within a board: default/individual checkbox per scene AND for the quick-menu — chooses whether the scene/quick-menu follows the board default or has its own values. "Follows default" = live binding (a change to the board default propagates to all scenes set to "follow"), not a frozen copy. A save file stores all settings from all levels; an import brings them all along.
+
+#### Assumption (to verify before building — NOT yet settled)
+
+The column/size setting may be a generic class across all scrollable surfaces (pad grid, library, quick-menu). Verify whether all surfaces actually share the same display logic — analogous to the panel-fit check for the summonable-overlay contract, where PadEditorPanel did not fit the pattern. Do not assume; verify before building.
+
+#### Parked alternatives (opt-in in settings — NOT core design; build only on proven need)
+
+- **Side scrollbar** as an alternative scroll model (instead of swipe-gesture scrolling).
+- **Collapsing gaps** as an alternative column-change behavior (instead of gap preservation).
+
+Both are exceptions for users who want it differently — consistent with the guiding principle (more choice = more control). Not part of the first build.
+
+#### Explicitly discarded (earlier intermediate states — no longer apply)
+
+- **Orphan warning on column reduction** — moot: the hard-wrapping sequence (point 4) discards nothing; no orphaning occurs.
+- **Data model rebuild to a linear array** — moot: gap preservation requires the `{col, row}` model (point 5).
+
+#### Open implementation question (clarify before Slice 8 — NOT now)
+
+Before building: check interaction expectations for existing saved boards. The new gesture model (point 7) changes the current SETUP reorder, which starts immediately on `pointerdown` (new: long hold instead of immediate drag). A migration/compatibility question to keep in mind when building.
+
+**→ Slice 8:** [Mobile layout adaptation](#mobile-layout-adaptation) · [Grid configurability](#grid-configurability-gridconfig-popover) · [Cell-size setting](#cell-size-setting).
+**Cross-references:** Settings architecture (point 8) → Slice 8 settings; quick-access/quick-menu display consistency → [Quick-Access content deferred](#quick-access-content-deferred-_pending-real-scene-experience_) and [B9](#b9--gap-einordnung-drei-bestätigungen-zwei-neue-kandidaten).
 
 ---
 
