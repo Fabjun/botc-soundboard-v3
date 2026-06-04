@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.11';
+export const APP_VERSION = '3.0.12';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.12',
+    date: '2026-06-05',
+    items: [
+      'Docs: Foundation analysis pass 1 — codebase map, 8 prioritized findings (critical: 3-col layout at 390px, zero adaptive CSS, C10 unresolved in code), per-area findings, 7 deep-dive recommendations',
+    ],
+  },
   {
     version: '3.0.11',
     date: '2026-06-04',
