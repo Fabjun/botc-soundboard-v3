@@ -347,13 +347,15 @@ without exception:
 ### Pre-push gate (mandatory before every push)
 
 > **Automatisch erzwungen**: Husky-Pre-Push-Hook läuft bei `git push` und blockt bei Fehler:
-> 1. `npm run size` (~2s) — Bundle-Size-Limit (200 kB JS / 50 kB CSS gzip); einzige Stufe-1-Lücke, die nicht vom Pre-Commit-Hook abgedeckt wird
-> 2. `npm run test:e2e:all` (~2.5 min) — alle fünf nicht-visuellen Playwright-Projekte: smoke + smoke-webkit + full + mobile + mobile-chromium; entspricht den drei CI-E2E-Jobs
+> 1. **Version-Bump-Check** (~0s) — `APP_VERSION` in `v3/src/lib/changelog.ts` muss sich gegenüber `origin/main` geändert haben (one push = one version bump); übersprungen wenn `origin/main` nicht erreichbar (Erstpush)
+> 2. `npm run size` (~2s) — Bundle-Size-Limit (200 kB JS / 50 kB CSS gzip)
+> 3. `npm run test:e2e:all` (~2.5 min) — alle fünf nicht-visuellen Playwright-Projekte: smoke + smoke-webkit + full + mobile + mobile-chromium; entspricht den drei CI-E2E-Jobs
 >
-> Bypass (bewusst): `git push --no-verify` — für Docs-only-Pushes, Notfälle oder wenn der Hook bereits lokal grün verifiziert wurde.
+> Bypass (bewusst): `git push --no-verify` — für Notfälle oder wenn der Hook bereits lokal grün verifiziert wurde.
 > Der pre-push-Hook schließt die Lücke zwischen lokalem pre-commit (nur smoke) und CI (smoke + full + mobile).
 > Nach `git clone`: `cd v3 && npm install` aktiviert den Hook automatisch.
 
+0. **Bump `APP_VERSION` + CHANGELOG-Eintrag** in `v3/src/lib/changelog.ts` — vor jedem Push erforderlich, im selben Commit wie die Änderung. Wird vom Pre-push-Hook erzwungen.
 1. `cd v3 && npm run build` — must exit 0 with zero TypeScript errors
 2. `git add` the relevant files, then `git commit` — lint-staged auto-formats + lints staged files
 3. `cd v3 && npm run test` — all unit tests must pass (exit 0)

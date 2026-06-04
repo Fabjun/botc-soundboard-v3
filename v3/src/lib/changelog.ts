@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.8';
+export const APP_VERSION = '3.0.9';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.9',
+    date: '2026-06-04',
+    items: [
+      'Infra: Pre-push-Hook blockt jetzt bei fehlendem APP_VERSION-Bump (one push = one version); CLAUDE.md pre-commit-Checkliste ergänzt',
+    ],
+  },
   {
     version: '3.0.8',
     date: '2026-06-04',
