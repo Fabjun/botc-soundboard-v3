@@ -368,6 +368,17 @@ Predictable mechanics and full user control take precedence over convenient auto
 
 ---
 
+#### Architecture motto — "Think big, but don't rush"
+
+The app is built on a deliberately chosen modular foundation — multi-level settings hierarchy, reusable building blocks such as the sidebar shell — a forward-looking anticipation of future extensibility, chosen consciously against a pure continuous-refactoring stance, with the trade-off explicitly named. This foundation is NOT set in stone: it emerges organically while practically building and testing the app, and even the underlying concept may be revised if real experience demands it. Concretely: only what the really existing cases need is implemented (the sidebar will simply be extended to the Pad Editor when that time comes); the full system is thought through in the design but NOT built on spec.
+
+**Corollary on communication:** Complexity that is deliberately built in must stay visible — foreseeable downstream costs are named in advance. Complexity that only reveals itself later is flagged explicitly as a new realization, never quietly absorbed.
+
+**Relationship to the tinkerer principle:** These are complementary, not competing. The tinkerer principle governs *what* to build (user control, predictable mechanics); this motto governs *how* to build it (forward-thinking architecture, incrementally, with explicit trade-offs named).
+**Cross-references:** → [Guiding principle — technically-minded tinkerers](#guiding-principle--technically-minded-tinkerers) · [2d — Sidebar as reusable building block](#2d--sidebar-as-reusable-building-block) · [2e — Multi-level settings hierarchy](#2e--multi-level-settings-hierarchy).
+
+---
+
 #### Stable directions
 
 ### Audio continues during scene switch _(confirmed correct — Slice 5)_
@@ -621,11 +632,15 @@ Claude Designs fünf geflagte Gaps wurden eingeordnet:
 
 7. **Scroll protection with many pads** (target ~64 pads/scene; scrolling is the normal case): character-based gesture disambiguation — quick tap = fire pad (GAME) / select (SETUP); swipe motion (past a movement threshold) = scroll; longer hold without movement = pick up pad, then drag to reorder (SETUP only). Thresholds are app-global, adjustable in app settings. Follows the proven LibraryPanel pattern (350 ms hold, cancel at 8 px movement).
 
-8. **Settings architecture (two separate levels, no duplication):** App level = app-wide (e.g. themes, gesture thresholds), set in the app settings menu. Board level = only for the current board (e.g. pad display), set in the board side-menu. The same setting option must NOT appear on both levels. Within a board: default/individual checkbox per scene AND for the quick-menu — chooses whether the scene/quick-menu follows the board default or has its own values. "Follows default" = live binding (a change to the board default propagates to all scenes set to "follow"), not a frozen copy. A save file stores all settings from all levels; an import brings them all along.
+8. **Settings architecture — special case of the multi-level hierarchy (→ [2e](#2e--multi-level-settings-hierarchy)):** App level = app-wide (e.g. themes, gesture thresholds), set in the app settings menu. Board level = only for the current board (e.g. pad display), set in the board side-menu. These two levels correspond to Levels 1 and 2 in the general model (see [2e](#2e--multi-level-settings-hierarchy) for the full 3-level picture). The **no-duplication rule** — the same setting option must NOT appear on both levels — is the special case of the cross-cutting separation rule: elements within a level are also separate (Board settings ≠ Library settings, even though both are Level 2). Within a board: default/individual checkbox per scene AND for the quick-menu — chooses whether the scene/quick-menu follows the board default or has its own values. "Follows default" = live binding (a change to the board default propagates to all scenes set to "follow"), not a frozen copy. A save file stores all settings from all levels; an import brings them all along.
 
-#### Assumption (to verify before building — NOT yet settled)
+#### Assumption — ✅ Verified (code-check 2026-06-04): Library is structurally different
 
-The column/size setting may be a generic class across all scrollable surfaces (pad grid, library, quick-menu). Verify whether all surfaces actually share the same display logic — analogous to the panel-fit check for the summonable-overlay contract, where PadEditorPanel did not fit the pattern. Do not assume; verify before building.
+The column/size setting is **not** a generic class across all scrollable surfaces. Code-check (2026-06-04) confirmed: the Library is categorically different from the pad grid — a single-column list of horizontal table rows (`.sb-item-list` + `.sb-audio-row`), not a 2D tile matrix. No shared layout class exists between the two surfaces today. Of the four display settings, only font/label size is genuinely generic across both; column count, pad size, and gap are pad-grid-specific.
+
+This is the same kind of structural difference as PadEditorPanel vs. the grid in the grip-contract analysis — analogous reasoning, same outcome.
+
+**→ Full finding and per-setting breakdown:** [2a — Library display logic](#2a--library-display-logic).
 
 #### Parked alternatives (opt-in in settings — NOT core design; build only on proven need)
 
@@ -644,7 +659,113 @@ Both are exceptions for users who want it differently — consistent with the gu
 Before building: check interaction expectations for existing saved boards. The new gesture model (point 7) changes the current SETUP reorder, which starts immediately on `pointerdown` (new: long hold instead of immediate drag). A migration/compatibility question to keep in mind when building.
 
 **→ Slice 8:** [Mobile layout adaptation](#mobile-layout-adaptation) · [Grid configurability](#grid-configurability-gridconfig-popover) · [Cell-size setting](#cell-size-setting).
-**Cross-references:** Settings architecture (point 8) → Slice 8 settings; quick-access/quick-menu display consistency → [Quick-Access content deferred](#quick-access-content-deferred-_pending-real-scene-experience_) and [B9](#b9--gap-einordnung-drei-bestätigungen-zwei-neue-kandidaten).
+**Cross-references:** Settings architecture (point 8) → full model in [2e — Multi-level settings hierarchy](#2e--multi-level-settings-hierarchy); display setting scope per surface → [2c — Modular display controls](#2c--modular-display-controls); quick-access/quick-menu display consistency → [Quick-Access content deferred](#quick-access-content-deferred-_pending-real-scene-experience_) and [B9](#b9--gap-einordnung-drei-bestätigungen-zwei-neue-kandidaten).
+
+---
+
+#### Code-check + architecture extension — 2026-06-04 (Library, sidebar, settings hierarchy)
+
+> Follows the resolution of C10. A code-check verified C10's "assumption to verify" (generic display class across surfaces). The result reversed the assumption and anchored three architecture decisions. **Status labels:** _settled_ = user decision; _working assumption_ = to be reviewed on the real object; _verified finding_ = code/analysis evidence.
+
+---
+
+### 2a — Library display logic
+
+_Verified finding — code-check 2026-06-04_
+
+**Finding:** The Library is structurally **different** from the pad grid — categorically, not by degree. Same kind of difference as PadEditorPanel vs. the main grid in the grip-contract analysis.
+
+| Surface | Structure | CSS layout |
+|---------|-----------|------------|
+| Pad grid | 2D tile matrix — `cols × rows` cells, each `1fr × 1fr`, position-addressed via `{col, row}` | `display:grid; grid-template-columns: repeat(var(--grid-cols), 1fr)` driven by `Scene.gridConfig` |
+| Library today | Single-column list of horizontal table rows | `.sb-item-list`: `flex-direction:column`. `.sb-audio-row`: `display:grid; grid-template-columns: 160px 1fr 70px 90px 44px` (name \| waveform \| duration \| size \| delete) |
+| Library panel | Single-column item list with row-separator border-bottom | `.sb-lib-panel-row`: `flex-direction:column`, name + waveform per row |
+
+**Of the four configurable display settings, only font/label size is genuinely generic across both surfaces:**
+
+| Setting | Pad grid | Library applicability |
+|---------|----------|-----------------------|
+| Column count / mode | Number of tile columns in the 2D grid — core structural parameter | Meaningless — Library has one content column; no tile matrix |
+| Pad size | Per-tile dimensions | No equivalent — Library rows have `min-height: 44px`, not tile size |
+| Gap | Space between tiles | Different concept — Library uses row spacing (`gap: var(--space-1)`, hardcoded); "row density" would be plausible but is a distinct setting |
+| Font/label size | Text size inside pad tiles | **Genuinely generic** — text appears in both surfaces; both benefit equally |
+
+**Shared today:** `Waveform` component and design tokens (`--space-*`, `--font-*`) only. No shared layout class or sizing primitive between the two surfaces.
+
+**Quick-menu:** Does not exist in code. Only `Board.settings.quickAccessLayout` + `PadSet` type defined (`src/types.ts:15–20, 39–44`); no component, screen, or CSS. Planned Slice 6.
+
+**→ C10 assumption updated:** see [C10](#c10--variable-grid-gap-preserving-reflow-gesture-based-scroll-protection-settings-architecture) — updated from "to verify" to "verified: Library structurally different, system is pad-grid-specific."
+
+---
+
+### 2b — Library form
+
+_Working assumption — to be reviewed after implementation, NOT a locked decision_
+
+**Working assumption:** The Library will become a tile grid (same structural form as the pad grid), on the rationale that both overviews are about seeing an arrangement of items.
+
+This is an explicit **working assumption to be reviewed on the real object** after implementation — not a locked decision. The Library is currently a row list; converting it to tiles is a significant structural change, and whether tiles actually serve library browsing better must be validated against real experience.
+
+**Consequence to design at implementation time:** Each tile must handle detail info (waveform, duration, size) with dynamic stacking depending on display size. V1 used `@container(max-width: 67px)` for this; V3 supports container queries (iOS 16+) with media-query fallback on iOS 15. Users can additionally choose which details are shown at all.
+
+**Open detail-question (flag for implementation — do NOT resolve now):** When the user enables a detail (e.g. "show waveform") but tiles are currently too small to display it, which wins — the user's choice or the size-driven auto-hide? Consistent with the tinkerer principle, the user's choice likely wins (opt-in detail should not silently disappear). Decide at implementation with real evidence.
+
+---
+
+### 2c — Modular display controls
+
+_Settled_
+
+The same display function (column count, size, gap) appears in multiple sidebars — e.g. the SETUP sidebar and the Library sidebar. It is the **same function/mechanic** but its **scope is local** to the sidebar it lives in:
+
+- Configuring pad size in the SETUP sidebar affects only the scene's pad grid, not Library tiles.
+- Configuring tile size in the Library sidebar affects only the Library, not the board's pads.
+
+**Technically:** A generic, reusable control component (knows nothing about which surface it drives), bound locally to different data sources (SETUP sidebar → `Scene.gridConfig`; Library sidebar → its own config). The function (control code) is shared; the value is separate per surface. This is loose coupling: generic tool, local binding.
+
+---
+
+### 2d — Sidebar as reusable building block
+
+_Settled — deliberate forward-looking exception per the [architecture motto](#architecture-motto--think-big-but-dont-rush)_
+
+**Beschluss:** The sidebar is a reusable building block: a generic **shell + behavior** (a container docked to a window edge, openable/closable with a grip) that receives its **content** from the window it serves. The shell does not know its content — each window supplies its own context-specific options.
+
+The sidebar IS a summonable panel from the overlay contract: bottom-sheet on phone, side-rail on tablet. Every sidebar instance has Layer 2 (Summon + Resize). **→ Cross-reference:** [Summonable overlay contract](#summonable-overlay-contract-_pending-not-yet-finalized--refined-after-panel-fit-check_) — the sidebar and the overlay contract describe the same mechanism from two angles: behavior (contract: layers, gestures, grip types) vs. structural reusability (this entry: generic shell, content injection per window).
+
+**Deliberately chosen as a forward-looking exception to the continuous-refactoring principle** (per the [architecture motto](#architecture-motto--think-big-but-dont-rush)): multiple sidebar instances are known to be likely (Board SETUP sidebar, Library sidebar, potentially more). Building the generic shell up front is consciously justified — not spec-building, but preventing the obvious duplication that would otherwise be certain.
+
+**Pad Editor sidebar — explicitly deferred:** The Pad Editor currently uses `PadEditorPanel` (280px, selection-driven, Layer 1 Resize only). The sidebar shell will be extended to the Pad Editor at the appropriate time, not now. No spec work.
+
+---
+
+### 2e — Multi-level settings hierarchy
+
+_Settled architecture direction_
+
+**This is the general model; C10 point 8's "two levels, no duplication" is a special case of it.** → [C10 — point 8](#c10--variable-grid-gap-preserving-reflow-gesture-based-scroll-protection-settings-architecture).
+
+Settings levels follow the app's navigation structure:
+
+**Level 1 — App** _(configured in Settings)_
+App-wide: themes, gesture thresholds, accessibility modifiers (night-vision etc.), defaults for lower levels.
+
+**Level 2 — Windows directly reachable from the main menu** _(Board, Library, …)_
+Each is a **separate element** — Board settings ≠ Library settings, even on the same level. Different Board instances are also separate (Board A ≠ Board B). Note: Settings itself is not a Level-2 element — it IS the Level-1 configuration surface.
+
+**Level 3 — Windows reachable only from within a Level-2 window** _(Pad Editor, Combo Editor — reached via Board)_
+Each is a **separate element** — Pad Editor ≠ Combo Editor. Pad Editor on Board A ≠ Pad Editor on Board B.
+
+**Cross-cutting separation rule (applies at every level):** Individual elements on the same level are separate from one another. This is the generalization of C10's "the same setting option must NOT appear on both levels" — extended to: options within a level do not cross-contaminate between elements (Board settings and Library settings are distinct even though both are Level 2).
+
+**Default model — Lesart B (live binding):**
+- Each element type has one shared default (all Pad Editor instances share one Pad Editor default; the Library has its own; each Board type has its own).
+- Per instance: follow the type-default (live binding — changes to the default propagate immediately to all instances set to "follow") or override with an instance-specific value.
+- "Follows default" = live binding, not a frozen copy. Consistent with the scene default/individual checkbox pattern already decided in C10 point 8.
+
+**The sidebar represents this hierarchy:** it always shows the options of the currently active context; its scope is exactly that one context. Configuring pad display in the Board's SETUP sidebar affects only that Board's scenes (or the Board default); configuring tile display in the Library sidebar affects only the Library.
+
+**→ Cross-references:** [C10 — point 8](#c10--variable-grid-gap-preserving-reflow-gesture-based-scroll-protection-settings-architecture) (special case preserved) · [2c — Modular display controls](#2c--modular-display-controls) · [2d — Sidebar as reusable building block](#2d--sidebar-as-reusable-building-block).
 
 ---
 
