@@ -414,14 +414,67 @@ If any form is built: must be disableable.
 [Open UX question: Quick Access strip scope](#open-ux-question-quick-access-strip-scope) —
 deferral reason updated: "requires real scene experience" extends "requires Slice 5 in place."
 
-### Summonable overlay contract _(pending; not yet finalized)_
+### Summonable overlay contract _(pending; not yet finalized — refined after panel-fit check)_
 
-A unifying interaction concept for all secondary panels (Library, PadEditor, Quick-Pads,
-Mixer): **ONE docked handle per panel** combining: tap = open/close; hold = spring-loaded
-momentary (fire-and-forget panels only); drag = resize; swipe-to-edge / tap-outside = close.
-Unites Resize + Summon + Peek in a single vocabulary.
-**Status:** Not yet finalized — panel inventory check is pending before committing to this
-model. Source: Claude Design concept session.
+A unifying interaction concept for secondary panels (Library, PadEditor, Quick-Pads, Mixer).
+Originally conceived as a single unified mechanism; a subsequent panel-fit check (2026-06-04)
+revealed this does not universally apply — the contract is **layered**, not monolithic.
+
+#### Layer 1 — Resize _(base; broadly applicable)_
+
+Applies to every **visible, resizable surface**. Prerequisite: surface is visible.
+
+- **Seam handle:** a finger-friendly grab zone in a narrow seam groove between regions.
+- **Drag = resize**, with detents (snap points) that enforce invariants: 4-column pad cells ≥ 44 px,
+  panels ≥ min-width ~200 px.
+- This layer alone does not confer open/close behaviour.
+
+#### Layer 2 — Summon _(extension; only for summon-driven surfaces)_
+
+Sits on top of Layer 1. Applies **only** to surfaces that are togglable (can be shown/hidden).
+Prerequisite: surface is togglable — a stricter condition than Layer 1.
+
+- **Tap seam = open / close.**
+- **Hold seam = spring-loaded momentary** (surface open only while held) — optional, reserved
+  exclusively for fire-and-forget surfaces (Quick-Pads). Not added to browse/edit surfaces.
+
+**Hierarchy:** The layers are not orthogonal — they are stacked. Summon presupposes Resize
+(whatever is summonable is also resizable when visible), but not vice versa (a visible surface
+need not be summonable). Resize = base, Summon = extension built on top.
+
+#### Closing gesture correction (Gesture 4)
+
+The originally proposed variant **tap-outside = close does NOT work** on this layout. The panel-fit
+check established: the pad grid occupies the entire remaining surface; every tap on it is already
+claimed (GAME: fire pad; SETUP: select pad / open creation popover). There is no neutral "outside".
+
+**Close instead via:** seam-tap again, or swipe-to-edge (both originate on the handle/panel —
+origin-disambiguated). Applies to all summon-driven surfaces.
+
+#### Per-surface assignment (from panel-fit check)
+
+| Surface | Layer 1 Resize | Layer 2 Summon | Spring-loaded | Notes |
+|---------|:--------------:|:--------------:|:-------------:|-------|
+| Quick-Pads _(planned)_ | ✅ | ✅ | ✅ | The design-canonical case of the full contract. |
+| LibraryPanel | ✅ | ✅ | — | Coexists with existing place-mode auto-close (long-press on library row sets panel to `'empty'`). |
+| Mixer _(planned, v8-atmosphere.jsx)_ | ✅ | ✅ | — | Same model as LibraryPanel. |
+| PadEditorPanel | ✅ | — | — | **Resize only.** Selection-driven (opens on pad select, closes on deselect) — not summon-driven. A summon handle would have no coherent state here. Editor retains its existing selection-driven open/close logic. |
+| SceneRail | — | — | — | **No layer today** — permanently present; no toggle state in the code. Contract applies only if SceneRail becomes collapsible on mobile (see [Mobile layout adaptation](#mobile-layout-adaptation)). At that point Layer 2 becomes a candidate. |
+
+#### Visual requirement _(for later elaboration)_
+
+Layers must be visually distinguishable: a pure Resize handle (e.g., Editor) shows only the
+drag glyph; a full Summon handle (e.g., Quick-Pads) additionally signals tap/open capability.
+Narrow constraint: shared pixel-handle language for recognisability AND a visible extra on the
+Summon handle so "sometimes tappable, sometimes not" does not confuse. Concrete visual solution
+is a task for Claude Design.
+
+**Status:** Preliminary/open, but now refined. Panel-fit check forced the layering — the
+originally monolithic contract did not fit PadEditor (selection-driven) or SceneRail
+(permanently present), and the tap-outside close gesture is ruled out by the dense layout.
+This documents the decision as tested, not assumed. Source: Claude Design concept session +
+panel-fit check 2026-06-04.
+
 **→ Slice 8:** [Mobile layout adaptation](#mobile-layout-adaptation).
 
 ---
