@@ -479,6 +479,147 @@ panel-fit check 2026-06-04.
 
 ---
 
+#### Design session round 2 — 2026-06-04 (continued)
+
+> Die folgenden drei Blöcke haben **unterschiedlichen Status** und dürfen nicht vermischt werden.
+> A = vorgeschlagener Design-Input (nicht beschlossen), B = getroffene Beschlüsse, C = ungelöstes
+> Architektur-Problem. Der Statusunterschied ist der Kern dieser Einträge.
+
+---
+
+#### A — Claude Design layout input _(gesichtet, NICHT als Beschluss übernommen)_
+
+Diese Vorschläge kamen von Claude Design und wurden besprochen, aber **nicht als Entscheidungen
+angenommen**. Sie sind Input für die kommende visuelle Ausarbeitung, die dann geprüft wird.
+
+### A1 — Geometrie-Beobachtung und Gesten-Grammatik-Idee
+
+Aus dem (bindenden) 4-Spalten-Grid folgt: Pads wachsen statt sich zu vermehren → das Grid wird
+ein hoher vertikaler Streifen. Abgeleitete Idee (Vorschlag, nicht beschlossen): diese Geometrie
+nahegelegt eine zweiachsige Gesten-Grammatik — vertikal = innerhalb einer Szene, horizontal =
+zwischen Szenen. Diese Idee berührt Beschluss B8 (Swipe-to-page) und Konflikt C10 (Scroll-Bedarf).
+
+### A2 — Drei-Band-Struktur (Vorschlag)
+
+Grobgliederung des Screen-Layouts: oberes Band = Glanceable-Infos / selten berührt; mittleres Band
+= Pad-Grid (füllt den Hauptteil); unteres Band = Daumenzone (Szenen-Switcher, Master-Controls,
+Summon-Grips). Noch nicht layoutiert oder implementiert; Vorschlag für die visuelle Ausarbeitung.
+
+### A3 — Grip-Vokabular: Rail vs. Pull-Tab _(betrifft Summonable-Overlay-Vertrag)_
+
+Vorschlag zur visuellen Schichten-Unterscheidung des Summonable-Overlay-Vertrags
+(→ [Summonable overlay contract](#summonable-overlay-contract-_pending-not-yet-finalized--refined-after-panel-fit-check_)):
+**Rail** (Schiene, „schieb mich") = Resize-Basis-Schicht; **Pull-Tab** (Lasche, „ich öffne") =
+Summon-Schicht. Die Frage „hat es eine Lasche?" wäre dann das visuelle Unterscheidungs-Merkmal
+zwischen den Schichten. Konkrete Ausgestaltung ist Aufgabe der visuellen Ausarbeitung, nicht hier
+entschieden.
+
+### A4 — Drei-Gesten-Auflösung (Vorschlag)
+
+Innerhalb eines Griffs: Bewegungsschwelle → Resize; unter Schwelle / Tap-Zeit → Summon-Toggle;
+Hold ohne Bewegung → Momentary. Jeder Zweig bekommt eigenes Feedback. Vorschlag — die
+Schwellenwerte und Feedback-Form sind nicht festgelegt.
+
+### A5 — Adaptive Andock-Regel (Vorschlag)
+
+Invariante: 4-Spalten-Grid, Zellen wachsen mit Viewport-Größe. Variable: Andock-Kante rotiert
+nach Formfaktor — Phone = Bottom-Sheets, Tablet = Side-Rail. Idee für die Layout-Ausarbeitung,
+nicht beschlossen.
+
+### A6 — Screen-Skizzen (Vorschlag)
+
+Vier Skizzen zu Modi-Zuständen: **Play** (Grid im Vordergrund, Szenen-Switcher unten,
+spring-loaded Quick-Pads); **Setup** (deutlicher Mode-Shift, Tap → Editor, Drag → Reorder);
+**Library** (beide Grip-Schichten sichtbar); **Editor** (nur Resize-Schicht). Noch keine
+konkreten Maße oder Pixel-Entscheidungen — Orientierungsbilder für die visuelle Ausarbeitung.
+
+---
+
+#### B — Getroffene Beschlüsse
+
+Diese Punkte sind vom User entschieden, nicht nur vorgeschlagen.
+
+### B7 — PadEditor-Schließen = Variante B (expliziter Close-Button)
+
+**Beschluss:** Der PadEditorPanel wird durch einen expliziten Close-Button geschlossen. Resize
+ändert **strikt nur die Größe** — er kann den Editor nie schließen. Keine Summon-Schicht, keine
+Wegzieh-Geste. Vorgabe: Close-Button ist in allen Resize-Zuständen erreichbar (sichtbare
+Mindestgröße des Panels existiert).
+Dieser Beschluss ist konsistent mit dem Summonable-Overlay-Vertrag (PadEditor = Layer 1 only,
+selektions-getrieben; → [Summonable overlay contract](#summonable-overlay-contract-_pending-not-yet-finalized--refined-after-panel-fit-check_)).
+
+### B8 — Szenenwechsel-Mechanismus: Tap-Switcher primär, Swipe optional und GAME-only
+
+**Beschluss:** Ein antippbarer Szenen-Switcher (in der Daumenzone) ist der **primäre,
+durchgängige** Szenenwechsel-Weg — konfliktfrei in beiden Modi. Swipe-to-page ist ein
+**optionaler Beschleuniger, ausschließlich im GAME-Modus** — nicht im SETUP.
+
+**Begründung (aus Code-Check, faktisch):**
+Im SETUP: Der Reorder-Drag fängt jede Geste auf einem belegten Pad sofort via
+`e.preventDefault()` + `setPointerCapture()` ab — omnidirektional, ohne Richtungsunterscheidung,
+ohne neutrale Wischfläche (nur 8px-CSS-Gaps). Harter, nicht auflösbarer Konflikt ohne
+Redesign des Reorder-Starts.
+Im GAME: Kein Reorder, aber Swipe muss explizit gegen Pad-Feuern disambiguiert werden (JS-
+Bewegungsschwelle nötig; `touch-action: none` auf `.sb-pad.is-deep` gilt auch in GAME → kein
+nativer Browser-Swipe). Implementierbar, aber nicht trivial.
+Diese Begründung ist festgehalten, damit spätere „warum nicht überall?"-Fragen die Entscheidung
+nicht aufweichen.
+**Berührt:** → [Unbounded-pads/grid-scroll conflict (C10)](#c10--unbegrenzte-pads-vs-nicht-scrollendes-grid)
+
+### B9 — Gap-Einordnung: drei Bestätigungen, zwei neue Kandidaten
+
+Claude Designs fünf geflagte Gaps wurden eingeordnet:
+
+**Drei Bestätigungen bekannter Punkte (nicht neu):**
+- **Cross-scene active sounds** = das Slice-5-Audio-Kontroll-Problem. Claude Designs konkrete Form:
+  Top-Band mit Quick-Stop-Chips (≈ frühere Option B).
+  → [Audio continues during scene switch](#audio-continues-during-scene-switch-_confirmed-correct--slice-5_).
+- **Panic/Fade-all** = bestehender Quick-Win (`fadeOutAll()` fertig). Neuer Zusatz: Auslösung
+  gegen versehentliches Aktivieren sichern („guarded").
+  → [PANIC / fade-all button](#panic--fade-all-button).
+- **Unmissverständliches Mode-Signal** = v25-Mode-awareness + Stage-Lock-Kandidat.
+  → [Stage Lock](#stage-lock).
+
+**Zwei wirklich neue Kandidaten (in den Kandidaten-Pool aufgenommen):**
+- **Audition vs. live output:** Vorhören eines Sounds darf nicht in den Raum hörbar sein — braucht
+  getrenntes Audio-Routing plus visuelle Unterscheidung (Kopfhörer-Icon o.ä.). Neu; noch kein
+  Design, keine Implementierung.
+- **Überlauf-/Scroll-Frage:** Unbegrenzte Pad-Zahl pro Szene vs. nicht scrollendes Grid. Dieser
+  Punkt hat sich zu einem Architektur-Konflikt ausgeweitet → vollständig in C10 dokumentiert.
+
+---
+
+#### C — Neu aufgedeckter Architektur-Konflikt _(ungelöst)_
+
+### C10 — Unbegrenzte Pads vs. nicht-scrollendes Grid
+
+**Konflikt:** Die Pad-Zahl pro Szene ist laut User-Anforderung nicht begrenzt. Der aktuelle Code
+zeigt ein festes, nicht-scrollendes Grid:
+- `.sb-pad-grid`: kein `overflow` gesetzt; `flex: 1; min-height: 0` (füllt feste Höhe)
+- `.sb-board-main`: `overflow: hidden`
+
+Sobald eine Szene mehr Pads enthält als das Grid zeigt, verschwinden überzählige Pads hinter
+`overflow: hidden` — unerreichbar, ohne Fehlermeldung, still. Die beiden Anforderungen
+(unbegrenzte Pads + nicht-scrollendes Grid) sind unvereinbar.
+
+**Konsequenz-Kette (berührt andere Entscheidungen):**
+
+1. Unbegrenzte Pads → Grid muss Überlauf zulassen (vertikal scrollbar oder paginiert).
+2. Scrollendes Feuer-Grid → Claude Designs „Scroll-Gefahr"-Gap wird real: Im abgedunkelten Raum
+   kann ein Scroll-Wisch versehentlich eine Tap-to-fire-Zelle treffen. (Claude Designs Vorschlag:
+   dedizierter Scroll-Gutter / „grab-to-scroll"-Rand an einem Griffflächen-Streifen — oder
+   Überlauf als Signal, eine neue Szene zu beginnen statt eine Szene zu verlängern.)
+3. Vertikales Scrollen tritt zu den bestehenden Grid-Gesten hinzu: Tap = feuern, horizontales
+   Wischen = Swipe-to-page (GAME, optional; → [B8](#b8--szenenwechsel-mechanismus-tap-switcher-primär-swipe-optional-und-game-only)),
+   Reorder-Drag (SETUP). Die vertikale Scroll-Geste vs. horizontale Page-Geste muss achsen-sicher
+   disambiguiert werden — was durch A1 (zweiachsige Grammatik) adressiert werden soll.
+
+**Status: ungelöst.** Betrifft das Grid-Grundlayout. Muss vor der mobilen Implementierung
+(Slice 8) adressiert werden — vermutlich als Teil der visuellen Layout-Ausarbeitung.
+**→ Slice 8:** [Mobile layout adaptation](#mobile-layout-adaptation).
+
+---
+
 #### Parked candidates _(not committed; each has a stated problem it would solve)_
 
 ### Stage Lock
