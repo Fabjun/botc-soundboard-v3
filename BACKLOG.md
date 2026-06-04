@@ -20,6 +20,7 @@ during the slice. This is the only defence against backlog drift.
    - [PAD Editor (Polish)](#pad-editor-polish)
    - [Audio Engine (Deferred from Slice 4)](#audio-engine-deferred-from-slice-4)
    - [Library (Deferred from Slice 2/3)](#library-deferred-from-slice-23)
+- [Design & Feature Clarification Session — 2026-06-04](#design--feature-clarification-session--2026-06-04)
 2. [Documentation Debt](#2-documentation-debt)
 3. [Deferred Design Decisions](#3-deferred-design-decisions)
 4. [Deferred Infrastructure](#4-deferred-infrastructure)
@@ -39,6 +40,8 @@ after Slice 4 audio playback is live.
 **Why deferred:** Slice 5 in the plan; scene data model and CRUD are complete (Slice 3).
 **When:** Slice 5.
 **Source:** V3_CONCEPT_BRIEF.md §5.1, CLAUDE.md Slice Progress table.
+**Session 2026-06-04:** Audio-during-switch explicitly confirmed as the correct behavior — no
+code change needed. → [Design Session 2026-06-04](#design--feature-clarification-session--2026-06-04).
 
 ---
 
@@ -73,8 +76,11 @@ canonical patterns; never use HTML5 DnD).
 ### Open UX question: Quick Access strip scope
 Does the strip suffice for Slice 6, or does it need dedicated Sets-management artboards
 mirroring the Scene CRUD work? Revisit after Slice 5 when cross-scene set usage is visible.
-**When:** Slice 6 planning.
+**When:** Slice 6 planning (after real Slice 5 scene experience is available).
 **Source:** DESIGN_NOTES.md §Slice 6 — Sets management UI.
+**Session 2026-06-04:** Quick-Access content deferred until real scene experience exists —
+need and shape are unknown without practice. Four candidate shapes documented.
+→ [Design Session 2026-06-04](#design--feature-clarification-session--2026-06-04).
 
 ---
 
@@ -164,6 +170,21 @@ iOS 18+ only; never a hard dependency. Progressively enhance scene/screen transi
 available.
 **When:** Slice 8 (only if iOS 18+ has reached the minimum-supported threshold by then).
 **Source:** ADR-0006.
+
+### PANIC / fade-all button
+
+Global fade button alongside the hard STOP. `fadeOutAll(duration)` is already implemented and
+exported — pure UI work; no audio changes needed. See [Design Session 2026-06-04](#design--feature-clarification-session--2026-06-04) for full context
+(engine file refs: `engine.ts:375–412`, `index.ts:83–85`).
+**Note:** Not the scene-to-scene crossfade stub (→ [Real crossfade stub](#real-crossfade)).
+**When:** Slice 8.
+
+### Glanceable loop state
+
+Breathing aura (v8 §5) + loop-spine animation (v8 §6) — designed in `SoS_DESIGN_25052026/`,
+not yet implemented. CSS animation + new `is-*` classes. On top of this design: One-Shot-Spark
+(see [Design Session 2026-06-04](#design--feature-clarification-session--2026-06-04) → Parked Candidates; not yet designed).
+**When:** Slice 8.
 
 #### Grid / Layout
 
@@ -330,6 +351,163 @@ folder via a `+ NEW` row at the bottom.
 
 ---
 
+## Design & Feature Clarification Session — 2026-06-04
+
+> **Beschlussstand einer Klärungssession, kein abgeschlossener Plan.** Die Feature-Liste ist
+> ausdrücklich offen — Ergänzungen und Änderungen sind erwartet. Stabilere
+> Richtungsentscheidungen können sich ändern, aber nur als bewusste Kursänderung mit Begründung;
+> vorläufige Posten sind erwartungsgemäß in Bewegung.
+
+---
+
+#### Stable directions
+
+### Audio continues during scene switch _(confirmed correct — Slice 5)_
+
+Scenes are the Gamemaster's organisational layer; players perceive no scene boundary. Switching
+is administrative, not dramatic — the audio experience must not change. Current code behaviour
+is correct; no implementation change needed.
+**Discarded:** Hard stop (disrupts player experience); crossfade = separate Slice 8 work
+(→ [Real crossfade stub](#real-crossfade)).
+**→ Slice 5:** [Scene navigation](#scene-navigation).
+
+### Code is the authoritative truth; design library is archive
+
+`SoS_DESIGN_25052026/` is the historical starting point, not a maintained living source.
+**Claude Design is used only for new UI elements** — not to keep existing files current.
+Design-code drift is NOT resolved by updating design files. Stale places (e.g., `v11-mobile`
+shows 3 columns; 4-column grid is binding) remain as archive.
+
+### Desktop after mobile; two separate interaction systems
+
+Desktop is a post-mobile phase with its own paradigm: mouse/keyboard, draggable panels.
+Mobile and Desktop are separated by **input type** (Touch vs. Mouse/Keyboard), not screen size.
+The mobile system spans adaptively from phone to tablet (all touch-based).
+**4-column grid is binding across all touch sizes**
+(→ [Grid configurability](#grid-configurability-gridconfig-popover)).
+
+---
+
+#### Provisional / open decisions
+
+### Night vision mode (modifier, not theme)
+
+Night vision = a Settings-activatable modifier over the active theme: brightness damping,
+red-shift, contrast reduction. Not a separate theme — ergonomics (not seeing too bright) and
+mood (theme) are orthogonal; both must remain independently configurable.
+**Status:** Freshly decided, not yet tested in practice. Disableable comfort feature; no hard
+dependencies.
+**When:** Slice 8.
+**→ Slice 8:** [Theme switcher](#theme-switcher-crimson-verdant-neon) — night vision layers
+over the active theme.
+
+### Quick-Access content deferred _(pending real scene experience)_
+
+Quick Access in any form is deferred until Slice 5 scene use reveals whether the need is
+genuine and what shape fits. Four candidate shapes remain open:
+- **Quick Access Strip** (v9 §2) — persistent pinned individual pads, always visible.
+- **Cue Stack** (v9 §3) — sequential TAB-queue; pads fire in order.
+- **Set-Switches** (Slice 6 concept) — switch entire Sets at once.
+- **Cue Tray** — 2–3 armed pads, non-sequential fire-at-will.
+If any form is built: must be disableable.
+**→ Slice 6:** [PadSet model + Quick-Access strip](#padset-model--quick-access-strip) ·
+[Open UX question: Quick Access strip scope](#open-ux-question-quick-access-strip-scope) —
+deferral reason updated: "requires real scene experience" extends "requires Slice 5 in place."
+
+### Summonable overlay contract _(pending; not yet finalized)_
+
+A unifying interaction concept for all secondary panels (Library, PadEditor, Quick-Pads,
+Mixer): **ONE docked handle per panel** combining: tap = open/close; hold = spring-loaded
+momentary (fire-and-forget panels only); drag = resize; swipe-to-edge / tap-outside = close.
+Unites Resize + Summon + Peek in a single vocabulary.
+**Status:** Not yet finalized — panel inventory check is pending before committing to this
+model. Source: Claude Design concept session.
+**→ Slice 8:** [Mobile layout adaptation](#mobile-layout-adaptation).
+
+---
+
+#### Parked candidates _(not committed; each has a stated problem it would solve)_
+
+### Stage Lock
+
+Freeze layout + lock edit gestures during live play to prevent accidental SETUP-mode drag.
+**Problem:** Live misoperation — more relevant as new touch gestures are added to the app.
+**Status:** Parked; no implementation started.
+
+### Long-Press-Peek
+
+Long press on a pad shows waveform / meta info (optionally: silent audio preview) WITHOUT
+firing the sound.
+**Problem:** No hover state on Touch; checking what a pad plays requires firing it. Live
+misfiring is expensive.
+**Status:** Long-press is free on board pads in both GAME and SETUP modes (verified
+2026-06-04; established template: LibraryPanel 350 ms `setTimeout` pattern).
+**Open question:** GAME mode only, or also SETUP? In SETUP, `onPointerDown` is already wired
+to `startDrag()` — long-press needs a coexistence contract. First-pass scope: GAME mode only.
+**→ §3:** [Long-press threshold (350 ms)](#long-press-threshold-350-ms).
+
+### Hold-to-play (Momentary Pads)
+
+Hold = plays; release = stops. For tension sounds, risers, stingers.
+**Problem:** Tap-to-toggle is cumbersome for momentary sounds; "hold" maps to physical
+intuition directly.
+**Implementation note:** `pointerdown` → play, `pointerup` → stop; needs a new pad type.
+**Status:** Parked.
+
+### One-Shot-Spark
+
+A brief visual spark animation when a one-shot fires, distinguishing it from a running loop.
+(Loops get the breathing aura — see [Glanceable loop state (Slice 8)](#glanceable-loop-state).)
+**Problem:** One-shots and loops currently produce identical visual feedback (none vs.
+`is-hot`). Spark = flash animation on trigger / `onended`.
+**Status:** Parked; no design or implementation started. Truly new — nothing analogous exists.
+
+### Further candidates _(feasibility / scope unclear)_
+
+Auto-duck on stinger (audio engine, non-trivial); Haptics (PWA/iOS Brave feasibility unclear);
+Orientation-as-posture (may double layout work); Cue Tray / Recently-used Rail; Command
+Palette (power-user escape hatch).
+**Overarching principle:** Optional comfort features must be disableable. On Touch, the pad
+grid is the instrument — features competing for its space deserve extra scrutiny.
+
+---
+
+#### Quick-wins _(engine work complete; UI-only remaining)_
+
+### PANIC / fade-all button _(see also Slice 8)_
+
+`fadeOutAll(duration)` is fully implemented and publicly exported:
+`v3/src/audio/engine.ts:375–412` · `v3/src/audio/index.ts:83–85`
+Only missing: a UI button alongside the hard STOP. Pure UI work; no audio changes needed.
+**Note:** This is the global per-pad fade — not the scene-to-scene crossfade stub
+(→ [Real crossfade stub](#real-crossfade)).
+**→ Slice 8:** [PANIC / fade-all (Slice 8)](#panic--fade-all-button).
+
+### Glanceable loop state _(see also Slice 8)_
+
+Designed in `SoS_DESIGN_25052026/` (v8 §5–§6), not yet implemented:
+- **Now-Playing breathing aura** — pad glows and breathes while looping (distinct from
+  static `is-hot`).
+- **Idle-Loop Breathing Spine** — type-color spine breathes continuously in loop state.
+Implementation: CSS animation + one new `is-*` class per state.
+New on top of this design: [One-Shot-Spark](#one-shot-spark) (not yet designed; truly new).
+**→ Slice 8:** [Glanceable loop state (Slice 8)](#glanceable-loop-state).
+
+---
+
+#### Implementation interface question
+
+### Resize reflow performance
+
+When dragging a panel edge to resize, the pad grid must NOT re-layout on every drag frame
+(causes jank). Pattern: translucent ghost overlay while dragging; commit real layout only on
+pointer release. Must be verified for compatibility with Preact + flat CSS class architecture
+before the resize handle is built.
+**Dependency:** Relevant only if the Summonable overlay contract (above) is adopted.
+**When:** Resolve before implementing the resize handle.
+
+---
+
 ## 2. Documentation Debt
 
 ### DESIGN_SYSTEM.md §1–§5 write out
@@ -444,6 +622,17 @@ all overlays) or an oversight?
 **When:** Slice 8 (Polish), or earlier if mode-toggle animation needs revisiting for
 z-index/overlay issues.
 **Source:** Truth-check commit `e207a0b`; class marked `[unused-css]` in DESIGN_SYSTEM.md §6.
+
+### Long-Press-Peek — GAME mode only, or SETUP coexistence?
+
+Long-Press-Peek is a parked candidate (see [Design Session 2026-06-04](#design--feature-clarification-session--2026-06-04)). The design question
+to resolve before implementation: **GAME mode only, or also SETUP?** In SETUP mode,
+`onPointerDown` on pads is already wired to `startDrag()` — long-press (350 ms timer before
+movement) would need a clear coexistence contract. First-pass recommendation: GAME mode only
+(no coexistence issue; SETUP already has a tap-to-select interaction).
+**When:** Decide before implementation starts.
+**Source:** Design Session 2026-06-04; long-press availability on board pads verified
+2026-06-04.
 
 ---
 
