@@ -493,4 +493,21 @@ In suggested priority order:
 <!-- PLACEHOLDER: Pass 4 — Audio engine deep dive (to be added) -->
 <!-- PLACEHOLDER: Pass 5 — Doc-vs-code drift sweep (to be added) -->
 <!-- PLACEHOLDER: Pass 6 — Upload + libDnd iOS robustness (to be added) -->
+
+---
+
+## 6. Document Coupling Map
+
+When a concept changes, these documents must be updated in lockstep. Raw input for future
+consistency-checking automation; not exhaustive — covers concepts that have already caused drift.
+
+| Concept / source of truth | Documents that must mirror it | Trigger event |
+|---|---|---|
+| **Adaptive model** — `docs/architecture/0045-two-axis-adaptive-model.md` | `V3_CONCEPT_BRIEF.md §4.10, §6`; `BACKLOG.md §Stable Directions` | Any revision to the two-axis model or its scope |
+| **Design tokens** — `v3/src/styles/tokens.css` | `CLAUDE.md §Color palette`; `V3_CONCEPT_BRIEF.md §4.7` | Any token added, renamed, or removed |
+| **Data model** — `v3/src/types.ts` | `CLAUDE.md §Deviations` (authoritative log); `V3_CONCEPT_BRIEF.md §4.1` (pointer only — do not duplicate the types here) | Any type renamed, field added/removed/changed from required↔optional |
+| **Platform constraints** — `CLAUDE.md §Supported Platforms (binding)` | `V3_CONCEPT_BRIEF.md §4.13` | Any minimum-version or API-availability change |
+| **CSS class inventory** — `DESIGN_SYSTEM.md §6` (auto-generated via `sync:classes`) | `CLAUDE.md §Permanent coding standards` (references class names) | New `sb-*` class added, renamed, or removed |
+| **ADR index** — `docs/architecture/README.md §Index` (auto-generated via `sync:adr`) | Any doc that cross-links ADRs by number | New ADR accepted; ADR status changed |
+| **Audio/IDB API surface** — `v3/src/db/idb.ts`, `v3/src/audio/` | `CLAUDE.md §V3 audio/IDB API` | Any public function added, renamed, removed, or signature changed |
 <!-- PLACEHOLDER: Pass 7 — C10 implementation planning (to be added) -->

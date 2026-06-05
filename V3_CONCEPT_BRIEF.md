@@ -62,57 +62,10 @@ V1 keeps running. V3.0 is built in parallel until ready.
 
 ### 4.1 · Data model
 
-```typescript
-type Board = {
-  id: string;
-  name: string;
-  themeId: string;
-  settings: {
-    quickAccessLayout: 'tabs' | 'stack' | 'hidden';
-    quickAccessSetCount: number;  // default 1
-  };
-  scenes: Scene[];
-  sets: Set[];
-};
-
-type Scene = {
-  id: string;
-  name: string;
-  order: number;
-  gridConfig: { cols: number; rows: number; gap: number; padSize: string };
-  pads: Pad[];
-};
-
-type Set = {
-  id: string;
-  name: string;
-  order: number;
-  pads: Pad[];
-};
-
-type Pad = {
-  id: string;
-  type: 'single' | 'loop' | 'playlist' | 'combo';
-  name: string;
-  hotkey?: string;
-  libraryItemRef: string;
-  iconRef?: string;
-  color?: string;
-  volume: number;
-  fadeIn: number;
-  fadeOut: number;
-  // type-specific fields applied as needed
-};
-
-type LibraryItem = {
-  id: string;
-  type: 'audio' | 'icon' | 'image';
-  name: string;
-  blob: Blob;
-  tags: string[];
-  addedAt: number;
-};
-```
+> **Canonical types:** `v3/src/types.ts` — source of truth for the current schema.
+> The model diverged from the original sketch during Slices 1–4; specific changes
+> are in CLAUDE.md §Deviations. The TypeScript sketch that was here has been removed
+> to eliminate a second copy that could drift.
 
 **Key concepts:**
 
@@ -200,7 +153,7 @@ are additive; V1 ignores unknown fields).
 
 Token language follows the design system canonically:
 - Fonts: `--font-display`, `--font-ui`, `--font-mono`
-- Mode colors: `--mode-setup`, `--mode-play`
+- Mode colors: `--mode-setup`, `--mode-game`
 - Spacing: `--space-1` through `--space-16`
 - Colors, borders, shadows, glows per `tokens.css`
 
@@ -248,8 +201,11 @@ Why a plugin: V1's manual `sw.js` worked but required discipline
 
 ### 4.10 · Responsive
 
-Desktop and tablet are primary targets. Mobile works but isn't
-specifically optimized in V3.0 (touch-first variant comes later).
+V3.0 uses a **two-axis adaptive model** (→ `docs/architecture/0045-two-axis-adaptive-model.md`):
+Axis 1 adapts the frame layout to screen format (narrow/portrait → bottom dock; wide/landscape →
+side rail). Axis 2 adds input capabilities progressively (touch is the base everywhere; mouse/
+keyboard add hover, right-click, shortcuts non-destructively). One adaptive app — no separate
+mobile variant, no version switch.
 
 ### 4.11 · Language
 
@@ -354,7 +310,6 @@ Ask the user — don't assume — when:
 - Cloud storage
 - Live audio sharing during play
 - Plugin system
-- Mobile-specific UI variant (later)
 - Multi-language (English only)
 - Comprehensive accessibility (baseline only)
 - Test suite (deferred)

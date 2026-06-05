@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.12';
+export const APP_VERSION = '3.0.13';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.13',
+    date: '2026-06-05',
+    items: [
+      'Docs: Foundation drift correction — align V3_CONCEPT_BRIEF with ADR-0045 (two-axis model); precision BACKLOG C10 label; fix --mode-play → --mode-game token; replace stale §4.1 type block with pointer; past-tense Session 3; add document coupling map',
+    ],
+  },
   {
     version: '3.0.12',
     date: '2026-06-05',

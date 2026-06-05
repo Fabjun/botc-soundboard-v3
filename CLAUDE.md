@@ -171,7 +171,7 @@ fonts, or spacing.
 --gold, --gold-dim, --gold-bright, --gold-soft
 --flame, --blood, --blood-bright, --blood-soft
 --text, --text-dim, --text-mute, --text-strong
---mode-setup, --mode-play
+--mode-setup, --mode-game
 --pad-single, --pad-loop, --pad-playlist, --pad-combo
   (each with -soft and -glow variants)
 ```
@@ -229,7 +229,7 @@ fonts, or spacing.
     §6 first for a class with similar function — extend (e.g., `is-*` variant) rather than
     duplicate. If duplication risk is unclear, raise the question. Layout-only structures
     (flex/gap/align-only wrappers) belong in named layout primitives (`sb-row`, `sb-stack`,
-    `sb-flex-1`, and variants), not inline exceptions; these primitives are created in
+    `sb-flex-1`, and variants), not inline exceptions; these primitives were created in
     Session 3 of the CSS Class Discipline plan.
   - **Path C — inline = dynamic only:** `style={}` is legitimate only for values computed at
     runtime: animation coordinates, drag positions, data-driven dimensions, state-dependent

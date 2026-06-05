@@ -649,13 +649,13 @@ Claude Designs fünf geflagte Gaps wurden eingeordnet:
 
 ---
 
-#### C — Architektur-Konflikt _(C10: resolved 2026-06-04)_
+#### C — Architektur-Konflikt _(C10: concept resolved 2026-06-04; implementation pending Slice 8)_
 
 ### C10 — Variable grid, gap-preserving reflow, gesture-based scroll protection, settings architecture
 
 **Starting situation:** The pad count per scene is unbounded (user requirement). The current code has a non-scrolling grid (`.sb-pad-grid`: no `overflow` set; `.sb-board-main`: `overflow: hidden`). These two requirements are incompatible — excess pads silently disappear behind `overflow: hidden`, unreachable and without any indication.
 
-**Status: RESOLVED.** Foundation: the [guiding principle](#guiding-principle--technically-minded-tinkerers) (predictable mechanics + full user control, sensible defaults).
+**Status: CONCEPT RESOLVED — IMPLEMENTATION PENDING (Slice 8).** The design is decided (see below). Code still has `overflow: hidden` on `.sb-board-main`; excess pads currently disappear. Implementation is Slice 8 work. Foundation: the [guiding principle](#guiding-principle--technically-minded-tinkerers) (predictable mechanics + full user control, sensible defaults).
 
 #### Core design
 
