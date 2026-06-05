@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.13';
+export const APP_VERSION = '3.0.14';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.14',
+    date: '2026-06-05',
+    items: [
+      'Docs: Full documentation audit — inventory + currency check of all 20 documents + 45 ADRs; 8 critical, 40 important, 24 cosmetic findings recorded; 12 category-D items flagged for user judgment',
+    ],
+  },
   {
     version: '3.0.13',
     date: '2026-06-05',

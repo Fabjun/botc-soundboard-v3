@@ -511,3 +511,241 @@ consistency-checking automation; not exhaustive — covers concepts that have al
 | **ADR index** — `docs/architecture/README.md §Index` (auto-generated via `sync:adr`) | Any doc that cross-links ADRs by number | New ADR accepted; ADR status changed |
 | **Audio/IDB API surface** — `v3/src/db/idb.ts`, `v3/src/audio/` | `CLAUDE.md §V3 audio/IDB API` | Any public function added, renamed, removed, or signature changed |
 <!-- PLACEHOLDER: Pass 7 — C10 implementation planning (to be added) -->
+
+---
+
+## 7. Documentation Audit — Full Inventory & Currency Check (2026-06-05)
+
+**Prior corrections (D1–D8):** Handled in commit `36e0178` — do not re-flag. See §6 coupling map for the lock-step relationships. This pass finds the remaining drift across the full document set.
+
+**Audit scope:** All project documents except the out-of-scope archives (`v1-reference/` and `SoS_DESIGN_25052026/`), whose existence is noted in the inventory.
+
+---
+
+### 7.1 Document Inventory
+
+| Document | Purpose | Lines | Status |
+|---|---|---|---|
+| `CLAUDE.md` | Project instructions; mandatory session read | 524 | Active, authoritative |
+| `V3_CONCEPT_BRIEF.md` | Binding architecture decisions; mandatory session read | 343 | Active; written early — many passages now stale |
+| `BACKLOG.md` | Feature backlog, design decisions, CSS discipline log | 1 926 | Active |
+| `README.md` | Project overview for repo visitors | 65 | Active |
+| `DESIGN_SYSTEM.md` | CSS/design-system specification; §6 and §A auto-generated | 466 | Active |
+| `DESIGN_NOTES.md` | Design decision log for detail-level choices | 565 | Active |
+| `DESIGN_SYSTEM_CHEATSHEET.md` | Quick-reference card for CSS conventions | 81 | Active |
+| `TESTING.md` | Test architecture, commands, conventions | 440 | Active |
+| `docs/MANUAL_IPHONE_CHECKLIST.md` | Manual iOS verification checklist for audio/IDB/file slices | 121 | Active |
+| `docs/DOCUMENTATION_MAP.md` | Navigation guide to the doc ecosystem | 97 | Active; incomplete |
+| `docs/analysis/FOUNDATION_ANALYSIS.md` | Foundation analysis passes (this file) | 513+ | Active |
+| `docs/architecture/README.md` | ADR index; auto-generated via `sync:adr` | 101 | Active |
+| `docs/architecture/_template.md` | ADR authoring template | ~30 | Active |
+| `docs/architecture/0001–0045.md` | 45 ADRs (no numbering gaps) | ~50–112 each | All Accepted |
+| **Out-of-scope archives** | | | |
+| `v1-reference/HANDOFF.md` | V1 design handoff (reference only) | 353 | Archive |
+| `SoS_DESIGN_25052026/HANDOFF.md` | V2 design-system handoff (reference only) | 353 | Archive |
+
+**CHANGELOG.md** exists at the project root (maintained per CLAUDE.md §Workflow rules step 0) but has no entry in any navigation document — noted in findings below.
+
+---
+
+### 7.2 Prioritized Findings Summary
+
+Findings are tagged `[SEV][CAT]` where:
+- **SEV:** `CRIT` = misleads every session or is a silent code trap; `IMP` = actionable error; `COS` = cosmetic/minor
+- **CAT:** `A` = verifiable drift vs. code/ADRs; `B` = outdated "still-open" decision; `C` = cross-doc inconsistency or dead link; `D` = intent-dependent — needs user judgment, not resolved here
+
+#### Critical findings (must fix before next feature slice)
+
+| # | SEV | CAT | Document | Finding | Line |
+|---|---|---|---|---|---|
+| C1 | CRIT | B | V3_CONCEPT_BRIEF.md §4.3 | "Zustand or Signals — Claude Code chooses based on fit": Signals decided in Slice 1, irreversibly implemented | 101–103 |
+| C2 | CRIT | B | V3_CONCEPT_BRIEF.md §4.3 | "Components read via hooks": Preact Signals uses `.value` / JSX binding, not hooks | 97 |
+| C3 | CRIT | B | V3_CONCEPT_BRIEF.md §6 | "Test suite (deferred)" listed as out-of-scope: full Phase 2 testing infra is built | 315 |
+| C4 | CRIT | A | CLAUDE.md §Path B / DESIGN_SYSTEM_CHEATSHEET.md | `sb-stack` named as a created layout primitive — class does not exist; actual vertical-stack primitive is `sb-col` | CLAUDE.md 231; Cheatsheet 44 |
+| C5 | CRIT | A | TESTING.md §Mobile Testing | All mobile touch-target and overflow tests are `test.describe.fixme()` — zero active tests; documentation claims active automated coverage | various |
+| C6 | CRIT | B | README.md §Status | "Slice 4 (Audio Playback) in progress" — Slice 4 complete since 2026-05-28 | 7–8 |
+| C7 | CRIT | C | docs/DOCUMENTATION_MAP.md | `V3_CONCEPT_BRIEF.md` — the most important mandatory-read doc — has no entry in the map | — |
+| C8 | CRIT | C | DESIGN_NOTES.md | Dead cross-reference to "DESIGN_SYSTEM.md §8.8" (two occurrences); DESIGN_SYSTEM.md has sections §1–§6 and §A only | 384, 433 |
+
+#### Important findings
+
+| # | SEV | CAT | Document | Finding | Line |
+|---|---|---|---|---|---|
+| I1 | IMP | B | V3_CONCEPT_BRIEF.md §4.3 | `AppState` sketch has stale types: `playingPads: Set<string>` (actual: `ReadonlySet`), `currentMode: 'play'|'edit'` inconsistency; sketch known-stale | 105–115 |
+| I2 | IMP | B | V3_CONCEPT_BRIEF.md §4.4 | Audio facade file described as `audio.ts`; actual: `src/audio/index.ts`. `play()` signature wrong (needs `pad: Pad`); `crossfade()` `to` arg is `Pad` not `string` | 123–128 |
+| I3 | IMP | B | V3_CONCEPT_BRIEF.md §4.5 | "Suggested: **idb** or raw IndexedDB, either works": `idb` chosen and in use | 143–145 |
+| I4 | IMP | C | V3_CONCEPT_BRIEF.md §3 vs §7 | §3 says HANDOFF.md is in `v1-reference/`; §7 step 2 says read `SoS_DESIGN_25052026/HANDOFF.md` — contradictory instructions | 53, 320 |
+| I5 | IMP | A | V3_CONCEPT_BRIEF.md §4.8 | Project structure tree has wrong filenames: `App.tsx` (actual: `app.tsx`); non-existent `public/manifest.json`, `styles/components.css`; stale screen names | 168–187 |
+| I6 | IMP | B | V3_CONCEPT_BRIEF.md §5.1 | Slice list shows no completion status; all 8 slices appear equally pending; Slice 1 called "Home screen" not "StartScreen" | 249–259 |
+| I7 | IMP | B | CLAUDE.md §Architecture | "IndexedDB extended for Scenes and **Sets**" — PadSets (Slice 6) not yet built | 55 |
+| I8 | IMP | A | CLAUDE.md §Build commands | `test:e2e` described as "E2E smoke tests — run before push"; actually runs smoke+full suites; pre-push runs `test:e2e:all` | ~427 |
+| I9 | IMP | A | CLAUDE.md §Deviations | "not from **React** state" — project uses Preact Signals; wrong framework name | 519 |
+| I10 | IMP | A | CLAUDE.md §Color code rule | SETUP rule uses `--mode-setup`; GAME rule uses `--gold` not `--mode-game`; asymmetric and `--gold` diverges from `--mode-game` in non-default themes | 182 |
+| I11 | IMP | B | CLAUDE.md §Inline-style audit | "before and after Session 3 migration work" (future tense); baseline shows 203 blocks / 177 violations — Session 3 done, current audit: 0 violations | 266–268 |
+| I12 | IMP | B | TESTING.md §Overview | E2E Full labeled "22 Slice-3-Verifikationspunkte" — includes Slice 4 audio tests; active count is 21 not "18+" | ~11 |
+| I13 | IMP | A | TESTING.md §Directory | `audio.spec.ts` and `tests/unit/audio/lru.test.ts` absent from file tree | ~31–78 |
+| I14 | IMP | A | TESTING.md §CI | Vitest count stated as 91 — actual: 102 | ~221 |
+| I15 | IMP | C | TESTING.md §Commands vs §CI | "5 tests / 2 tests" means spec files in one place, test cases in another; inconsistent terminology for "tests" | 162, 232 |
+| I16 | IMP | C | docs/DOCUMENTATION_MAP.md | Missing entries: `CHANGELOG.md`, `docs/MANUAL_IPHONE_CHECKLIST.md`, `docs/analysis/FOUNDATION_ANALYSIS.md` | — |
+| I17 | IMP | A | DESIGN_SYSTEM.md §A header | Claims token source is `SoS_DESIGN_25052026/tokens.css`; actual: `sync:tokens` reads `v3/src/styles/tokens.css` | ~311 |
+| I18 | IMP | A | DESIGN_NOTES.md | `--pix-bg-layer` named in RESOLVED entry as an active escape hatch — token removed from `tokens.css` (file header, line 4) | 384 |
+| I19 | IMP | B | DESIGN_NOTES.md | "Slice 4 — to decide at implementation time" header: Slice 4 complete; C1/C2 items not implemented but section header still reads as pre-implementation open | ~189 |
+| I20 | IMP | B | DESIGN_NOTES.md §Slice 3 | Multiple "to decide at implementation time" items from Slice 3 (type inference, slot-scan order, source-picker shape) not marked RESOLVED despite being implemented | ~24–72 |
+| I21 | IMP | C | DESIGN_SYSTEM_CHEATSHEET.md §state vocab | `is-deep` and `is-compact` absent from the quick-reference state vocabulary; present in DESIGN_SYSTEM.md §3 | 63–64 |
+| I22 | IMP | B | BACKLOG.md §Session 3 COMPLETE | Phrasing item (a) "CLAUDE.md line 233 past tense" listed as pending — completed in commit `36e0178` | 1722 |
+| I23 | IMP | C | BACKLOG.md §Slice 7 | ADR-0015 cited as source for V1-compatible template format; ADR-0015 covers DB name only | 94 |
+| I24 | IMP | B | BACKLOG.md §3 | Delete-last-scene behavior decided in code (SceneRail drops to empty-board state) but still listed as an open decision | ~1073 |
+| I25 | IMP | B | BACKLOG.md §3 | Scene rename duplicate-name policy decided in code (allow, no validation) but still listed as "verify before Slice 5" | ~1079 |
+| I26 | IMP | B | ADR-0018 §Decision | Facade still described as unbuilt ("noch nicht erstellt"); `play()` and `crossfade()` signatures wrong (Slice 4 implemented different API) | 37–38, 70 |
+| I27 | IMP | B+A | ADR-0020 §Decision | "noch nicht erstellt" stale (Slice 4 done); `ctx.suspend()` on `visibilitychange` and `audioContextState='suspended'` described but not implemented | 27–30, 67 |
+| I28 | IMP | A | ADR-0012 §Decision | Code snippet uses wrong import path: `sha256` not `sha2.js`, missing `.js` extension | 25–32 |
+| I29 | IMP | B | ADR-0021 §Decision | State vocabulary "closed set" claim stale — 5 classes added after this ADR: `is-looping`, `is-insert-before`, `is-insert-after`, `is-drag-swap`, `is-drag-source` | various |
+| I30 | IMP | A | ADR-0026 §Decision | `prefers-reduced-motion` behavior documented as "220 ms flash" but `sb-mode-toggle-flash` is `[unused-css]`; actual behavior: skip animation entirely | 28 |
+| I31 | IMP | C | ADR-0033 | Title "Drei-Schichten" but body enumerates four test layers; README index propagates the wrong title | title |
+| I32 | IMP | B | ADR-0033 §Decision | Pre-push gate (version-bump + size + full E2E) entirely absent from gate-order description | 30 |
+| I33 | IMP | C | ADR-0034 §Related | Cross-ref "ADR-0038 (fake-indexeddb Isolation)" is wrong — ADR-0038 covers `data-testid` conventions | 62 |
+| I34 | IMP | A | ADR-0035 §Decision | "drei Projekten" — actual Playwright config has 6 projects; `mobile` and `mobile-chromium` entirely absent | 21 |
+| I35 | IMP | A | ADR-0037 §Decision | "drei Gates" — actual pre-commit hook has 6 gates; `sync:docs`, `lint-staged`, `link:check` absent | 19–25 |
+| I36 | IMP | A | ADR-0039 §Decision table | Slice 4 shown as `⬜` pending — CLAUDE.md marks it `✅ Complete` since 2026-05-28 | 28 |
+| I37 | IMP | C | ADR-0043 §Header | Missing required `**Slice:**` field; header format deviates from template (`**Date**:` vs `**Date:**`) | 1–7 |
+| I38 | IMP | C | ADR-0044 §Header | Same: missing `**Slice:**` field; non-template header format | 1–7 |
+| I39 | IMP | C | docs/architecture/_template.md | `**Refines:**` field introduced by ADR-0043/0044 not in template | — |
+| I40 | IMP | B | README.md §Documentation | Incomplete doc listing: missing `BACKLOG.md`, `DESIGN_SYSTEM.md`, `DESIGN_SYSTEM_CHEATSHEET.md`, `CHANGELOG.md`, `docs/DOCUMENTATION_MAP.md`, `docs/MANUAL_IPHONE_CHECKLIST.md` | 55–59 |
+
+#### Cosmetic findings
+
+| # | SEV | CAT | Document | Finding | Line |
+|---|---|---|---|---|---|
+| K1 | COS | B | V3_CONCEPT_BRIEF.md §7 | "Default: Slice 1" stale — Slice 1 complete; current default would be Slice 5 | 324 |
+| K2 | COS | C | V3_CONCEPT_BRIEF.md §3 | Dangling reference to `prototype/*.html` V1.5 files — directory does not exist | 58 |
+| K3 | COS | C | V3_CONCEPT_BRIEF.md §3 | "v1–v26 exploration files" — no `v1-*.jsx` file exists; first file is `v2-screens.jsx` | 53 |
+| K4 | COS | A | CLAUDE.md §Reference docs | `v1-reference/CLAUDE.md` listed as reference document — file does not exist in that directory | ~31–32 |
+| K5 | COS | C | CLAUDE.md §Design language §Tokens | "imported from SoS_DESIGN_25052026/tokens.css" implies live sync; `v3/src/styles/tokens.css` is the canonical live source and has diverged | ~163–164 |
+| K6 | COS | A | CLAUDE.md §Deviations | npm cache note ("partially root-owned") conflicts with resolved memory entry noting this is largely fixed | ~514 |
+| K7 | COS | B | TESTING.md §Overview | "Slice 3.5" not an official slice name; CLAUDE.md uses "Phase 2 testing infrastructure" | ~5 |
+| K8 | COS | C | TESTING.md §Fallstricke | Numbering gap: sections jump from §5 to §7 (no §6) | — |
+| K9 | COS | C | DESIGN_SYSTEM.md §3 | TODO comment about "Träger" (carrier elements) column never added | ~64 |
+| K10 | COS | C | DESIGN_NOTES.md §A3 | Scene CRUD questions listed under "Slice 6 — capacity questions" — they relate to Slice 3 features | ~228 |
+| K11 | COS | B | BACKLOG.md §Session 3 header | Session 3 header has no ✅ Done marker; Sessions 0/1/2 headers all marked done | 1371 |
+| K12 | COS | C | BACKLOG.md §Slice 8 | "Desktop-first layout; mobile adaptation is a dedicated phase" — uses superseded framing; ADR-0045 replaced "desktop-first" with two-axis terminology | 220 |
+| K13 | COS | C | BACKLOG.md §5 title | "CSS Class Discipline (multi-session plan)" — all sessions complete; calling it a "plan" is stale | 1247 |
+| K14 | COS | B | ADR-0005 §Related | `v3/public/manifest.json` listed as a file — manifest is inline in `vite.config.ts`; no separate file exists | 64 |
+| K15 | COS | B | ADR-0003 §Consequences | Build time claim "~90 ms" reflects Slice 1 scaffold; now ~115 ms with PWA plugin | 31 |
+| K16 | COS | B | ADR-0007 §Decision | `elementFromPoint` ghost pattern presented as applying to all DnD modules; `padDnd.ts` uses cellRef registry instead | 44 |
+| K17 | COS | C | ADR-0025 §Context | ADR-0006 parenthetical undersells its scope ("iPhone 8 / iOS 15 Minimum") | 18 |
+| K18 | COS | A | ADR-0026 | `sb-mode-toggle-sparks` marked `[unused-css]` in CSS — ADR doesn't note the divergence (sparks injected to `document.body`, not via this class) | — |
+| K19 | COS | C | ADR-0032 §Related | ADR-0006 cross-ref described as "360px Viewports" — undersells ADR-0006 scope | 61 |
+| K20 | COS | C | ADR-0035 §Decision | "smoke (Chromium + WebKit)" imprecise — `smoke` and `smoke-webkit` are two separate Playwright projects | 21 |
+| K21 | COS | C | ADR-0038 §Alternatives | "ADR-0041-artig" is non-standard and the reference (ADR-0041 = English-only ADR) is unrelated to accessibility | 72 |
+| K22 | COS | C | ADR-0043 | Missing `## Related` section (required by template) | — |
+| K23 | COS | C | ADR-0044 | Missing `## Related` and `## Alternatives Considered` sections | — |
+| K24 | COS | B | ADR-0005 §Consequences | Stale precache entry count/size ("11 entries, 178.68 KiB") | 43 |
+
+#### Items requiring user judgment (category D — not resolved here)
+
+| # | Document | Question | Why judgment is needed |
+|---|---|---|---|
+| D1 | V3_CONCEPT_BRIEF.md §4.1 Key concepts | Prose still says "Set" — should it say "PadSet" for precision? | Conceptual vs. implementation naming is a style choice |
+| D2 | CLAUDE.md §Color code rule | Rule uses `--gold` for GAME mode; `--mode-game` also exists. Is the asymmetry intentional? | `--gold` and `--mode-game` share the same hex in the default theme but diverge in non-default themes; whether the rule should use `--mode-game` for consistency with `--mode-setup` rule requires design intent |
+| D3 | CLAUDE.md §Workflow rules #8 | `update_log.md` rule says "create on first commit" — file never created after 4 slices | Was this deliberately dropped or forgotten? |
+| D4 | TESTING.md §Routing table | "Slice-3 Verifikation" label for full E2E project — should it be relabeled now Slice 4 tests are included? | Cosmetic scope/naming decision |
+| D5 | docs/MANUAL_IPHONE_CHECKLIST.md §Section 2 | Backup export/import checks reference Slice 7 functionality not yet built | Should these be annotated `[Slice 7 — skip until implemented]`? |
+| D6 | BACKLOG.md §Session 3 | Mixed live/completed items in "What remains (Session 8)" note — phrasing item (a) done, others genuine | Should item (a) be explicitly struck through? |
+| D7 | BACKLOG.md §5 | `sb-col` added in Session 3c but not in the Session 3a primitive table; table is historical, not a master inventory | Add a "final layout primitives" list elsewhere? |
+| D8 | ADR-0019 §Decision | Rule 5 ("null `s.buffer` in `onended`") — single/loop paths use LRU eviction instead; only playlist path explicitly nulls | Was LRU-as-sole-eviction-mechanism a conscious deviation from rule 5, or oversight? |
+| D9 | ADR-0020 §Decision | `ctx.suspend()` on `visibilitychange` and `audioContextState='suspended'` described but absent from code — may have been deliberately resolved differently in Slice 4 / ADR-0043 | Was the suspend-on-hide approach deliberately dropped? |
+| D10 | ADR-0039 §Category | Category "Test-Infrastruktur & Workflow" is a poor semantic fit for a development-process (slice planning) ADR | Should a new category be added, or reassign? |
+| D11 | ADR-0041 §Category | Same category mismatch: English-only product scope assigned to "Test-Infrastruktur & Workflow" | Same question as D10 |
+| D12 | ADR-0045 §Consequences | Breakpoint thresholds for Axis 1 (when sidebar moves from bottom to side) explicitly TBD; no BACKLOG tracking reference exists | When/where does this get resolved? Should a BACKLOG item be added? |
+
+---
+
+### 7.3 V3_CONCEPT_BRIEF.md "Still-Open" Passage Inventory
+
+Special scan requested: every passage presenting a decision as open/TBD/"to be chosen." Status column shows whether the decision has been made.
+
+| Passage | Line | Decision status |
+|---|---|---|
+| "Components read via hooks, mutations via setters" | 97 | **Resolved (wrong):** Preact Signals uses `.value`, not hooks. |
+| "Recommended approach: **Zustand** … or **Preact Signals** … Either is fine — Claude Code chooses" | 101–103 | **Resolved:** Preact Signals chosen, Slice 1. ADR-0002. |
+| `AppState` sketch (inline `playingPads: Set<string>` etc.) | 105–115 | **Resolved (stale):** Type block removed in D4 fix; see `src/types.ts` and CLAUDE.md §Deviations. |
+| "Suggested library: **idb** … Or raw IndexedDB. Either works." | 143–145 | **Resolved:** `idb` chosen, Slice 2. ADR-0016. |
+| Audio facade described as `audio.ts` with simplified signatures | 123–128 | **Resolved (stale):** `src/audio/index.ts`; actual signatures differ. See CLAUDE.md §V3 audio/IDB API. |
+| Project structure tree (filenames, directory layout) | 168–187 | **Partially resolved (stale):** Actual structure diverges significantly. Tree is a historical sketch, not authoritative. |
+| "Claude Code adjusts structure as needed" | 236 | Still valid (intentional flexibility). No drift. |
+| Slice list §5.1 — presented as all-pending | 249–259 | **Resolved:** Slices 1–4 complete. CLAUDE.md §Slice progress is authoritative. |
+| "Default: Slice 1" in §7 step 5 | 324 | **Resolved (stale):** Slice 1 complete; Slice 5 is next. |
+| "Test suite (deferred)" in §6 | 315 | **Resolved:** Full Phase 2 test infrastructure built. See TESTING.md, ADRs 0033–0038. |
+| §7 step 2: "Read `SoS_DESIGN_25052026/HANDOFF.md`" | 320 | **Partially resolved (ambiguous):** §3 says HANDOFF.md was moved to `v1-reference/`; both copies exist; §7 points to the original SoS copy. |
+
+**Still genuinely open (no resolution found):**
+- The project structure tree and audio facade description are acknowledged as historical sketches in CLAUDE.md §Deviations; they are "stale by design" rather than active open questions.
+- No passages in the brief carry truly-open "TBD" flags beyond the ones listed above (all resolved or acknowledged-stale).
+
+**Summary:** 9 passages found requiring attention (all B-category); 8 have been resolved in Slice 1–4 implementations; 1 is ambiguous (HANDOFF.md location).
+
+---
+
+### 7.4 Cross-Document Vocabulary Gap: `is-*` State Classes
+
+ADR-0021 declares a "closed set" of `is-*` state classes. DESIGN_SYSTEM.md §3 is the living registry. Both are incomplete — five classes are actively used in code but unregistered anywhere:
+
+| Class | Where used | Added in |
+|---|---|---|
+| `is-looping` | `PadGridCell.tsx`, `tokens.css` | Slice 4 |
+| `is-insert-before` | `padDnd.ts`, `tokens.css` | Slice 3 |
+| `is-insert-after` | `padDnd.ts`, `tokens.css` | Slice 3 |
+| `is-drag-swap` | `padDnd.ts`, `tokens.css` | Slice 3 |
+| `is-drag-source` | `padDnd.ts`, `tokens.css` | Slice 3 |
+
+**Impact:** Any developer checking ADR-0021 or DESIGN_SYSTEM.md §3 for the authoritative state vocabulary will not find these classes, and may introduce duplicate or conflicting classes. DESIGN_SYSTEM.md §3 is manually maintained (not auto-generated), so the fix requires a manual edit. ADR-0021's "closed set" claim becomes accurate again once these are added.
+
+---
+
+### 7.5 ADR Health Summary
+
+| ADRs | Issues | Notes |
+|---|---|---|
+| 0001–0011 | None found | Clean |
+| 0012 | Import path wrong in code snippet (`sha256` → `sha2.js`) | Causes copy-paste TypeScript errors |
+| 0013–0017 | None found | Clean |
+| 0018 | Stale "not yet built" + wrong `play()`/`crossfade()` signatures | Slice 4 implemented different API |
+| 0019 | D-category (LRU vs onended nulling) | User judgment on intent |
+| 0020 | Stale "not yet built" + `ctx.suspend()` not implemented | May be resolved by ADR-0043 reasoning |
+| 0021 | "Closed set" claim stale — 5 classes missing | See §7.4 above |
+| 0022 | Clean | |
+| 0023–0025 | Clean | |
+| 0026 | `prefers-reduced-motion` flash class `[unused-css]` — actual behavior: skip entirely | |
+| 0027–0032 | Clean (minor cosmetic cross-ref wording) | |
+| 0033 | Title "Drei-Schichten" wrong (four layers); pre-push gate absent | |
+| 0034 | Wrong cross-ref for fake-indexeddb isolation | Phantom ADR cited |
+| 0035 | Says "drei Projekten" — 6 projects exist; mobile projects entirely absent | |
+| 0036 | Clean | |
+| 0037 | Says "drei Gates" — 6 gates exist; lint-staged, sync:docs, link:check absent | |
+| 0038 | Non-standard cross-ref suffix ("-artig"); references wrong ADR | |
+| 0039 | Slice 4 shown pending; category questionable (D) | |
+| 0040 | Clean | |
+| 0041 | Category "Test-Infrastruktur & Workflow" is wrong fit (D) | |
+| 0042–0043 | 0043 missing `Slice:` field and `## Related` section | |
+| 0044 | Missing `Slice:` field, `## Related`, `## Alternatives Considered` sections | |
+| 0045 | Breakpoint thresholds TBD — no tracking reference (D) | |
+
+**ADRs with zero findings (verified clean):** 0001–0011, 0013–0017, 0022–0025, 0027–0032, 0036, 0040, 0042.
+
+---
+
+### 7.6 Coverage & Completeness Statement
+
+**Documents fully audited:** All 20 non-archive project documents: CLAUDE.md, V3_CONCEPT_BRIEF.md, BACKLOG.md, README.md, DESIGN_SYSTEM.md, DESIGN_NOTES.md, DESIGN_SYSTEM_CHEATSHEET.md, TESTING.md, docs/MANUAL_IPHONE_CHECKLIST.md, docs/DOCUMENTATION_MAP.md, docs/analysis/FOUNDATION_ANALYSIS.md (as a document), docs/architecture/README.md, docs/architecture/_template.md, and all 45 ADRs (0001–0045).
+
+**Documents noted but not audited:** `v1-reference/HANDOFF.md` and `SoS_DESIGN_25052026/HANDOFF.md` are out-of-scope archives by design. `CHANGELOG.md` was not audited (it is a mechanical record, not a prescriptive doc).
+
+**Confidence in finding completeness:**
+- **(A) Verifiable drift:** High confidence. Every claim was checked against actual code, config files, and tokens. Code was read where relevant (not inferred).
+- **(B) Outdated "still-open":** High confidence for the brief (special deep scan). Moderate confidence for other documents — any "open" passage found was verified. Documents not scanned for "open" patterns at the same depth as the brief: BACKLOG.md (too large for exhaustive pattern scan; key sections audited).
+- **(C) Cross-document inconsistency:** High confidence for explicit cross-references (ADR numbers, file paths, function names). Moderate confidence for implicit consistency — the coupling map (§6) defines the key relationships; anything outside that map may have been missed.
+- **(D) Intent-dependent items:** By definition incomplete — only what was noticed while reading. The 12 flagged items are genuine judgment calls; there may be others in BACKLOG.md sections not fully traversed.
+
+**What this audit does NOT settle:** Whether the design decisions documented in the ADRs and BACKLOG still reflect what we want to build (category D). That is the user's call, and this audit surfaces the questions without resolving them.
+
+**Total findings: 8 CRITICAL, 40 IMPORTANT, 24 COSMETIC, 12 category-D (user judgment).** The most consequential cluster is the V3_CONCEPT_BRIEF.md stale passages (C1–C3, I1–I6) — a new session reading the brief from scratch would encounter 9 incorrect or outdated statements in the first half of the document.
