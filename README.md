@@ -52,10 +52,17 @@ npm run build
 
 ## Documentation
 
-- `CLAUDE.md` — workflow rules and conventions
-- `V3_CONCEPT_BRIEF.md` — architectural overview
-- `TESTING.md` — test strategy and patterns
-- `DESIGN_NOTES.md` — design detail decisions
+- `CLAUDE.md` — workflow rules, coding standards, and conventions
+- `V3_CONCEPT_BRIEF.md` — architectural overview and slice plan (mandatory first-read)
+- `DESIGN_SYSTEM.md` — CSS rules, design tokens, component anatomy, full class inventory
+- `DESIGN_SYSTEM_CHEATSHEET.md` — one-page quick reference for daily use
+- `TESTING.md` — test strategy, commands, and `data-testid` patterns
+- `BACKLOG.md` — deferred items, known limitations, and open UX decisions
+- `DESIGN_NOTES.md` — design-detail decisions and open "how exactly" questions
+- `CHANGELOG.md` — release notes per version
+- `docs/DOCUMENTATION_MAP.md` — map of every document's role and source-of-truth scope
+- `docs/MANUAL_IPHONE_CHECKLIST.md` — manual iPhone verification checklist
+- `docs/analysis/FOUNDATION_ANALYSIS.md` — documentation audit and cross-doc coupling map
 - `docs/architecture/` — Architecture Decision Records (ADRs)
 
 ## License

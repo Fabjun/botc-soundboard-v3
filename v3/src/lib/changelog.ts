@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.15';
+export const APP_VERSION = '3.0.16';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.16',
+    date: '2026-06-05',
+    items: [
+      'Docs: Complete DOCUMENTATION_MAP + README doc index; add curated layout-primitives list (§5a) to DESIGN_SYSTEM as single source of truth (sb-row/sm/wrap/fill, sb-col, sb-flex-1); record coupling + planned drift-guard',
+    ],
+  },
   {
     version: '3.0.15',
     date: '2026-06-05',

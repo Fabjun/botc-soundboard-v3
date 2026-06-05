@@ -104,6 +104,45 @@ Verbotene Muster in neuem V3-Code:
 
 ---
 
+## §5a Layout Primitives
+
+Layout-only structure classes — flex/gap/align wrappers with no visual styling. Use these
+instead of inline `style={{ display: 'flex', ... }}` (Path B in `CLAUDE.md §CSS class rule`).
+Defined in `v3/src/styles/tokens.css`; all appear in the generated §6 inventory below.
+
+> **Maintenance:** When adding, renaming, or removing a layout-primitive class in
+> `v3/src/styles/tokens.css`, update this table in the same commit.
+> *(Interim process-note: a planned code task will formalise this as an automated
+> drift-guard — introducing a `/* @layout-primitive: <purpose> */` CSS tag on each
+> primitive and a check (extending the existing sync tooling) that flags removals and
+> new unregistered primitives. Until that check exists, this table is the canonical
+> list and the process-note is the guard.)*
+
+| Class | CSS | Purpose |
+|-------|-----|---------|
+| `sb-row` | `flex; align-items:center; gap:8px (--space-2); min-width:0` | Horizontal row with overflow guard. Default for icon+label pairs and toolbar rows. |
+| `sb-row-sm` | `flex; align-items:center; gap:4px (--space-1)` | Compact row for tight action clusters. |
+| `sb-row-wrap` | `flex; flex-wrap:wrap; gap:4px (--space-1)` | Wrapping row for grids and tag groups. |
+| `sb-row-fill` | `flex:1; flex; align-items:center; justify-content:center` | Fills flex parent and centers content both axes. Use for empty-state placeholders. |
+| `sb-col` | `flex; flex-direction:column; min-height:0` | Vertical flex container with scroll-overflow guard. Required parent for `sb-scroll-fill`. |
+| `sb-flex-1` | `flex:1` | Takes all remaining space in a flex parent. Use as spacer or to push siblings apart. |
+
+**Related flex utilities** (not pure layout primitives — extend flex with additional behaviour;
+also in §6):
+
+| Class | Extends with | Use case |
+|-------|-------------|----------|
+| `sb-flex-min` | `flex:1; min-width:0` | Flex-fill for truncatable text in a flex row. |
+| `sb-flex-trunc` | `flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap` | Truncating flex-fill for text labels that must clip. |
+| `sb-scroll-fill` | `flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; min-height:0` | Scrollable flex fill — requires a `sb-col` ancestor. |
+
+> **Note — `sb-stack`:** `CLAUDE.md` and `DESIGN_SYSTEM_CHEATSHEET.md` currently name
+> `sb-stack` as a layout primitive. **`sb-stack` does not exist**; the correct class is
+> `sb-col`. This discrepancy (C4) will be corrected in the CLAUDE.md pass.
+> **The canonical list is this table.**
+
+---
+
 ## §6 Komponenten-Inventur
 
 > Auto-generiert via `npm run sync:classes`. Beschreibungen via

@@ -5,6 +5,17 @@ When you are unsure where something belongs or where to look something up, start
 
 ---
 
+## Orientation (read first)
+
+### `V3_CONCEPT_BRIEF.md`
+The **mandatory session-start document**. Binding architecture for V3.0: stack decisions,
+data model, state management, audio engine, slice plan, and session start protocol.
+Read before any other document at the start of every Claude Code session.
+**Source of truth for:** Architectural decisions binding V3.0 development; starting point
+for every session. Kept up to date by Claude Code as slices complete and decisions harden.
+
+---
+
 ## Design system
 
 ### `DESIGN_SYSTEM.md`
@@ -67,6 +78,12 @@ convention, E2E patterns, known caveats (Playwright/WebKit limitations), and the
 pre-commit/CI gate specification.
 **Source of truth for:** Test structure, test commands, `data-testid` naming.
 
+### `docs/MANUAL_IPHONE_CHECKLIST.md`
+Checklist for manual verification on iPhone + Brave that cannot be automated in Playwright
+(audio playback, file-picker, tab-switch lifecycle, Add to Home Screen). Run through this
+before the final commit of any slice touching `src/audio/`, `src/db/`, or file handling.
+**Source of truth for:** Manual iPhone verification steps beyond the automated test suite.
+
 ---
 
 ## Working notes
@@ -83,6 +100,26 @@ the slice level.
 Living backlog: all deferred items, known limitations, and open UX decisions.
 Updated at each slice completion (per CLAUDE.md Workflow Rule 14).
 **Source of truth for:** What work is explicitly deferred, and why.
+
+---
+
+## Analysis
+
+### `docs/analysis/FOUNDATION_ANALYSIS.md`
+Foundation audit of the documentation set (2026-06-05). Inventories all project documents,
+records drift findings (critical / important / cosmetic), and maintains the **Document
+Coupling Map** (§6) — the authoritative record of which concepts must stay in sync across
+documents when a source of truth changes.
+**Source of truth for:** Cross-document consistency findings; the Document Coupling Map.
+
+---
+
+## Release history
+
+### `CHANGELOG.md`
+Human-readable release log. Tracks notable changes per version in Keep-a-Changelog format.
+Updated alongside the in-app changelog (`v3/src/lib/changelog.ts`) on each push.
+**Source of truth for:** External-facing release notes and version history.
 
 ---
 
