@@ -509,7 +509,7 @@ consistency-checking automation; not exhaustive — covers concepts that have al
 | **Platform constraints** — `CLAUDE.md §Supported Platforms (binding)` | `V3_CONCEPT_BRIEF.md §4.13` | Any minimum-version or API-availability change |
 | **CSS class inventory** — `DESIGN_SYSTEM.md §6` (auto-generated via `sync:classes`) | `CLAUDE.md §Permanent coding standards` (references class names) | New `sb-*` class added, renamed, or removed |
 | **ADR index** — `docs/architecture/README.md §Index` (auto-generated via `sync:adr`) | Any doc that cross-links ADRs by number | New ADR accepted; ADR status changed |
-| **Audio/IDB API surface** — `v3/src/db/idb.ts`, `v3/src/audio/` | `CLAUDE.md §V3 audio/IDB API` | Any public function added, renamed, removed, or signature changed |
+| **Audio/IDB API surface** — `v3/src/db/idb.ts`, `v3/src/audio/` | `CLAUDE.md §V3 audio/IDB API`; `V3_CONCEPT_BRIEF.md §4.4`; `docs/architecture/ADR-0018` | Any public function added, renamed, removed, or signature changed. **Specific pending trigger:** `crossfade(from, to, _duration)` is currently a stub (stop+play, no overlap); when Slice 8 implements real crossfade, all three documents must be updated in lockstep (signatures, stub note in brief §4.4, ADR-0018 facade description) |
 <!-- PLACEHOLDER: Pass 7 — C10 implementation planning (to be added) -->
 
 ---

@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.14';
+export const APP_VERSION = '3.0.15';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.15',
+    date: '2026-06-05',
+    items: [
+      'Docs: V3_CONCEPT_BRIEF modernisation — record Signals/idb decisions, fix paradigm/signatures/structure, remove stale open-choice framing, update slice status to post-Slice-4 reality; refine coupling map',
+    ],
+  },
   {
     version: '3.0.14',
     date: '2026-06-05',
