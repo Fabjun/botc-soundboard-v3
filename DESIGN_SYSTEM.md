@@ -61,8 +61,6 @@ Basis-Klassen der Pixel-Frame-Familie: `sb-pix`, `sb-card`, `sb-pad`, `sb-btn`,
 
 ## §3 State Vocabulary (geschlossene Menge)
 
-<!-- TODO: Tabelle aller is-*-Klassen mit Bedeutung und erlaubten Trägern -->
-
 Aktuell registrierte Zustands-Klassen (aus DESIGN_SYSTEM_CHEATSHEET.md §3):
 
 | Klasse | Bedeutung |
@@ -80,6 +78,11 @@ Aktuell registrierte Zustands-Klassen (aus DESIGN_SYSTEM_CHEATSHEET.md §3):
 | `is-combo` | Combo-Kontext |
 | `is-deep` | Opt-In für Pad-Depth-Stack |
 | `is-compact` | Kompakte Darstellung |
+| `is-looping` | Pad läuft aktuell im Loop |
+| `is-drag-source` | DnD: dieses Pad wird gerade gezogen |
+| `is-drag-swap` | DnD-Ziel: Swap mit diesem Pad |
+| `is-insert-before` | DnD-Ziel: Einfügen vor diesem Pad |
+| `is-insert-after` | DnD-Ziel: Einfügen nach diesem Pad |
 
 Neue Zustands-Klassen hier ergänzen, **bevor** sie im Code verwendet werden.
 
@@ -135,11 +138,6 @@ also in §6):
 | `sb-flex-min` | `flex:1; min-width:0` | Flex-fill for truncatable text in a flex row. |
 | `sb-flex-trunc` | `flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap` | Truncating flex-fill for text labels that must clip. |
 | `sb-scroll-fill` | `flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; min-height:0` | Scrollable flex fill — requires a `sb-col` ancestor. |
-
-> **Note — `sb-stack`:** `CLAUDE.md` and `DESIGN_SYSTEM_CHEATSHEET.md` currently name
-> `sb-stack` as a layout primitive. **`sb-stack` does not exist**; the correct class is
-> `sb-col`. This discrepancy (C4) will be corrected in the CLAUDE.md pass.
-> **The canonical list is this table.**
 
 ---
 
@@ -347,7 +345,7 @@ also in §6):
 ## §A Token-Inventur
 
 > Auto-generiert via `npm run sync:tokens` aus
-> `SoS_DESIGN_25052026/tokens.css`. Gruppen entsprechen den
+> `v3/src/styles/tokens.css`. Gruppen entsprechen den
 > Abschnitts-Kommentaren in der Token-Quelldatei.
 
 <!-- AUTO-GENERATED:tokens START — nicht manuell editieren -->

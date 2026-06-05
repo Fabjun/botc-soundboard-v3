@@ -33,9 +33,8 @@ uns beantwortet: BEM-ähnlich, aber ohne `__` und `--`.
 - Nie neues clip-path / border CSS für Varianten
 - Customization via CSS Custom Properties: `--pix-bg`, `--pix-border`, `--pix-step`
 
-**State-Vocabulary (geschlossene Menge — vollständig in DESIGN_SYSTEM.md §3):**
-`is-active`, `is-on`, `is-hot`, `is-setup`, `is-game`, `is-danger`, `is-raised`,
-`is-italic`, `is-loop`, `is-playlist`, `is-combo`, `is-deep`, `is-compact`
+**State-Vocabulary (verwaltetes Inventar — vollständig in DESIGN_SYSTEM.md §3;
+neue Klassen dort eintragen, nicht hier):**
 
 ## Consequences
 

@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.16';
+export const APP_VERSION = '3.0.17';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.17',
+    date: '2026-06-06',
+    items: [
+      'Docs: Pass 3 corrections — fix sb-stack→sb-col in CLAUDE.md+Cheatsheet (§5a as canonical list), align GAME color rule to --mode-game, remove dead update_log rule, correct IDB/build-command/framework staleness, register 5 is-* DnD+looping classes in DESIGN_SYSTEM §3, fix token-source file in §A header, add coupling-map entries',
+    ],
+  },
   {
     version: '3.0.16',
     date: '2026-06-05',

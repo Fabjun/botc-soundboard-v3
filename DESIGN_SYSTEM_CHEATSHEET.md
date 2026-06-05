@@ -41,7 +41,7 @@ Need to style something.
 │     NO  → continue
 │
 ├── Is it pure layout (flex/gap/align) on a wrapper with no semantic name?
-│     YES → Path B: layout primitive class (sb-row, sb-stack, sb-flex-1 …)
+│     YES → Path B: layout primitive class → see DESIGN_SYSTEM.md §5a for canonical list
 │           Never inline for static layout. See Path D in CLAUDE.md.
 │     NO  → continue
 │
@@ -61,7 +61,8 @@ Need to style something.
 
 - **State vocabulary** (closed set — see §3 for full table):
   `is-active` · `is-on` · `is-hot` · `is-setup` · `is-game` · `is-danger`
-  · `is-raised` · `is-italic` · `is-loop` · `is-playlist` · `is-combo`.
+  · `is-raised` · `is-italic` · `is-loop` · `is-playlist` · `is-combo`
+  · `is-deep` · `is-compact`.
   New state? Add it to §3 first.
 
 - **Porting from old JSX:** `is-playing` on `sb-pad` → `is-hot`.

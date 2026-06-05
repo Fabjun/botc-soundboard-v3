@@ -28,9 +28,6 @@
 
 - **`V3_CONCEPT_BRIEF.md`** — binding architecture decisions for V3,
   data model, slice plan. Read first in every session.
-- **`v1-reference/CLAUDE.md`** — V1's CLAUDE.md, kept for reference.
-  Contains hard-won implementation knowledge that informed many of
-  the rules below.
 - **`v1-reference/index.html`** — V1 source, reference for behavior,
   audio engine, IndexedDB schema, template export/import.
 - **`SoS_DESIGN_25052026/`** — design system: tokens, JSX components.
@@ -51,8 +48,9 @@
   Signals live in `src/state/store.ts`. Components read via `.value`
   or auto-subscribing JSX binding. Mutations via exported setter
   functions (e.g. `addPlayingPad`, `removeLoopingPad`).
-- **Persistence**: IndexedDB. V1 schema preserved where overlapping,
-  extended for Scenes and Sets.
+- **Persistence**: IndexedDB. V1 `library` store preserved; `boards`
+  store added for Board documents (Scenes and Pads embedded as JSON).
+  Sets store deferred to Slice 6.
 - **Preferences**: `localStorage` (small UI state, theme choice, etc.)
 - **PWA**: managed via `vite-plugin-pwa`. No manual `sw.js`. Auto-
   generated SHELL list, auto-bumped version on build.
@@ -160,9 +158,9 @@ to any → refactor before shipping.
 
 ### Tokens
 
-Use the design system tokens from `src/styles/tokens.css` (imported
-from `SoS_DESIGN_25052026/tokens.css`). Never hardcode colors,
-fonts, or spacing.
+Use the design system tokens from `v3/src/styles/tokens.css` (canonical
+source; `SoS_DESIGN_25052026/tokens.css` is the design-handoff reference
+and has diverged). Never hardcode colors, fonts, or spacing.
 
 ### Color palette (canonical names from design system)
 
@@ -179,7 +177,7 @@ fonts, or spacing.
 ### Color code rule (never mix)
 
 - SETUP mode = teal/cool (`--mode-setup`)
-- GAME mode = gold/warm (`--gold`)
+- GAME mode = gold/warm (`--mode-game`)
 
 ### Typography
 
@@ -228,9 +226,9 @@ fonts, or spacing.
     tokens (ADR-0022), add `/* @inventory: … */`, register in §6 in the same commit. Check
     §6 first for a class with similar function — extend (e.g., `is-*` variant) rather than
     duplicate. If duplication risk is unclear, raise the question. Layout-only structures
-    (flex/gap/align-only wrappers) belong in named layout primitives (`sb-row`, `sb-stack`,
-    `sb-flex-1`, and variants), not inline exceptions; these primitives were created in
-    Session 3 of the CSS Class Discipline plan.
+    (flex/gap/align-only wrappers) belong in named layout primitives — see
+    `DESIGN_SYSTEM.md §5a` for the canonical list (`sb-row`, `sb-col`, `sb-flex-1`,
+    and variants) — not inline exceptions.
   - **Path C — inline = dynamic only:** `style={}` is legitimate only for values computed at
     runtime: animation coordinates, drag positions, data-driven dimensions, state-dependent
     values. Test: "can this value be written as a CSS string literal without referencing
@@ -263,9 +261,9 @@ fonts, or spacing.
 - **Inline-style audit:** `npm run audit:inline-styles` reports all `style={}` blocks
   classified against the four-path rule (pure-layout / structural / mixed / dynamic /
   custom-setter / unclassified). Non-blocking; runs in CI as informational. Use it to
-  measure inline-style drift — before and after CSS Class Discipline Session 3 migration
-  work, or any time you want to check whether new violations crept in. Baseline (2026-05-29):
-  203 blocks, 177 Path-D violations.
+  measure inline-style drift after any migration pass, or any time you want to check
+  whether new violations crept in. Post-Session-3 baseline (2026-06-05):
+  0 Path-D violations (2 unclassified remain).
 
 ---
 
@@ -284,9 +282,7 @@ fonts, or spacing.
    `git add . && git commit -m "..." && git push`
 6. After every push: short summary of what changed and what was verified.
 7. **Update this CLAUDE.md** when permanent standards change.
-8. **Update `update_log.md`** after every commit (if the file exists;
-   create on first commit).
-9. **Testing**: see `TESTING.md` for full test architecture, commands, and
+8. **Testing**: see `TESTING.md` for full test architecture, commands, and
    conventions. Phase 2 testing infrastructure is complete:
    - Pre-commit: sync:docs (auto-stage) + build + lint + unit tests + smoke E2E + link:check
    - CI: GitHub Actions `tests.yml` runs unit + lint + size + docs sync check + link check + full E2E
@@ -424,7 +420,7 @@ cd v3 && npm run build         # production build → v3/dist/ (tsc + vite)
 cd v3 && npm run preview       # serve v3/dist/ locally for PWA testing
 cd v3 && npm run test          # unit tests (vitest, once) — run before commit
 cd v3 && npm run test:watch    # unit tests in watch mode (while developing)
-cd v3 && npm run test:e2e      # E2E smoke tests (Playwright) — run before push
+cd v3 && npm run test:e2e      # smoke + smoke-webkit + full E2E (Playwright); pre-push runs test:e2e:all (adds mobile)
 ```
 
 See `TESTING.md` for the full test architecture and conventions.
@@ -511,12 +507,11 @@ boardDelete(id: string): Promise<void>
 - `LibraryItem.blob` never stored in Signals: type split into `LibraryItemMeta` (in state) + `LibraryItem` (IDB only).
 - SHA-256 uses `@noble/hashes/sha2.js` (not Web Crypto API) — required for iPhone LAN dev server (no Secure Context at http://IP).
 - Library screen is 2-column in Slice 2; inspector panel deferred to Slice 8+.
-- npm cache: `~/.npm/_cacache/` partially root-owned on this machine; use `--cache /tmp/npm-cache-sos` flag for npm installs if permission error occurs.
 - Slice 3: Board persistence as full JSON document (Board + Scenes + Pads); trade-off documented in idb.ts and DESIGN_NOTES.md.
 - Slice 4: `stopPad(padId, immediate, fadeOut?)` takes explicit fadeOut parameter — engine doesn't hold a Pad reference after playback starts; callers pass `pad.fadeOut`. Pad-on-stop fadeOut is effectively 0 in Slice 4 (Slice 8 refinement).
 - Slice 4: Infinite loops only (no loopCount > 0 support); crossfade is a stub (`stop(from)` + `play(to)`).
 - Slice 4: `audio.spec.ts` added to FULL_TESTS in playwright.config.ts.
-- Slice 3: `libDragItemId` state removed from BoardScreen — PadGrid reads drag payload directly from `e.dataTransfer`, not from React state.
+- Slice 3: `libDragItemId` state removed from BoardScreen — PadGrid reads drag payload directly from `e.dataTransfer`, not from Preact Signals state.
 - Slice 3: `Waveform` component has no `width` prop (fills flex container); fixed in PadEditorPanel, LibraryPanel, PadCreationPopover.
 - Phase 2 (Testing Infra): `@size-limit/preset-app` replaced with `@size-limit/file` — preset-app uses Chrome for timing (crashes on this ARM mac due to estimo/chromium issue); file plugin measures gzip size only, which is what we need.
 - Phase 2: Visual regression baselines are macOS-only (`*-darwin.png`); excluded from CI (Ubuntu font rendering differs).
