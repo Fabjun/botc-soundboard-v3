@@ -39,7 +39,7 @@ sind in neuem V3-Code verboten.
 1. `element.setPointerCapture(e.pointerId)` auf `pointerdown`
 2. `pointermove` auf `document` für Tracking
 3. `pointerup` auf `document` für Drop-Detection
-4. Ghost: `position: fixed; pointer-events: none` — lässt `elementFromPoint` durch
+4. Ghost: `position: fixed; pointer-events: none` — Pointer-Events passieren durch den Ghost hindurch (Voraussetzung für `elementFromPoint` in libDnd.ts; padDnd.ts nutzt die gleiche Eigenschaft, verwendet aber die cellRef-Registry statt `elementFromPoint` für die Drop-Zone-Erkennung)
 5. `touch-action: none` auf draggable Elements — verhindert Scroll-Capture
 6. 8 px Threshold vor Drag-Start (verhindert versehentliche Drags)
 7. Isoliertes Modul-State pro DnD-Typ — kein Shared State zwischen Modulen

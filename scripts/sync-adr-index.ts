@@ -31,6 +31,7 @@ const CATEGORY_ORDER = [
   'UI-Architektur',
   'Interaktion',
   'Test-Infrastruktur & Workflow',
+  'Prozess- & Produktentscheidungen',
   'Unkategorisiert',
 ];
 

@@ -1,8 +1,9 @@
 # ADR-0044: Audio Engine Module Structure
 
-**Date**: 2026-05-28
-**Status**: Accepted
-**Refines**: ADR-0018 (Audio Engine Strategy — "copy V1 unchanged")
+**Status:** Accepted
+**Date:** 2026-05-28
+**Slice:** Slice 4
+**Refines:** ADR-0018 (Audio Engine Strategy — "copy V1 unchanged")
 **Category:** Audio-Engine & iOS Memory
 
 ---
@@ -102,6 +103,15 @@ supersession. The strategy (V1 algorithms, no redesign) is unchanged.
 - Any deviation from V1 semantics must be caught by test or iPhone
   manual verification (Slice 4 Phase 5 / verification checklist)
 
-**Rejected alternative**: Wrapping the V1 JS source as a `<script>` tag
-or a non-TypeScript `.js` file. Rejected because: no type safety,
-no way to pass V3's `Pad` union types, global namespace pollution.
+## Alternatives Considered
+
+**V1 JS als `<script>`-Tag oder nicht-typisierte `.js`-Datei:** Keine Type-Safety,
+keine Möglichkeit V3's `Pad`-Discriminated-Union zu übergeben, globale Namespace-Pollution.
+Verworfen.
+
+## Related
+
+- **Dateien:** `v3/src/audio/engine.ts`, `v3/src/audio/index.ts`, `v3/src/audio/types.ts`
+- **ADRs:** ADR-0018 (V1 Audio-Engine 1:1 kopiert — kein Neubau), ADR-0019 (iOS Memory Safety), ADR-0042 (Pad als Discriminated Union), ADR-0043 (AudioContext Timing)
+- **Quelldokumente:** `CLAUDE.md §V3 audio/IDB API`, `v1-reference/CLAUDE.md §iPhone / iOS Safari`
+- **Commits:** Slice 4 (2026-05-28)

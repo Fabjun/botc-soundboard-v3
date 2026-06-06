@@ -69,7 +69,7 @@ Nur test-kritische Elemente bekommen `data-testid` (kein vollständiges DOM-Cove
 **CSS-Klassen als Selektoren:** Brechen bei Slice-8-Refactoring. Nicht geeignet.
 
 **Aria-Labels als Selektoren:** Semantic, aber erfordert vollständiges
-Accessibility-Markup. V3 hat nur baseline A11y (ADR-0041-artig); Aria-Labels
+Accessibility-Markup. V3 hat nur baseline A11y; Aria-Labels
 sind nicht für jeden Button vorhanden.
 
 ## Related

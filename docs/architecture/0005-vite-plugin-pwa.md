@@ -40,7 +40,7 @@ Strategie: `generateSW` (Standard-Modus). Konfiguriert für:
   erfasst.
 - Kein manuelles VERSION-Bumping. Build-Hash im Output sorgt für Cache-Invalidierung.
 - PWA-Validierung in `npm run build` — precache-Entries werden ausgegeben
-  (aktuell: 11 entries, 178.68 KiB).
+  (Anzahl variiert je nach Build-Output; wird bei jedem Build auf der Konsole ausgegeben).
 
 **Negativ / Trade-offs:**
 - Weniger Kontrolle über den Service Worker im Vergleich zu manuellem Code.
@@ -61,7 +61,7 @@ erfordern ohne Mehrwert.
 
 ## Related
 
-- **Dateien:** `v3/vite.config.ts` (Plugin-Konfiguration), `v3/public/manifest.json`
+- **Dateien:** `v3/vite.config.ts` (Plugin-Konfiguration inkl. Web-App-Manifest — kein separates manifest.json)
 - **ADRs:** ADR-0003 (Vite), ADR-0006 (iOS-Targets beeinflussen PWA-Anforderungen)
 - **Quelldokumente:** `V3_CONCEPT_BRIEF.md §4.9`
 - **Commits:** `8be64d4` — Slice 1 scaffold (Plugin eingerichtet)

@@ -3,7 +3,16 @@
 **Status:** Accepted | Deprecated | Superseded by ADR-YYYY
 **Date:** YYYY-MM-DD
 **Slice:** Slice X | cross-cutting | infrastructure
-**Category:** Tech Stack | Plattform-Constraints | Datenmodell | Persistenz | Audio-Engine & iOS Memory | UI-Architektur | Interaktion | Test-Infrastruktur & Workflow
+**Refines:** ADR-XXXX | —
+<!-- Refines (optional): dieses ADR baut auf einem früheren auf und verfeinert es, OHNE es zu ersetzen.
+     Das frühere ADR bleibt Accepted.
+     Abgrenzung:
+       "Superseded by" (im Status-Feld) = das frühere ADR ist jetzt deprecated/ersetzt.
+       "Related" (im Related-Abschnitt) = lose Assoziation, kein hierarchisches Verhältnis.
+       "Refines" = dieses ADR fügt Implementierungsdetail oder Einschränkung hinzu,
+                   die das frühere ADR nicht spezifiziert hat.
+     Weglassen wenn dieses ADR kein früheres verfeinert. -->
+**Category:** Tech Stack | Plattform-Constraints | Datenmodell | Persistenz | Audio-Engine & iOS Memory | UI-Architektur | Interaktion | Test-Infrastruktur & Workflow | Prozess- & Produktentscheidungen
 
 ## Context
 

@@ -14,8 +14,7 @@ Edge-Relief, chunky Pixel-Drop-Shadow. Das sieht gut aus, ist aber rendering-
 intensiv (mehrere CSS-Layers, filter: drop-shadow).
 
 Bei einem 4×4-Grid mit 16 Pads, oder gar 6×4 mit 24 Pads, wird das Rendering
-spürbar. Auf dem iPhone 13 Pro ist das akzeptabel, auf iPhone 8 (iOS 15 Minimum,
-ADR-0006) könnte es einen Frame-Drop geben.
+spürbar. Auf dem iPhone 13 Pro ist das akzeptabel, auf iPhone 8 (ADR-0006: Plattform-Targets) könnte es einen Frame-Drop geben.
 
 ## Decision
 

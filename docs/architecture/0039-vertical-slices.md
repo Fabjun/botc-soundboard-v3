@@ -4,7 +4,7 @@
 **Date:** 2026-05-27
 **Slice:** cross-cutting
 
-**Category:** Test-Infrastruktur & Workflow
+**Category:** Prozess- & Produktentscheidungen
 
 ## Context
 
@@ -25,7 +25,7 @@ Entwicklung in **8 vertikalen Slices**:
 | 1 | Project setup + StartScreen | ✅ |
 | 2 | Library + LibraryItem CRUD | ✅ |
 | 3 | Board + Scene + Pad CRUD | ✅ |
-| 4 | Audio playback (V1 engine) | ⬜ |
+| 4 | Audio playback (V1 engine) | ✅ |
 | 5 | Scene switching | ⬜ |
 | 6 | Sets + Quick Access | ⬜ |
 | 7 | Template export/import | ⬜ |

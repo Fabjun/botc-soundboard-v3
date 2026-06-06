@@ -22,11 +22,11 @@ Das ist kein Secure Context → `crypto.subtle` ist dort nicht verfügbar.
 
 ## Decision
 
-SHA-256 wird mit `@noble/hashes/sha256` berechnet:
+SHA-256 wird mit `@noble/hashes/sha2.js` berechnet:
 
 ```typescript
-import { sha256 } from '@noble/hashes/sha256';
-import { bytesToHex } from '@noble/hashes/utils';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { bytesToHex } from '@noble/hashes/utils.js';
 
 export function computeHash(buf: ArrayBuffer): string {
   return bytesToHex(sha256(new Uint8Array(buf)));

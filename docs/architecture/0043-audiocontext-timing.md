@@ -1,8 +1,9 @@
 # ADR-0043: AudioContext Timing — Synchronous in Click Handler
 
-**Date**: 2026-05-28
-**Status**: Accepted
-**Refines**: ADR-0020 (TAP TO UNLOCK — AudioContext Creation)
+**Status:** Accepted
+**Date:** 2026-05-28
+**Slice:** Slice 4
+**Refines:** ADR-0020 (TAP TO UNLOCK — AudioContext Creation)
 **Category:** Audio-Engine & iOS Memory
 
 ---
@@ -88,3 +89,10 @@ synchronous placement.
 
 ADR-0020 remains **Accepted** — ADR-0043 is a refinement specifying
 implementation-level placement, not a change in strategy.
+
+## Related
+
+- **Dateien:** `v3/src/screens/StartScreen.tsx` (handleUnlock — Aufrufstelle), `v3/src/audio/engine.ts` (initAudio — Implementierung)
+- **ADRs:** ADR-0020 (AudioContext-Lifecycle — TAP TO UNLOCK), ADR-0044 (Audio Engine Module Structure)
+- **Quelldokumente:** `CLAUDE.md §iPhone / iOS Safari — memory & stability rules`, `v1-reference/CLAUDE.md §iPhone / iOS Safari`
+- **Commits:** Slice 4 (2026-05-28)

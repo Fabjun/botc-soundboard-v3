@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.19';
+export const APP_VERSION = '3.0.20';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.20',
+    date: '2026-06-06',
+    items: [
+      'Docs: Pass 6 — fix stale facts/refs/counts across ADRs (import path, manifest.json, build time, elementFromPoint pattern, ADR-0006 descriptions, ADR-0041 reference); fix ADR-0043/0044 headers to template; formalize Refines: field in template; recategorize ADR-0039+0041 into new Prozess- & Produktentscheidungen category; add §6 coupling row to FOUNDATION_ANALYSIS.md',
+    ],
+  },
   {
     version: '3.0.19',
     date: '2026-06-06',

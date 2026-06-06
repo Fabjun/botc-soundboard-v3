@@ -59,8 +59,8 @@ Jede Entscheidung bekommt eine eigene Datei. Format: `docs/architecture/_templat
 | [ADR-0018](0018-v1-audio-engine.md) | V1 Audio-Engine 1:1 kopiert — kein Neubau | Accepted | Slice 4 | 2026-05-27 |
 | [ADR-0019](0019-ios-memory-safety.md) | iOS Memory Safety Rules (150 MB LRU-Cache, serielles Decode) | Accepted | cross-cutting | 2026-05-27 |
 | [ADR-0020](0020-audiocontext-lifecycle.md) | AudioContext-Lifecycle — TAP TO UNLOCK + visibilitychange | Accepted | Slice 4 | 2026-05-27 |
-| [ADR-0043](0043-audiocontext-timing.md) | AudioContext Timing — Synchronous in Click Handler | Accepted | — | 2026-05-28 |
-| [ADR-0044](0044-audio-engine-module-structure.md) | Audio Engine Module Structure | Accepted | — | 2026-05-28 |
+| [ADR-0043](0043-audiocontext-timing.md) | AudioContext Timing — Synchronous in Click Handler | Accepted | Slice 4 | 2026-05-28 |
+| [ADR-0044](0044-audio-engine-module-structure.md) | Audio Engine Module Structure | Accepted | Slice 4 | 2026-05-28 |
 
 ### UI-Architektur
 
@@ -95,7 +95,12 @@ Jede Entscheidung bekommt eine eigene Datei. Format: `docs/architecture/_templat
 | [ADR-0036](0036-visual-regression-macos.md) | Visual Regression Tests lokal-only (macOS-Baselines) | Accepted | infrastructure | 2026-05-27 |
 | [ADR-0037](0037-husky-precommit.md) | Husky Pre-Commit-Hook: Build + Unit + Smoke E2E | Accepted | infrastructure | 2026-05-27 |
 | [ADR-0038](0038-data-testid-convention.md) | `data-testid`-Konvention für E2E-Selektoren | Accepted | infrastructure | 2026-05-27 |
-| [ADR-0039](0039-vertical-slices.md) | Vertikale Slices als Entwicklungsmodell (8 Slices) | Accepted | cross-cutting | 2026-05-27 |
 | [ADR-0040](0040-github-pages-deployment.md) | GitHub Pages Deployment gated auf CI (`workflow_run`) | Accepted | infrastructure | 2026-05-27 |
+
+### Prozess- & Produktentscheidungen
+
+| # | Titel | Status | Slice | Datum |
+|---|-------|--------|-------|-------|
+| [ADR-0039](0039-vertical-slices.md) | Vertikale Slices als Entwicklungsmodell (8 Slices) | Accepted | cross-cutting | 2026-05-27 |
 | [ADR-0041](0041-english-only.md) | Englisch als App-Sprache — keine i18n-Infrastruktur | Accepted | cross-cutting | 2026-05-27 |
 <!-- AUTO-GENERATED:adr-index END -->
