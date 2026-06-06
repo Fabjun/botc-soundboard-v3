@@ -86,12 +86,12 @@ because Playwright runs against a simulated environment:
   - Expected: Same result.
   - Why manual: Same MIME type handling.
 
-- [ ] **Backup export**
+- [ ] **Backup export** _(Slice 7 — skip until implemented)_
   - Action: Export a board template/backup.
   - Expected: iOS system share sheet appears, file can be saved to Files app. File is not empty.
   - Why manual: iOS share sheet / file system access is not testable in Playwright.
 
-- [ ] **Backup import**
+- [ ] **Backup import** _(Slice 7 — skip until implemented)_
   - Action: Import an exported backup file.
   - Expected: Board and pads are restored. No crash. (V1 had a crash here — regression risk.)
   - Why manual: Same file system access. V1 crash was iOS-specific memory issue.

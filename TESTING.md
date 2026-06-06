@@ -2,14 +2,14 @@
 
 ## Überblick
 
-Vier Schichten, eingeführt in Phase 1 & 2 (Slice 3.5):
+Vier Schichten, eingeführt in Phase 1 & 2 (Phase 2 — Testing Infrastructure):
 
 | Schicht | Werkzeug | Zweck | Laufzeit |
 |---------|---------|-------|---------|
 | Unit | Vitest | Logik-Korrektheit (pure functions, signals, IDB-API) | ~1s |
 | E2E Smoke | Playwright | Kritische Pfade in Chromium + WebKit | ~6s |
-| E2E Full | Playwright | Alle 22 Slice-3-Verifikationspunkte | ~90s |
-| Mobile E2E | Playwright (WebKit) | Touch-wiring, touch target sizes, overflow — iPhone 13 Pro profile | ~30s |
+| E2E Full | Playwright | Vollständige Verifikation (Slices 3–4): Board/Scene/Pad CRUD, Audio-Engine | ~90s |
+| Mobile E2E | Playwright (WebKit + Chromium) | Touch-wiring via tap() — 3 aktive WebKit-Specs + 2 Chromium-Specs; 2 WebKit-Specs deferred/fixme'd (touch-targets, overflow) bis Slice 8 | ~30s |
 | Visual Regression | Playwright Screenshots | Pixel-Vergleich (lokal-only) | ~30s |
 
 ---
@@ -39,6 +39,8 @@ v3/
       padDnd.test.ts          ← applySwap, applyInsert (pure, kein DOM)
       store.test.ts           ← Preact Signals mutations + computed reactivity
       idb.test.ts             ← IDB-Layer round-trips (boardPut/Get/Delete, libGetAllMeta)
+      audio/
+        lru.test.ts           ← LRU Buffer-Cache (Größenlimit, Eviction-Logik)
     e2e/
       helpers.ts              ← Shared helpers: goToBoardList, createBoardAndNavigate, ...
       app-loads.spec.ts       ← Smoke: StartScreen mit TAP TO UNLOCK
@@ -52,6 +54,7 @@ v3/
       pad-editing.spec.ts     ← Full: Tests 16–19 (PadEditorPanel, TypChange)
       pad-dnd.spec.ts         ← Full: Tests 20–21 (SWAP/INSERT DnD) [test.skip]
       game-mode.spec.ts       ← Full: Test 22 (GAME-Modus: kein CRUD)
+      audio.spec.ts           ← Full: Tests A–C (Audio-Engine: Unlock, Single, Loop)
       mobile/
         mobile-unlock-nav.spec.ts    ← Mobile: TAP TO UNLOCK + nav buttons via tap()
         mobile-board-flow.spec.ts    ← Mobile: NEW BOARD + back button via tap()
@@ -119,7 +122,7 @@ device profile (viewport 390×844, `hasTouch: true`, `isMobile: true`):
 
 | Project | Browser | Tests |
 |---------|---------|-------|
-| `mobile` | WebKit | 5 audio-free specs (navigation, mode toggle, touch targets, overflow) |
+| `mobile` | WebKit | 5 Spec-Dateien: 3 aktiv (navigation, mode toggle, unlock-nav), 2 deferred/fixme'd (touch-targets, overflow — pending Slice 8 mobile adaptation) |
 | `mobile-chromium` | Chromium | 2 audio-dependent specs (pad interaction, pad creation) |
 
 All tested interactions use `tap()` to send real touch events (pointerType: 'touch').
@@ -136,8 +139,8 @@ iPhone 13 Pro device settings (viewport, hasTouch, isMobile, UA) applied.
 | `mobile-unlock-nav` | `mobile` (WebKit) | TAP TO UNLOCK + BOARD/LIBRARY navigation buttons respond to `tap()` |
 | `mobile-board-flow` | `mobile` (WebKit) | NEW BOARD, board-row-title, back button respond to `tap()` |
 | `mobile-mode-toggle` | `mobile` (WebKit) | SETUP ↔ GAME toggle switches in both directions via `tap()` |
-| `mobile-touch-targets` | `mobile` (WebKit) | `boundingBox()` ≥ 44×44px on TAP TO UNLOCK, NEW BOARD, back button, pad cells |
-| `mobile-overflow` | `mobile` (WebKit) | No structural element extends beyond 390px viewport width |
+| `mobile-touch-targets` | `mobile` (WebKit) | ⬜ Deferred (Slice 8): `test.describe.fixme` — alle Tests übersprungen bis mobile layout adaptation implementiert |
+| `mobile-overflow` | `mobile` (WebKit) | ⬜ Deferred (Slice 8): `test.describe.fixme` — alle Tests übersprungen bis mobile layout adaptation implementiert |
 | `mobile-pad-interaction` | `mobile-chromium` | **Core:** pad `tap()` → `.sb-pad.is-hot` / `.sb-pad.is-looping` DOM state |
 | `mobile-pad-creation` | `mobile-chromium` | Empty cell `tap()` → popover → `tap()` through to pad creation |
 
@@ -159,7 +162,7 @@ These items are covered by the manual checklist at
 ### Running mobile tests
 
 ```bash
-cd v3 && npm run test:e2e:mobile   # Both projects: WebKit (5 tests) + Chromium (2 tests)
+cd v3 && npm run test:e2e:mobile   # Beide Projekte: 5 Spec-Dateien WebKit (2 davon fixme'd) + 2 Spec-Dateien Chromium
 ```
 
 Mobile tests run in CI as a separate `e2e-mobile` job (parallel to `e2e-smoke` and
@@ -218,7 +221,7 @@ GitHub Actions unter [`.github/workflows/tests.yml`](.github/workflows/tests.yml
 ```
 unit-build-lint
   ├── npm run build          (tsc + vite)
-  ├── npm run test           (vitest 91 Tests)
+  ├── npm run test           (vitest 102 Tests, Stand v3.0.18)
   ├── npm run lint           (eslint)
   ├── npm run format:check   (prettier)
   ├── npm run size           (size-limit)
@@ -229,10 +232,10 @@ e2e-smoke (needs: unit-build-lint)
   └── npm run test:e2e:smoke   (10 Tests: 5 × Chromium + 5 × WebKit)
 
 e2e-mobile (needs: unit-build-lint)
-  └── npm run test:e2e:mobile  (17 Tests: 5 × WebKit + 2 × Chromium — both iPhone 13 Pro profile)
+  └── npm run test:e2e:mobile  (7 Spec-Dateien: 5 WebKit + 2 Chromium — iPhone 13 Pro profile; 2 WebKit-Specs fixme'd/deferred bis Slice 8)
 
 e2e-full (needs: unit-build-lint)
-  └── npm run test:e2e:full    (18+ Tests in Chromium)
+  └── npm run test:e2e:full    (Slices-3+4-Tests in Chromium: CRUD, Audio-Engine)
 ```
 
 Playwright-Reports werden als Artifact hochgeladen (7 Tage, bei Fehler).
@@ -266,8 +269,8 @@ cd v3 && npm run test:ui           # Browser-Interface
 
 # ── E2E ───────────────────────────────────────────────────────────────────
 cd v3 && npm run test:e2e:smoke    # 10 Smoke-Tests (Chromium + WebKit)
-cd v3 && npm run test:e2e:full     # 18+ Slice-3-Tests (Chromium)
-cd v3 && npm run test:e2e:mobile   # Mobile touch-wiring + targets + overflow (WebKit)
+cd v3 && npm run test:e2e:full     # Slices-3+4-Tests (Chromium: CRUD, Audio-Engine)
+cd v3 && npm run test:e2e:mobile   # Beide Projekte: 5 Spec-Dateien WebKit (2 fixme'd) + 2 Spec-Dateien Chromium
 cd v3 && npm run test:e2e          # Smoke + Full kombiniert
 
 # ── Visual Regression (lokal only) ────────────────────────────────────────
@@ -405,7 +408,7 @@ Tests 9, 14, 20, 21 (Scene-Reorder, Library-Drag Path B, Pad SWAP, Pad INSERT)
 erfordern pointer-event-basiertes Drag (`mouse.down + move + up`). Diese Tests
 sind als `test.skip` markiert — in Phase 3 aktivieren wenn Drag-Sequenz stabil ist.
 
-### 7. WebKit headless: no audio codec support
+### 6. WebKit headless: no audio codec support
 
 Playwright's headless WebKit build does not include audio codec support. Calls to
 `AudioContext.decodeAudioData()` with a WAV (or most other formats) fail with a
@@ -431,7 +434,7 @@ A `patchAudioDecodeForWebKit` approach was attempted (replacing `decodeAudioData
 `addInitScript`) but does not work: Playwright's WebKit runs `addInitScript` in an
 isolated context that does not affect the app's main realm, so the mock is never applied.
 
-### 8. getByText-Ambiguität in Playwright
+### 7. getByText-Ambiguität in Playwright
 
 `page.getByText('X')` schlägt fehl wenn "X" mehrfach im DOM vorkommt (strict mode
 violation). Immer präzisere Selektoren verwenden:

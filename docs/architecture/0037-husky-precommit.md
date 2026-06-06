@@ -16,13 +16,16 @@ Nach Phase 2 ist der Pre-Commit-Hook automatisiert via Husky.
 
 ## Decision
 
-Husky-Pre-Commit-Hook (`v3/.husky/pre-commit`) führt drei Gates sequenziell aus:
+Husky-Pre-Commit-Hook (`v3/.husky/pre-commit`) führt sechs Gates sequenziell aus:
 
-1. `npm run build` (tsc + vite, ~4s)
-2. `npm run test` (vitest, ~1s)
-3. `npm run test:e2e:smoke` (Chromium + WebKit, ~6s)
+1. `npm run sync:docs` + `git add` (~1s) — Auto-generierte Docs (ADR-Index, Klassen, Tokens)
+2. `npm run build` (tsc + vite, ~4s)
+3. `npx lint-staged` (~1s) — Prettier + ESLint auf gestageten Dateien; auto-fix + re-stage
+4. `npm run test` (vitest, ~1s)
+5. `npm run test:e2e:smoke` (Chromium + WebKit, ~6s)
+6. `npm run link:check` (~1s) — markdown-link-check auf alle .md-Dateien
 
-**Gesamt: ~11s.** Schlägt ein Gate fehl → Commit wird abgebrochen.
+**Gesamt: ~15s.** Schlägt ein Gate fehl → Commit wird abgebrochen.
 
 **Aktivierung:** `cd v3 && npm install` aktiviert den Hook automatisch
 (via Husky's `prepare`-Script in `package.json`).

@@ -18,8 +18,7 @@ besonders wertvoll.
 
 ## Decision
 
-Playwright mit drei Projekten: `smoke` (Chromium + WebKit), `full` (Chromium),
-`visual` (Chromium, macOS-only). Konfiguration in `v3/playwright.config.ts`.
+Playwright mit sechs Projekten: `smoke` (Chromium), `smoke-webkit` (WebKit), `full` (Chromium), `mobile` (iPhone 13 Pro, WebKit), `mobile-chromium` (iPhone 13 Pro, Chromium), `visual` (Chromium, macOS-only). Konfiguration in `v3/playwright.config.ts`.
 
 `webServer`-Konfiguration: Playwright startet den Vite-Dev-Server automatisch
 vor dem Test-Run. Tests laufen gegen `http://localhost:5173/botc-soundboard-v3/`.

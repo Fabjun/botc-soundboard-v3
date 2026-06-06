@@ -1,4 +1,4 @@
-# ADR-0033: Drei-Schichten-Test-Strategie (Unit / E2E / Visual)
+# ADR-0033: Vier-Schichten-Test-Strategie (Unit / E2E Smoke / E2E Full / Visual)
 
 **Status:** Accepted
 **Date:** 2026-05-27
@@ -24,11 +24,10 @@ riskant würde (Regressionen nicht erkennbar).
 |---------|------|-------|----------|----|
 | Unit | Vitest | Logik-Korrektheit (pure functions, signals, IDB) | ~1s | ✓ |
 | E2E Smoke | Playwright Chromium+WebKit | Kritische Pfade | ~6s | ✓ |
-| E2E Full | Playwright Chromium | 22 Slice-3-Verifikationspunkte | ~90s | ✓ |
+| E2E Full | Playwright Chromium | Vollständige Verifikation (Slices 3–4): Board/Scene/Pad CRUD, Audio-Engine | ~90s | ✓ |
 | Visual Regression | Playwright Screenshots | Pixel-Vergleich | ~30s | ✗ (lokal only) |
 
-**Gate-Reihenfolge:** Unit → E2E Smoke → E2E Full (CI), Unit → E2E Smoke
-(Pre-Commit-Hook, ADR-0037).
+**Gate-Reihenfolge:** Unit → E2E Smoke → E2E Full (CI); Pre-Commit: sync:docs → Build → lint-staged → Unit → E2E Smoke → link:check (ADR-0037); Pre-Push: Version-Bump + Size → E2E All (ADR-0037).
 
 **Bundle-Size-Monitoring:** `@size-limit/file` misst gzip-Größen nach Build.
 Limits: JS 200 KB, CSS 50 KB. In CI integriert. Hinweis: `@size-limit/preset-app`

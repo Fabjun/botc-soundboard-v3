@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.18';
+export const APP_VERSION = '3.0.19';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.19',
+    date: '2026-06-06',
+    items: [
+      "Docs: Pass 5 — correct test/gate/project counts in TESTING.md + ADRs (0033/0034/0035/0037), mark fixme'd mobile tests as deferred (not active coverage), annotate Slice-7 manual checklist items, fix section numbering, add testing coupling entry",
+    ],
+  },
   {
     version: '3.0.18',
     date: '2026-06-06',

@@ -89,7 +89,7 @@ Jede Entscheidung bekommt eine eigene Datei. Format: `docs/architecture/_templat
 
 | # | Titel | Status | Slice | Datum |
 |---|-------|--------|-------|-------|
-| [ADR-0033](0033-three-layer-testing.md) | Drei-Schichten-Test-Strategie (Unit / E2E / Visual) | Accepted | infrastructure | 2026-05-27 |
+| [ADR-0033](0033-three-layer-testing.md) | Vier-Schichten-Test-Strategie (Unit / E2E Smoke / E2E Full / Visual) | Accepted | infrastructure | 2026-05-27 |
 | [ADR-0034](0034-vitest.md) | Vitest für Unit-Tests | Accepted | infrastructure | 2026-05-27 |
 | [ADR-0035](0035-playwright.md) | Playwright für E2E-Tests | Accepted | infrastructure | 2026-05-27 |
 | [ADR-0036](0036-visual-regression-macos.md) | Visual Regression Tests lokal-only (macOS-Baselines) | Accepted | infrastructure | 2026-05-27 |

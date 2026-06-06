@@ -37,7 +37,7 @@ Signals testen, müssen in `beforeEach` alle berührten Signals resetten.
 ## Consequences
 
 **Positiv:**
-- ~1s Laufzeit für 91 Unit-Tests. Schnellste Feedback-Schleife.
+- ~1s Laufzeit für 102 Unit-Tests (Stand v3.0.18). Schnellste Feedback-Schleife.
 - Keine separate Webpack/Babel-Konfiguration — Vitest nutzt Vite nativ.
 - `fake-indexeddb` ermöglicht echte IDB-API-Tests ohne Browser.
 
@@ -58,6 +58,6 @@ Vite/TypeScript/ES Modules. Kein Vorteil gegenüber Vitest in einem Vite-Projekt
 ## Related
 
 - **Dateien:** `v3/vitest.config.ts`, `v3/tests/unit/setup.ts`, `v3/tests/unit/*.test.ts`
-- **ADRs:** ADR-0033 (Test-Strategie), ADR-0038 (fake-indexeddb Isolation)
+- **ADRs:** ADR-0033 (Test-Strategie) — fake-indexeddb-Isolation ist in §Decision dieses ADRs dokumentiert; kein separates ADR
 - **Quelldokumente:** `TESTING.md §Werkzeuge`, `TESTING.md §Neue Unit-Tests schreiben`
 - **Commits:** `47ff8b0` — chore: add vitest setup and first unit tests
