@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.17';
+export const APP_VERSION = '3.0.18';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.18',
+    date: '2026-06-06',
+    items: [
+      'Docs: Pass 4 BACKLOG maintenance — record settled scene decisions (I24 SETTLED/I25 decided-pending-code), supersede desktop-first framing per ADR-0045, fix ADR-0015 citation, add Axis-1 breakpoint tracking, status markers (K11/K13), remove completed I22 phrasing item',
+    ],
+  },
   {
     version: '3.0.17',
     date: '2026-06-06',

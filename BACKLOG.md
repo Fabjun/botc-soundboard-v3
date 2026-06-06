@@ -24,7 +24,7 @@ during the slice. This is the only defence against backlog drift.
 2. [Documentation Debt](#2-documentation-debt)
 3. [Deferred Design Decisions](#3-deferred-design-decisions)
 4. [Deferred Infrastructure](#4-deferred-infrastructure)
-5. [CSS Class Discipline](#5-css-class-discipline-multi-session-plan)
+5. [CSS Class Discipline](#5-css-class-discipline-complete)
 6. [Known Limitations](#6-known-limitations)
 7. [Manual Verification Reference](#7-manual-verification-reference)
 
@@ -91,7 +91,7 @@ Import V1 template files; a V1 board becomes a V3 board with one default scene c
 all pads. Export in a format V1 can read (V3-specific fields are additive; V1 ignores them).
 **Why deferred:** Requires a working board with audio (Slices 3+4) before export is meaningful.
 **When:** Slice 7.
-**Source:** V3_CONCEPT_BRIEF.md §4.6 + §5.1, ADR-0015.
+**Source:** V3_CONCEPT_BRIEF.md §4.6 + §5.1. (ADR-0015 covers only DB name; no ADR covers the V1-compatible template format — that design is deferred to Slice 7.)
 
 ### Stream-based export/import (V1 lessons warning)
 Must stream one library entry at a time — never JSON-load the entire library at once (iOS
@@ -218,7 +218,7 @@ Make SceneRail collapsible or overlay at narrow viewports (≤ 390 px). Make ins
 (PadEditorPanel, LibraryPanel) slide over the pad grid rather than pushing it, or use a
 tab-based layout. Minimum viable target: pad grid center area ≥ 44 px in all three SETUP
 states at 390 px.
-**Why deferred:** Desktop-first layout; mobile adaptation is a dedicated phase.
+**Why deferred:** Adaptive layout implementation per ADR-0045 (two-axis model: narrow↔wide × touch↔pointer). Slice 8 brings layout fully into the model; Axis-1 breakpoints need empirical calibration on real devices first.
 **When:** Slice 8.
 **Source:** DESIGN_NOTES.md §Known limitation: SETUP layout.
 
@@ -1066,20 +1066,30 @@ The two-axis adaptive model (→ [Stable directions](#two-axis-adaptive-model)) 
 **When:** After the mobile prototype reaches a stable, verified state. Not started; recorded here so it isn't lost.
 **→ Source:** Part 4 of the two-axis model revision, 2026-06-04.
 
+### Axis-1 breakpoint thresholds — narrow↔wide layout switch ⬜ TBD (ADR-0045)
+Exact breakpoint values at which the SceneRail dock moves from bottom-bar to side-rail are
+explicitly not yet defined — empirical calibration on real devices is required (ref ADR-0045
+§Consequences). Record here so this open decision is not lost.
+**When:** Before or during Slice 8 layout work.
+**Source:** ADR-0045.
+
 ### Empty-SETUP affordance
 See Features → Slice 8 above. Duplicated here as a reminder that it is a design decision,
 not just a feature.
 
-### Delete-last-scene behaviour
-Drop back to Empty Board state (recommended — zero scenes is a legal Board state, Empty Board
-UX is already good) vs. block the action. May have been decided during Slice 3 implementation;
-verify before Slice 5.
-**Source:** DESIGN_NOTES.md §A3 Scene CRUD open questions.
+### Delete-last-scene behaviour ✅ SETTLED (Slice 3)
+Deleting the last scene leaves the board in zero-scenes (empty-board) state — the intended
+behavior. Blocking was considered and rejected. Implemented unconditionally in
+`SceneRail.tsx` `requestDelete()`: no guard on `scenes.length`; empty-board UI is live.
+**Source:** DESIGN_NOTES.md §A3 Scene CRUD; SceneRail.tsx.
 
-### Scene rename: allow duplicate names?
-Scenes are ID-referenced; name is display-only. Strict-unique adds friction without benefit.
-Likely defaulted to "allow" during Slice 3 — verify.
-**Source:** DESIGN_NOTES.md §A3 Scene CRUD.
+### Scene rename: duplicate names ⬜ DECIDED — code task pending (2026-06-06)
+**Decision:** Duplicate scene names should be prevented. The name-is-display-only argument was
+considered; uniqueness was chosen to avoid user confusion.
+**Code state:** `commitRename()` in `SceneRail.tsx` currently validates only non-empty trim —
+no duplicate check exists. Duplicates are still allowed in code. Validation to be added as a
+separate code task (not this documentation pass).
+**Source:** DESIGN_NOTES.md §A3 Scene CRUD; user decision 2026-06-06.
 
 ### Scene mobile reorder: stepwise vs. handle-based
 Slice 3 shipped stepwise Move up/Move down. A dedicated reorder-mode with handles on every
@@ -1244,7 +1254,7 @@ this just makes them durable. Low priority but cheap.
 
 ---
 
-## 5. CSS Class Discipline (multi-session plan)
+## 5. CSS Class Discipline (complete)
 _Plan authored: 2026-05-29_
 
 Four sequential sessions to establish and enforce stronger discipline around CSS class usage
@@ -1368,7 +1378,7 @@ normalization decision (6px → `var(--space-2)`). Sub-session sizing with audit
 
 ---
 
-### Session 3 — Migration of inline-styles to classes (8 sub-sessions)
+### Session 3 — Migration of inline-styles to classes (8 sub-sessions) ✅ Done (994d2eb)
 
 _Purpose:_ Convert all 177 Path-D violations + 20 dynamic-with-static + 2 unclassified blocks
 into proper class usage. New classes created per 4-path rule; explicit anti-duplication
@@ -1719,7 +1729,7 @@ consolidation pass" for full results. 24 of 26 candidate classes confirmed-justi
 **What remains pending (Session 8):** Sub-token literal tokenization, the sb-overlay
 family (SPECULATIVE #18–20), visual regression check of PadGridCell/PadTypeConfirmDialog/
 UndoToast/Waveform with real audio data (not headlessly testable without audio fixtures),
-CLAUDE.md phrasing items (line 233 past tense, line 268 post-migration baseline).
+CLAUDE.md phrasing items (line 268 post-migration baseline).
 
 **Separate session (sb-menu-row restructuring):** Pre-flat family flattening — dedicated
 session after consolidation pass, structural work mode.
