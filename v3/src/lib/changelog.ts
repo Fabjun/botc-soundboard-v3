@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.20';
+export const APP_VERSION = '3.0.21';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.21',
+    date: '2026-06-10',
+    items: [
+      'Docs: Pass 7 — annotate dead §8.8 references + removed --pix-bg-layer token in DESIGN_NOTES; update Slice 4 header (complete, C1/C2 deferred); record I20 Slice-3 sign-offs with file:line evidence; annotate A3 Scene CRUD items (settled/deferred/superseded); fix false "stepwise reorder shipped" claim in BACKLOG; add §8.8 inset-shadow content-gap entry to BACKLOG; add ADR-category↔CATEGORY_ORDER coupling row to FOUNDATION_ANALYSIS.md',
+    ],
+  },
   {
     version: '3.0.20',
     date: '2026-06-06',

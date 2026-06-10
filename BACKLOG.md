@@ -1004,6 +1004,19 @@ actual system documentation.
 **When:** As design documentation catch-up, likely before Slice 8.
 **Source:** Referenced in multiple sessions as "not yet written."
 
+### DESIGN_SYSTEM.md §5 — inset box-shadow exception undocumented
+`§5 Verbotene Muster` says `box-shadow auf clip-path-Elementen (stattdessen filter: drop-shadow())`.
+This covers outer box-shadow only. Inset `box-shadow` renders inside the padding box, within the
+clip region, and therefore remains visible on clip-path elements — it is explicitly allowed. See
+v15 treatments D/F and the hot-pad inner glow as canonical examples. The nuance was recorded in
+DESIGN_NOTES.md (Drop-shadow vs Inset shadow RESOLVED entry), but the §8.8 where it was supposed
+to land was never written. Current §5 reads as "no box-shadow at all on clip-path elements",
+which is incorrect.
+Fix: add one sentence to §5: "Inset `box-shadow` is explicitly allowed — it renders inside the
+padding box, within the clip region, and therefore remains visible on clip-path elements."
+**When:** Next DESIGN_SYSTEM.md write-out pass (Documentation Debt §1).
+**Source:** DESIGN_NOTES.md Drop-shadow vs Inset shadow RESOLVED; FOUNDATION_ANALYSIS.md C8.
+
 ### ✅ End-of-Session-3 consolidation pass — COMPLETE (2026-05-31)
 
 > **Completed 2026-05-31.** All five tasks done. See results below.
@@ -1092,9 +1105,13 @@ separate code task (not this documentation pass).
 **Source:** DESIGN_NOTES.md §A3 Scene CRUD; user decision 2026-06-06.
 
 ### Scene mobile reorder: stepwise vs. handle-based
-Slice 3 shipped stepwise Move up/Move down. A dedicated reorder-mode with handles on every
-tab is for power users with ≥ 6 scenes. Revisit in Slice 8 based on real use.
+No scene reorder mechanism exists in the code — `SceneRail.tsx` has no stepwise Move up/Down
+and no drag handle, and no reorder setter exists in `state/store.ts`. The file-header comment
+"Reorder (drag handle, pointer-events based)" is a planned-feature note, not shipped code.
+Implement stepwise Move up/Down first (recommended); evaluate a handle-based reorder mode for
+power users (≥6 scenes) later, based on real use once it exists.
 **Source:** DESIGN_NOTES.md §A3 Scene CRUD.
+*(Entry corrected 2026-06-10: previously claimed stepwise reorder shipped in Slice 3.)*
 
 ### Long-press threshold (350 ms)
 Fixed-with-accessibility-override is the cleanest. Or expose in Settings → Controls. Decide

@@ -36,6 +36,11 @@ The 5–10 s zone is ambiguous.
 **Pre-disposition · SINGLE default in the 5–10 s zone, type-flip allowed.**
 Clean and predictable; rare enough that an explicit flip on the pad costs
 nothing. Re-evaluate if real audio sets show many sub-loops in this band.
+*(Implemented: threshold as recommended — SINGLE below 10 s, `padUtils.ts:57–59`. Type-flip:
+in-flow only in Path A via type pills (`PadCreationPopover.tsx:193`); Path B creates
+immediately with no in-flow override; post-creation change always available via Pad Editor
+(`PadEditorPanel.tsx:379` + `PadTypeConfirmDialog.tsx`). Whether Path B needs an in-flow
+flip is a future UX question — not re-opened here.)*
 
 ### A2 · Path C "next available slot" scan order
 + ADD PAD on save lands the new pad on a free slot. Row-major top-left
@@ -43,6 +48,7 @@ vs. near-focused-slot.
 **Pre-disposition · row-major top-left.** Predictable beats smart for an
 operation the user rarely triggers consciously. Smart-near-focus is the
 kind of thing that mysteriously breaks one in twenty workflows.
+**RESOLVED** — `padUtils.ts:22–26`: outer loop = row, inner = col → row-major top-left.
 
 ### A2 · Path A audio-source picker shape
 Inline popover for slot-tap creation needs an audio source picker.
@@ -50,6 +56,7 @@ Inline popover for slot-tap creation needs an audio source picker.
 BROWSE · DROP HERE.** Keeps the popover small, covers the three real
 ways audio arrives. If RECENT LIBRARY's row count overflows the popover
 height in real data, segment the popover differently — but only then.
+*(RECENT LIBRARY and BROWSE live (`PadCreationPopover.tsx:7–9`); DROP HERE deferred to Slice 8 — placeholder shown.)*
 
 ### A2 · Path A → Path C handoff link
 Inline popover should offer a "graduate to full editor" path so users
@@ -57,6 +64,7 @@ don't retype when they hit the popover's ceiling.
 **Pre-disposition · "More options →" link bottom-right of the popover.**
 Standard convention; opens the full PAD editor pre-populated with the
 in-progress data. No data loss, no surprise.
+**RESOLVED** — `PadCreationPopover.tsx:213`: "More options →" exists.
 
 ### A4 · grid stays 4-col on every viewport (no portrait reflow)
 Mobile-portrait at the Slice-3 default 4×4 keeps **4 columns**, with
@@ -70,6 +78,8 @@ cells ~78 px wide at 360 px viewport — above the 44 px touch minimum.
   zero functional benefit.
 v19 Empty-Scene mobile updated from a teaching 3×4 hint to the real
 4×4 grid so the design pack is consistent.
+*(Per ADR-0032: 4-col is the default; the ban is on AUTO-reflow of the column count. Manual
+display-dependent column choice (Slice 8 `gridConfig`) is compatible — no contradiction.)*
 
 ---
 
@@ -190,6 +200,10 @@ shipping vs. what's still in exploration.
 
 > Audio-state vocabulary surfaces when the audio engine is real.
 > Speculative tokens / states would be cruft until then.
+>
+> *(Slice 4 complete 2026-05-28. C1 and C2 were NOT implemented — the scheduling
+> lifecycle was not exposed in Slice 4, confirming the "speculative cruft" concern.
+> Both remain open.)*
 
 ### C1 · `is-scheduled` pad state (combo + ducking)
 A pad that will fire on the next downbeat (combo scheduling, ducking
@@ -225,14 +239,19 @@ implemented and we can see real cross-scene set usage.
 
 ---
 
-### A3 · Scene CRUD — open questions
+### A3 · Scene CRUD — open questions *(Slice-3 content — misplaced under Slice 6, left in place)*
 Surface during A3; final calls happen at implementation:
 - **Delete-last-scene behaviour** — drop back to Empty Board (recommended)
   vs. block. Recommendation argues from the data-model angle: zero scenes
   is a legal Board state, and Empty Board UX is already good.
+  *(SETTLED — recommendation implemented: `SceneRail.tsx` `requestDelete()` has no guard on
+  `scenes.length`. See BACKLOG.md: Delete-last-scene behaviour ✅ SETTLED (Slice 3).)*
 - **Rename name conflicts** — allow duplicates (scenes are ID-referenced,
   name is display-only) vs. enforce unique. Strict-unique adds friction
   without benefit.
+  *(BACKLOG user decision 2026-06-06 supersedes this recommendation: duplicate names are to
+  be prevented. `SceneRail.tsx` `commitRename()` currently allows duplicates — code task
+  pending. See BACKLOG.md: Scene rename: duplicate names ⬜ DECIDED.)*
 - **Hotkey conflicts on duplicate** — duplicated pads carry their hotkeys,
   creating intra-board collisions. Resolve via the planned inline-
   conflict-feedback UI (already in DESIGN_NOTES, "PAD Editor"). Open:
@@ -245,8 +264,12 @@ Surface during A3; final calls happen at implementation:
   vs. dedicated reorder-mode with handles on every tab. Stepwise is the
   reliable touch-friendly default; reorder-mode is for power users with
   ≥6 scenes.
+  *(No reorder mechanism in code — `SceneRail.tsx` has no Move up/Down and no drag handle;
+  `state/store.ts` has no reorder setter. Deferred; see BACKLOG.md §3 Scene mobile reorder.)*
 - **Long-press threshold** — 350 ms default. Settings-configurable, or
   fixed? Fixed-with-accessibility-override is the cleanest.
+  *(Deferred per BACKLOG (Slice 8). 350 ms is established as the project long-press constant in
+  `LibraryPanel.tsx:145`. Scene-context question is open until scene reorder exists.)*
 
 ---
 
@@ -375,14 +398,15 @@ four small system changes, all on the same commit as the state:
 
 - `--pix-bg-layer` escape hatch on the `sb-pix`-family background (allows
   multi-layer gradients without breaking the solid-colour `--pix-bg`
-  contract — fully backwards-compatible)
+  contract — fully backwards-compatible) *(token subsequently removed from tokens.css)*
 - `--pad-filter-base` plumbing on `sb-pad` so `is-hot`'s glow stacks
   onto whatever base filter `is-deep` (or any future treatment) sets,
   instead of clobbering it
 - new tokens `--pad-edge-light`, `--pad-edge-dark` (inset relief +
   bevel gradient stops), `--shadow-pad-lift` (chunky pixel drop-shadow)
-- DESIGN_SYSTEM.md §3 (new `is-deep` state), §8.8 (the two custom-property
-  escape hatches), §A (Pad surface row + Elevation token added)
+- DESIGN_SYSTEM.md §3 (new `is-deep` state), ~~§8.8~~ *(§8.8 was never written;
+  escape-hatch content is moot — `--pix-bg-layer` removed; box-shadow rule lives in §5)*,
+  §A (Pad surface row + Elevation token added)
 
 v18-pad-depth-migration.jsx is kept as the design-history artefact
 showing what the contract carried and what it didn't.
@@ -430,7 +454,9 @@ Hold for one or two design sessions before deciding; the experiment with
 `--fade` will tell us how green sits next to the rest.
 
 ### Drop-shadow vs Inset shadow on `sb-pix`-family — RESOLVED
-`DESIGN_SYSTEM.md` §8.8 has been refined: the rule is now about **outer**
+*(§8.8 was never written. The outer box-shadow rule lives in DESIGN_SYSTEM.md §5.
+The inset-is-allowed nuance is a documented gap — see BACKLOG.md §2 Documentation Debt.)*  
+`DESIGN_SYSTEM.md` ~~§8.8~~ has been refined: the rule is now about **outer**
 `box-shadow` only — that's what `clip-path` fails to follow (the shadow
 hugs the bounding box, not the stepped silhouette), so the workaround is
 `filter: drop-shadow(...)`. Inset `box-shadow` renders inside the padding
