@@ -267,6 +267,45 @@ and has diverged). Never hardcode colors, fonts, or spacing.
 
 ---
 
+## Evidence Requirements (non-negotiable)
+
+Introduced after five wrong repo-state claims in planning, one nearly destructive —
+these are mechanical obligations, not principles.
+
+**E1 — Existence/location:** Before asserting a file/section exists, does not exist,
+or is at a specific path: run `pwd && find . -iname "<name>"` (or `grep -n` for
+sections) from repo root. No stderr suppression — a mistyped path must fail visibly,
+not look like absence. Paste the output inline before the claim. No output shown =
+claim not allowed.
+
+**E2 — File creation:** Before proposing to create any file: paste
+`pwd && find . -iname "<filename>"` output proving absence. No find output =
+plan-format error. (Highest blast radius — overwrite/duplication risk.)
+
+**E3 — Implementation status:** Any plan row claiming code is implemented / not
+implemented / deferred: add a `Code evidence:` sub-item (grep or Read file:line).
+BACKLOG ✅, DESIGN_NOTES, and commit messages are claims to verify, never code evidence.
+
+**E4 — Execution-time scope:** If execution requires touching a file not on the
+plan's **Files touched** list: STOP, report file + reason, wait for go-ahead. No
+"trivially correct" exceptions.
+
+**E5 — Section citations:** Citing a §-number or specific text requires quoting the
+actual text verbatim from a fresh Read — no paraphrase from memory.
+
+### Plan format (Plan-Mode plans)
+
+Every Plan-Mode plan must contain two named sections:
+
+**`### Evidence`** — all E1/E2/E3/E5 proofs collected. If the plan makes no
+existence/status/citation claims: `Evidence: no existence/status claims in this plan`
+— never silently absent.
+
+**`### Files touched`** — complete enumeration including generated files. Any non-doc
+file flagged ⚠ for approval.
+
+---
+
 ## Workflow rules
 
 1. **Read `V3_CONCEPT_BRIEF.md` at session start.** It is the binding
@@ -280,7 +319,8 @@ and has diverged). Never hardcode colors, fonts, or spacing.
    Brief.
 5. **After every feature or fix**: verify manually, then
    `git add . && git commit -m "..." && git push`
-6. After every push: short summary of what changed and what was verified.
+6. After every push: run `git --no-pager show --stat HEAD` and include the full
+   file list in the summary, plus what changed and what was verified.
 7. **Update this CLAUDE.md** when permanent standards change.
 8. **Testing**: see `TESTING.md` for full test architecture, commands, and
    conventions. Phase 2 testing infrastructure is complete:
@@ -360,6 +400,14 @@ without exception:
 6. Only then: `git push`
 
 If any check fails: **do not commit**. Report the failure, ask for direction.
+
+> **Plan-Mode commit gate:** Before committing Plan-Mode work, run
+> `git diff --cached --name-only` and compare against the plan's **Files touched**
+> list. Any file not on it → abort and report before committing.
+> Standing exceptions (defined by class, not by name):
+> — outputs of `npm run sync:docs` (whichever files the script stages)
+> — `v3/src/lib/changelog.ts` (version bump)
+> Non-Plan-Mode work is covered by the post-push `--stat` summary (Workflow rule 6).
 
 ### Manual verification before commit
 

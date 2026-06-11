@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.21';
+export const APP_VERSION = '3.0.22';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.22',
+    date: '2026-06-11',
+    items: [
+      'Docs: add Evidence Requirements (E1–E5) to CLAUDE.md — mechanical guardrails after five wrong repo-state claims in planning; plan-format requirements (### Evidence / ### Files touched); Plan-Mode commit gate; post-push --stat mandate',
+    ],
+  },
   {
     version: '3.0.21',
     date: '2026-06-10',
