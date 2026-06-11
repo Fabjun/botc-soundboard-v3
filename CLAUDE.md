@@ -326,14 +326,19 @@ any non-doc file flagged ⚠ for approval. Routine additionally: `v3/src/lib/cha
    Brief.
 5. **After every feature or fix**: verify manually, then
    `git add . && git commit -m "..." && git push`
-6. After every push: run `git --no-pager show --stat HEAD` and include the full
-   file list in the summary, plus what changed and what was verified.
+6. After every push: paste the **literal output** of `git --no-pager show --stat HEAD`
+   verbatim in the summary — not a prose description of the file list. Also include what
+   changed and what was verified.
 7. **Update this CLAUDE.md** when permanent standards change.
 8. **Testing**: see `TESTING.md` for full test architecture, commands, and
    conventions. Phase 2 testing infrastructure is complete:
    - Pre-commit: sync:docs (auto-stage) + build + lint + unit tests + smoke E2E + link:check
    - CI: GitHub Actions `tests.yml` runs unit + lint + size + docs sync check + link check + full E2E
    - Deploy is gated on green `tests.yml` run (via `workflow_run`)
+9. **Design→code imports**: all Claude Design output entering production code must pass
+   the import gate (5-point check: Path-D styles, class-name registries, hex/px literals,
+   TODO-CLASS markers, token existence) — see ADR-0046. Session spec for production-near
+   design sessions: `docs/design/CLAUDE_DESIGN_SPEC.md`.
 10. **Visual Regression**: Before UI-relevant commits (components, CSS,
     design-system tokens — especially Slice 8 / Polish), run:
     `cd v3 && npm run test:e2e:visual`

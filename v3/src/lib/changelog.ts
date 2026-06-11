@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.23';
+export const APP_VERSION = '3.0.24';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.24',
+    date: '2026-06-11',
+    items: [
+      'Docs: record import-gate decision (ADR-0046) — no design output enters production unchecked; 5-point import gate; per-session spec dial; add Claude Design session spec (docs/design/CLAUDE_DESIGN_SPEC.md); sharpen rule 6 to literal stat output; add FOUNDATION_ANALYSIS coupling row; add BACKLOG import-gate script candidate',
+    ],
+  },
   {
     version: '3.0.23',
     date: '2026-06-11',

@@ -1269,6 +1269,25 @@ caught bugs:
 this just makes them durable. Low priority but cheap.
 **Source:** Conversation 2026-05-29 — "how to prevent things being overlooked."
 
+### Import-gate script + @layout-primitive tagging
+
+Two deferred code tasks, related enough to batch:
+
+**1. Import-gate script** (`scripts/import-gate.sh` or similar): formalise the 5 import-gate
+checks from ADR-0046 as grep commands in a runnable script. Inputs: a path glob of files
+to check (e.g. the freshly imported JSX). Outputs: per-check hit lists, exit 0 if clean,
+exit 1 with a summary if violations found. Integrate as `npm run import:gate`.
+Optional extension: auto-generate a one-session spec snapshot from live §5a + §3 +
+tokens.css as a diff-checkable artifact.
+
+**2. @layout-primitive CSS tagging** (referenced in `DESIGN_SYSTEM.md §5a` process note):
+add `/* @layout-primitive: <purpose> */` annotation to each layout-primitive class in
+`v3/src/styles/tokens.css`; extend sync tooling to detect unregistered primitives and flag
+removals. Until implemented, §5a process note + manual update are the guard.
+
+**Why deferred:** Greps are currently manual but functional; import gate is a new workflow
+(ADR-0046, 2026-06-11) — prove the workflow first, then script it.
+
 ---
 
 ## 5. CSS Class Discipline (complete)
