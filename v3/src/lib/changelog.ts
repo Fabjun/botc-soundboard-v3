@@ -7,9 +7,16 @@ export type ChangelogEntry = {
   items: string[];
 };
 
-export const APP_VERSION = '3.0.22';
+export const APP_VERSION = '3.0.23';
 
 export const CHANGELOG: ChangelogEntry[] = [
+  {
+    version: '3.0.23',
+    date: '2026-06-11',
+    items: [
+      'Docs: fix Evidence Requirements wording defects (relay-gap draft: E1 closing line, Files-touched routine carve-out, commit-gate exceptions), add E6 approval integrity, update incident count to six',
+    ],
+  },
   {
     version: '3.0.22',
     date: '2026-06-11',
